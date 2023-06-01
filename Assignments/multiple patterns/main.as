@@ -971,18 +971,29 @@ TOSH equ 0FFEh ;#
 # 35039 "/opt/microchip/xc8/v1.36/include/pic18f4580.h"
 TOSU equ 0FFFh ;# 
 	FNCALL	_main,_init_config
-	FNCALL	_main,_level
+	FNCALL	_main,_patteren1
+	FNCALL	_main,_patteren2
+	FNCALL	_main,_patteren3
+	FNCALL	_main,_patteren4
+	FNCALL	_main,_read_digital_keypad
 	FNROOT	_main
+	global	read_digital_keypad@once
+psect	idataCOMRAM,class=CODE,space=0,delta=1,noexec
+global __pidataCOMRAM
+__pidataCOMRAM:
+	file	"main.c"
+	line	68
+
+;initializer for read_digital_keypad@once
+	db	low(01h)
 	global	_PORTB
 _PORTB	set	0xF81
+	global	_PORTC
+_PORTC	set	0xF82
 	global	_TRISB
 _TRISB	set	0xF93
 	global	_TRISC
 _TRISC	set	0xF94
-	global	_RC0
-_RC0	set	0x7C10
-	global	_RC1
-_RC1	set	0x7C11
 ; #config settings
 	file	"main.as"
 	line	#
@@ -994,6 +1005,27 @@ start_initialization:
 
 global __initialization
 __initialization:
+psect	dataCOMRAM,class=COMRAM,space=1,noexec
+global __pdataCOMRAM
+__pdataCOMRAM:
+	file	"main.c"
+	line	68
+read_digital_keypad@once:
+       ds      1
+	file	"main.as"
+	line	#
+psect	cinit
+; Initialize objects allocated to COMRAM (1 bytes)
+	global __pidataCOMRAM
+	; load TBLPTR registers with __pidataCOMRAM
+	movlw	low (__pidataCOMRAM)
+	movwf	tblptrl
+	movlw	high(__pidataCOMRAM)
+	movwf	tblptrh
+	movlw	low highword(__pidataCOMRAM)
+	movwf	tblptru
+	tblrd*+ ;fetch initializer
+	movff	tablat, __pdataCOMRAM+0		
 psect cinit,class=CODE,delta=1
 global end_of_initialization,__end_of__initialization
 
@@ -1008,25 +1040,53 @@ global __pcstackCOMRAM
 __pcstackCOMRAM:
 ?_init_config:	; 1 bytes @ 0x0
 ??_init_config:	; 1 bytes @ 0x0
-?_level:	; 1 bytes @ 0x0
-??_level:	; 1 bytes @ 0x0
+?_patteren1:	; 1 bytes @ 0x0
+??_patteren1:	; 1 bytes @ 0x0
+?_read_digital_keypad:	; 1 bytes @ 0x0
+??_read_digital_keypad:	; 1 bytes @ 0x0
+?_patteren2:	; 1 bytes @ 0x0
+??_patteren2:	; 1 bytes @ 0x0
+?_patteren3:	; 1 bytes @ 0x0
+??_patteren3:	; 1 bytes @ 0x0
+?_patteren4:	; 1 bytes @ 0x0
+??_patteren4:	; 1 bytes @ 0x0
 ?_main:	; 1 bytes @ 0x0
-	global	level@i
-level@i:	; 2 bytes @ 0x0
-	ds   2
+	global	patteren1@delay
+patteren1@delay:	; 1 bytes @ 0x0
+	global	patteren2@delay
+patteren2@delay:	; 1 bytes @ 0x0
+	global	patteren3@delay
+patteren3@delay:	; 1 bytes @ 0x0
+	global	patteren4@delay
+patteren4@delay:	; 1 bytes @ 0x0
+	ds   1
+	global	read_digital_keypad@detection
+read_digital_keypad@detection:	; 1 bytes @ 0x1
+	global	patteren1@count
+patteren1@count:	; 1 bytes @ 0x1
+	global	patteren2@count
+patteren2@count:	; 1 bytes @ 0x1
+	global	patteren3@flag
+patteren3@flag:	; 1 bytes @ 0x1
+	global	patteren4@flag
+patteren4@flag:	; 1 bytes @ 0x1
+	ds   1
 ??_main:	; 1 bytes @ 0x2
+	global	main@key
+main@key:	; 1 bytes @ 0x2
+	ds   1
 ;!
 ;!Data Sizes:
 ;!    Strings     0
 ;!    Constant    0
-;!    Data        0
+;!    Data        1
 ;!    BSS         0
 ;!    Persistent  0
 ;!    Stack       0
 ;!
 ;!Auto Spaces:
 ;!    Space          Size  Autos    Used
-;!    COMRAM           95      2       2
+;!    COMRAM           95      3       4
 ;!    BANK0           160      0       0
 ;!    BANK1           256      0       0
 ;!    BANK2           256      0       0
@@ -1043,7 +1103,11 @@ level@i:	; 2 bytes @ 0x0
 ;!
 ;!Critical Paths under _main in COMRAM
 ;!
-;!    _main->_level
+;!    _main->_patteren1
+;!    _main->_patteren2
+;!    _main->_patteren3
+;!    _main->_patteren4
+;!    _main->_read_digital_keypad
 ;!
 ;!Critical Paths under _main in BANK0
 ;!
@@ -1079,11 +1143,28 @@ level@i:	; 2 bytes @ 0x0
 ;! ---------------------------------------------------------------------------------
 ;! (Depth) Function   	        Calls       Base Space   Used Autos Params    Refs
 ;! ---------------------------------------------------------------------------------
-;! (0) _main                                                 0     0      0      15
+;! (0) _main                                                 1     1      0     225
+;!                                              2 COMRAM     1     1      0
 ;!                        _init_config
-;!                              _level
+;!                          _patteren1
+;!                          _patteren2
+;!                          _patteren3
+;!                          _patteren4
+;!                _read_digital_keypad
 ;! ---------------------------------------------------------------------------------
-;! (1) _level                                                2     2      0      15
+;! (1) _read_digital_keypad                                  2     2      0      15
+;!                                              0 COMRAM     2     2      0
+;! ---------------------------------------------------------------------------------
+;! (1) _patteren4                                            2     2      0      30
+;!                                              0 COMRAM     2     2      0
+;! ---------------------------------------------------------------------------------
+;! (1) _patteren3                                            2     2      0      30
+;!                                              0 COMRAM     2     2      0
+;! ---------------------------------------------------------------------------------
+;! (1) _patteren2                                            2     2      0      30
+;!                                              0 COMRAM     2     2      0
+;! ---------------------------------------------------------------------------------
+;! (1) _patteren1                                            2     2      0      60
 ;!                                              0 COMRAM     2     2      0
 ;! ---------------------------------------------------------------------------------
 ;! (1) _init_config                                          0     0      0       0
@@ -1095,33 +1176,32 @@ level@i:	; 2 bytes @ 0x0
 ;!
 ;! _main (ROOT)
 ;!   _init_config
-;!   _level
+;!   _patteren1
+;!   _patteren2
+;!   _patteren3
+;!   _patteren4
+;!   _read_digital_keypad
 ;!
 
 ;! Address spaces:
 
 ;!Name               Size   Autos  Total    Cost      Usage
-;!BITCOMRAM           5F      0       0       0        0.0%
+;!BIGRAM             5FF      0       0      16        0.0%
 ;!EEDATA             100      0       0       0        0.0%
-;!NULL                 0      0       0       0        0.0%
-;!CODE                 0      0       0       0        0.0%
-;!COMRAM              5F      2       2       1        2.1%
-;!STACK                0      0       0       2        0.0%
-;!ABS                  0      0       0       3        0.0%
-;!BITBANK0            A0      0       0       4        0.0%
-;!BANK0               A0      0       0       5        0.0%
-;!BITBANK1           100      0       0       6        0.0%
-;!BANK1              100      0       0       7        0.0%
-;!BITBANK2           100      0       0       8        0.0%
-;!BANK2              100      0       0       9        0.0%
-;!BITBANK3           100      0       0      10        0.0%
-;!BANK3              100      0       0      11        0.0%
-;!BITBANK4           100      0       0      12        0.0%
-;!BANK4              100      0       0      13        0.0%
 ;!BITBANK5           100      0       0      14        0.0%
 ;!BANK5              100      0       0      15        0.0%
-;!BIGRAM             5FF      0       0      16        0.0%
-;!DATA                 0      0       0      17        0.0%
+;!BITBANK4           100      0       0      12        0.0%
+;!BANK4              100      0       0      13        0.0%
+;!BITBANK3           100      0       0      10        0.0%
+;!BANK3              100      0       0      11        0.0%
+;!BITBANK2           100      0       0       8        0.0%
+;!BANK2              100      0       0       9        0.0%
+;!BITBANK1           100      0       0       6        0.0%
+;!BANK1              100      0       0       7        0.0%
+;!BITBANK0            A0      0       0       4        0.0%
+;!BANK0               A0      0       0       5        0.0%
+;!BITCOMRAM           5F      0       0       0        0.0%
+;!COMRAM              5F      3       4       1        4.2%
 ;!BITSFR_3             0      0       0      40        0.0%
 ;!SFR_3                0      0       0      40        0.0%
 ;!BITSFR_2             0      0       0      40        0.0%
@@ -1130,16 +1210,21 @@ level@i:	; 2 bytes @ 0x0
 ;!SFR_1                0      0       0      40        0.0%
 ;!BITSFR               0      0       0      40        0.0%
 ;!SFR                  0      0       0      40        0.0%
+;!STACK                0      0       0       2        0.0%
+;!NULL                 0      0       0       0        0.0%
+;!ABS                  0      0       4       3        0.0%
+;!DATA                 0      0       4      17        0.0%
+;!CODE                 0      0       0       0        0.0%
 
 	global	_main
 
 ;; *************** function _main *****************
 ;; Defined at:
-;;		line 13 in file "main.c"
+;;		line 23 in file "main.c"
 ;; Parameters:    Size  Location     Type
 ;;		None
 ;; Auto vars:     Size  Location     Type
-;;		None
+;;  key             1    2[COMRAM] unsigned char 
 ;; Return value:  Size  Location     Type
 ;;                  1    wreg      void 
 ;; Registers used:
@@ -1150,67 +1235,305 @@ level@i:	; 2 bytes @ 0x0
 ;;		Unchanged: 0/0
 ;; Data sizes:     COMRAM   BANK0   BANK1   BANK2   BANK3   BANK4   BANK5
 ;;      Params:         0       0       0       0       0       0       0
-;;      Locals:         0       0       0       0       0       0       0
+;;      Locals:         1       0       0       0       0       0       0
 ;;      Temps:          0       0       0       0       0       0       0
-;;      Totals:         0       0       0       0       0       0       0
-;;Total ram usage:        0 bytes
+;;      Totals:         1       0       0       0       0       0       0
+;;Total ram usage:        1 bytes
 ;; Hardware stack levels required when called:    1
 ;; This function calls:
 ;;		_init_config
-;;		_level
+;;		_patteren1
+;;		_patteren2
+;;		_patteren3
+;;		_patteren4
+;;		_read_digital_keypad
 ;; This function is called by:
 ;;		Startup code after reset
 ;; This function uses a non-reentrant model
 ;;
 psect	text0,class=CODE,space=0,reloc=2
 	file	"main.c"
-	line	13
+	line	23
 global __ptext0
 __ptext0:
 psect	text0
 	file	"main.c"
-	line	13
+	line	23
 	global	__size_of_main
 	__size_of_main	equ	__end_of_main-_main
 	
 _main:
 ;incstack = 0
 	opt	stack 30
-	line	15
+	line	25
 	
-l658:
+l775:
 	call	_init_config	;wreg free
-	line	16
+	line	27
+	call	_patteren1	;wreg free
+	line	28
 	
-l17:
-	line	18
-	call	_level	;wreg free
-	goto	l17
-	line	19
+l23:
+	line	31
+	movlw	(01h)&0ffh
 	
-l18:
-	line	16
-	goto	l17
+	call	_read_digital_keypad
+	movwf	((c:main@key)),c
+	line	32
 	
-l19:
-	line	24
+l777:
+		movlw	14
+	xorwf	((c:main@key)),c,w
+	btfss	status,2
+	goto	u151
+	goto	u150
+
+u151:
+	goto	l781
+u150:
+	line	34
 	
-l20:
+l779:
+	call	_patteren1	;wreg free
+	line	35
+	goto	l23
+	line	36
+	
+l24:
+	
+l781:
+		movlw	13
+	xorwf	((c:main@key)),c,w
+	btfss	status,2
+	goto	u161
+	goto	u160
+
+u161:
+	goto	l785
+u160:
+	line	38
+	
+l783:
+	call	_patteren2	;wreg free
+	line	39
+	goto	l23
+	line	40
+	
+l26:
+	
+l785:
+		movlw	11
+	xorwf	((c:main@key)),c,w
+	btfss	status,2
+	goto	u171
+	goto	u170
+
+u171:
+	goto	l789
+u170:
+	line	42
+	
+l787:
+	call	_patteren3	;wreg free
+	line	43
+	goto	l23
+	line	44
+	
+l28:
+	
+l789:
+		movlw	7
+	xorwf	((c:main@key)),c,w
+	btfss	status,2
+	goto	u181
+	goto	u180
+
+u181:
+	goto	l23
+u180:
+	line	46
+	
+l791:
+	call	_patteren4	;wreg free
+	goto	l23
+	line	47
+	
+l30:
+	goto	l23
+	line	51
+	
+l29:
+	goto	l23
+	
+l27:
+	goto	l23
+	
+l25:
+	goto	l23
+	
+l31:
+	line	28
+	goto	l23
+	
+l32:
+	line	54
+	
+l33:
 	global	start
 	goto	start
 	opt stack 0
 GLOBAL	__end_of_main
 	__end_of_main:
 	signat	_main,89
-	global	_level
+	global	_read_digital_keypad
 
-;; *************** function _level *****************
+;; *************** function _read_digital_keypad *****************
 ;; Defined at:
-;;		line 32 in file "main.c"
+;;		line 66 in file "main.c"
+;; Parameters:    Size  Location     Type
+;;  detection       1    wreg     unsigned char 
+;; Auto vars:     Size  Location     Type
+;;  detection       1    1[COMRAM] unsigned char 
+;; Return value:  Size  Location     Type
+;;                  1    wreg      unsigned char 
+;; Registers used:
+;;		wreg, status,2, status,0
+;; Tracked objects:
+;;		On entry : 0/0
+;;		On exit  : 0/0
+;;		Unchanged: 0/0
+;; Data sizes:     COMRAM   BANK0   BANK1   BANK2   BANK3   BANK4   BANK5
+;;      Params:         0       0       0       0       0       0       0
+;;      Locals:         1       0       0       0       0       0       0
+;;      Temps:          1       0       0       0       0       0       0
+;;      Totals:         2       0       0       0       0       0       0
+;;Total ram usage:        2 bytes
+;; Hardware stack levels used:    1
+;; This function calls:
+;;		Nothing
+;; This function is called by:
+;;		_main
+;; This function uses a non-reentrant model
+;;
+psect	text1,class=CODE,space=0,reloc=2
+	line	66
+global __ptext1
+__ptext1:
+psect	text1
+	file	"main.c"
+	line	66
+	global	__size_of_read_digital_keypad
+	__size_of_read_digital_keypad	equ	__end_of_read_digital_keypad-_read_digital_keypad
+	
+_read_digital_keypad:
+;incstack = 0
+	opt	stack 30
+	movwf	((c:read_digital_keypad@detection)),c
+	line	70
+	
+l705:
+		decf	((c:read_digital_keypad@detection)),c,w
+	btfss	status,2
+	goto	u51
+	goto	u50
+
+u51:
+	goto	l723
+u50:
+	line	72
+	
+l707:
+	movff	(c:3970),??_read_digital_keypad+0+0	;volatile
+	movlw	0Fh
+	andwf	(??_read_digital_keypad+0+0),c
+	btfsc	status,2
+	goto	u61
+	goto	u60
+u61:
+	goto	l717
+u60:
+	
+l709:
+	movf	((c:read_digital_keypad@once)),c,w
+	btfsc	status,2
+	goto	u71
+	goto	u70
+u71:
+	goto	l717
+u70:
+	line	74
+	
+l711:
+	movlw	low(0)
+	movwf	((c:read_digital_keypad@once)),c
+	line	75
+	
+l713:
+	movf	((c:3970)),c,w	;volatile
+	andlw	low(0Fh)
+	goto	l43
+	
+l715:
+	goto	l43
+	line	76
+	
+l42:
+	line	77
+	
+l717:
+	movlw	(0Fh)&0ffh
+	goto	l43
+	
+l719:
+	goto	l43
+	line	78
+	
+l721:
+	goto	l43
+	line	79
+	
+l41:
+	
+l723:
+	movf	((c:3970)),c,w	;volatile
+	andlw	low(0Fh)
+	xorlw	0Fh
+	btfss	status,2
+	goto	u81
+	goto	u80
+u81:
+	goto	l43
+u80:
+	line	81
+	
+l725:
+	movlw	low(01h)
+	movwf	((c:read_digital_keypad@once)),c
+	goto	l43
+	line	82
+	
+l45:
+	goto	l43
+	line	83
+	
+l44:
+	
+l43:
+	return	;funcret
+	opt stack 0
+GLOBAL	__end_of_read_digital_keypad
+	__end_of_read_digital_keypad:
+	signat	_read_digital_keypad,4217
+	global	_patteren4
+
+;; *************** function _patteren4 *****************
+;; Defined at:
+;;		line 177 in file "main.c"
 ;; Parameters:    Size  Location     Type
 ;;		None
 ;; Auto vars:     Size  Location     Type
-;;  i               2    0[COMRAM] unsigned int 
+;;  flag            1    1[COMRAM] unsigned char 
+;;  delay           1    0[COMRAM] unsigned char 
 ;; Return value:  Size  Location     Type
 ;;                  1    wreg      void 
 ;; Registers used:
@@ -1232,96 +1555,514 @@ GLOBAL	__end_of_main
 ;;		_main
 ;; This function uses a non-reentrant model
 ;;
-psect	text1,class=CODE,space=0,reloc=2
-	line	32
-global __ptext1
-__ptext1:
-psect	text1
+psect	text2,class=CODE,space=0,reloc=2
+	line	177
+global __ptext2
+__ptext2:
+psect	text2
 	file	"main.c"
-	line	32
-	global	__size_of_level
-	__size_of_level	equ	__end_of_level-_level
+	line	177
+	global	__size_of_patteren4
+	__size_of_patteren4	equ	__end_of_patteren4-_patteren4
 	
-_level:
+_patteren4:
 ;incstack = 0
 	opt	stack 30
-	line	34
+	line	179
 	
-l648:
-	btfsc	c:(31760/8),(31760)&7	;volatile
+l759:
+	movlw	low(0)
+	movwf	((c:patteren4@delay)),c
+	line	180
+	movlw	low(01h)
+	movwf	((c:patteren4@flag)),c
+	line	181
+	
+l761:
+	incf	((c:patteren4@delay)),c
+	goto	l77
+	line	183
+	
+l763:
+		decf	((c:patteren4@flag)),c,w
+	btfss	status,2
+	goto	u131
+	goto	u130
+
+u131:
+	goto	l769
+u130:
+	line	185
+	
+l765:
+	movlw	low(0F0h)
+	movwf	((c:3969)),c	;volatile
+	line	186
+	
+l767:
+	incf	((c:patteren4@flag)),c
+	line	188
+	goto	l77
+	line	189
+	
+l74:
+	
+l769:
+		movlw	2
+	xorwf	((c:patteren4@flag)),c,w
+	btfss	status,2
+	goto	u141
+	goto	u140
+
+u141:
+	goto	l77
+u140:
+	line	191
+	
+l771:
+	comf	((c:3969)),c	;volatile
+	line	192
+	
+l773:
+	movlw	low(01h)
+	movwf	((c:patteren4@flag)),c
+	goto	l77
+	line	193
+	
+l76:
+	goto	l77
+	line	197
+	
+l75:
+	goto	l77
+	
+l73:
+	line	201
+	
+l77:
+	return	;funcret
+	opt stack 0
+GLOBAL	__end_of_patteren4
+	__end_of_patteren4:
+	signat	_patteren4,89
+	global	_patteren3
+
+;; *************** function _patteren3 *****************
+;; Defined at:
+;;		line 151 in file "main.c"
+;; Parameters:    Size  Location     Type
+;;		None
+;; Auto vars:     Size  Location     Type
+;;  flag            1    1[COMRAM] unsigned char 
+;;  delay           1    0[COMRAM] unsigned char 
+;; Return value:  Size  Location     Type
+;;                  1    wreg      void 
+;; Registers used:
+;;		wreg, status,2, status,0
+;; Tracked objects:
+;;		On entry : 0/0
+;;		On exit  : 0/0
+;;		Unchanged: 0/0
+;; Data sizes:     COMRAM   BANK0   BANK1   BANK2   BANK3   BANK4   BANK5
+;;      Params:         0       0       0       0       0       0       0
+;;      Locals:         2       0       0       0       0       0       0
+;;      Temps:          0       0       0       0       0       0       0
+;;      Totals:         2       0       0       0       0       0       0
+;;Total ram usage:        2 bytes
+;; Hardware stack levels used:    1
+;; This function calls:
+;;		Nothing
+;; This function is called by:
+;;		_main
+;; This function uses a non-reentrant model
+;;
+psect	text3,class=CODE,space=0,reloc=2
+	line	151
+global __ptext3
+__ptext3:
+psect	text3
+	file	"main.c"
+	line	151
+	global	__size_of_patteren3
+	__size_of_patteren3	equ	__end_of_patteren3-_patteren3
+	
+_patteren3:
+;incstack = 0
+	opt	stack 30
+	line	154
+	
+l743:
+	movlw	low(0)
+	movwf	((c:patteren3@delay)),c
+	line	155
+	movlw	low(01h)
+	movwf	((c:patteren3@flag)),c
+	line	156
+	
+l745:
+	incf	((c:patteren3@delay)),c
+	goto	l70
+	line	158
+	
+l747:
+		decf	((c:patteren3@flag)),c,w
+	btfss	status,2
+	goto	u111
+	goto	u110
+
+u111:
+	goto	l753
+u110:
+	line	160
+	
+l749:
+	movlw	low(0AAh)
+	movwf	((c:3969)),c	;volatile
+	line	161
+	
+l751:
+	incf	((c:patteren3@flag)),c
+	line	163
+	goto	l70
+	line	165
+	
+l67:
+	
+l753:
+		movlw	2
+	xorwf	((c:patteren3@flag)),c,w
+	btfss	status,2
+	goto	u121
+	goto	u120
+
+u121:
+	goto	l70
+u120:
+	line	167
+	
+l755:
+	comf	((c:3969)),c	;volatile
+	line	168
+	
+l757:
+	movlw	low(01h)
+	movwf	((c:patteren3@flag)),c
+	goto	l70
+	line	169
+	
+l69:
+	goto	l70
+	line	172
+	
+l68:
+	goto	l70
+	
+l66:
+	line	176
+	
+l70:
+	return	;funcret
+	opt stack 0
+GLOBAL	__end_of_patteren3
+	__end_of_patteren3:
+	signat	_patteren3,89
+	global	_patteren2
+
+;; *************** function _patteren2 *****************
+;; Defined at:
+;;		line 125 in file "main.c"
+;; Parameters:    Size  Location     Type
+;;		None
+;; Auto vars:     Size  Location     Type
+;;  count           1    1[COMRAM] unsigned char 
+;;  delay           1    0[COMRAM] unsigned char 
+;; Return value:  Size  Location     Type
+;;                  1    wreg      void 
+;; Registers used:
+;;		wreg, status,2, status,0
+;; Tracked objects:
+;;		On entry : 0/0
+;;		On exit  : 0/0
+;;		Unchanged: 0/0
+;; Data sizes:     COMRAM   BANK0   BANK1   BANK2   BANK3   BANK4   BANK5
+;;      Params:         0       0       0       0       0       0       0
+;;      Locals:         2       0       0       0       0       0       0
+;;      Temps:          0       0       0       0       0       0       0
+;;      Totals:         2       0       0       0       0       0       0
+;;Total ram usage:        2 bytes
+;; Hardware stack levels used:    1
+;; This function calls:
+;;		Nothing
+;; This function is called by:
+;;		_main
+;; This function uses a non-reentrant model
+;;
+psect	text4,class=CODE,space=0,reloc=2
+	line	125
+global __ptext4
+__ptext4:
+psect	text4
+	file	"main.c"
+	line	125
+	global	__size_of_patteren2
+	__size_of_patteren2	equ	__end_of_patteren2-_patteren2
+	
+_patteren2:
+;incstack = 0
+	opt	stack 30
+	line	127
+	
+l727:
+	movlw	low(0)
+	movwf	((c:patteren2@count)),c
+	line	128
+	movlw	low(0)
+	movwf	((c:patteren2@delay)),c
+	line	129
+	
+l729:
+	incf	((c:patteren2@delay)),c
+	line	131
+	
+l731:
+		movlw	08h-0
+	cpfslt	((c:patteren2@count)),c
+	goto	u91
+	goto	u90
+
+u91:
+	goto	l735
+u90:
+	line	133
+	
+l733:
+	bsf	status,0
+	
+	rlcf	((c:3969)),c	;volatile
+	line	134
+	goto	l739
+	line	135
+	
+l60:
+	
+l735:
+		movlw	010h-0
+	cpfslt	((c:patteren2@count)),c
+	goto	u101
+	goto	u100
+
+u101:
+	goto	l739
+u100:
+	line	137
+	
+l737:
+	movf	((c:3969)),c,w	;volatile
+	addwf	((c:3969)),c,w	;volatile
+	movwf	((c:3969)),c	;volatile
+	goto	l739
+	line	138
+	
+l62:
+	goto	l739
+	line	140
+	
+l61:
+	goto	l739
+	
+l59:
+	line	141
+	
+l739:
+	incf	((c:patteren2@count)),c
+	line	142
+	
+l741:
+	movlw	low(0)
+	movwf	((c:patteren2@delay)),c
+	line	146
+	
+l63:
+	return	;funcret
+	opt stack 0
+GLOBAL	__end_of_patteren2
+	__end_of_patteren2:
+	signat	_patteren2,89
+	global	_patteren1
+
+;; *************** function _patteren1 *****************
+;; Defined at:
+;;		line 87 in file "main.c"
+;; Parameters:    Size  Location     Type
+;;		None
+;; Auto vars:     Size  Location     Type
+;;  count           1    1[COMRAM] unsigned char 
+;;  delay           1    0[COMRAM] unsigned char 
+;; Return value:  Size  Location     Type
+;;                  1    wreg      void 
+;; Registers used:
+;;		wreg, status,2, status,0
+;; Tracked objects:
+;;		On entry : 0/0
+;;		On exit  : 0/0
+;;		Unchanged: 0/0
+;; Data sizes:     COMRAM   BANK0   BANK1   BANK2   BANK3   BANK4   BANK5
+;;      Params:         0       0       0       0       0       0       0
+;;      Locals:         2       0       0       0       0       0       0
+;;      Temps:          0       0       0       0       0       0       0
+;;      Totals:         2       0       0       0       0       0       0
+;;Total ram usage:        2 bytes
+;; Hardware stack levels used:    1
+;; This function calls:
+;;		Nothing
+;; This function is called by:
+;;		_main
+;; This function uses a non-reentrant model
+;;
+psect	text5,class=CODE,space=0,reloc=2
+	line	87
+global __ptext5
+__ptext5:
+psect	text5
+	file	"main.c"
+	line	87
+	global	__size_of_patteren1
+	__size_of_patteren1	equ	__end_of_patteren1-_patteren1
+	
+_patteren1:
+;incstack = 0
+	opt	stack 30
+	line	89
+	
+l681:
+	movlw	low(0)
+	movwf	((c:patteren1@count)),c
+	line	90
+	movlw	low(0)
+	movwf	((c:patteren1@delay)),c
+	line	92
+	
+l683:
+	incf	((c:patteren1@delay)),c
+	line	94
+	
+l685:
+		movlw	08h-0
+	cpfslt	((c:patteren1@count)),c
 	goto	u11
 	goto	u10
+
 u11:
-	goto	l26
+	goto	l689
 u10:
-	line	36
+	line	96
 	
-l650:
-	setf	((c:3969)),c	;volatile
-	line	37
-	goto	l27
-	line	38
+l687:
+	bsf	status,0
 	
-l26:
-	btfss	c:(31760/8),(31760)&7	;volatile
+	rlcf	((c:3969)),c	;volatile
+	line	97
+	goto	l701
+	line	98
+	
+l49:
+	
+l689:
+		movlw	010h-0
+	cpfslt	((c:patteren1@count)),c
 	goto	u21
 	goto	u20
+
 u21:
-	goto	l27
+	goto	l693
 u20:
-	line	40
+	line	100
 	
-l652:
-	movlw	low(0)
+l691:
+	movf	((c:3969)),c,w	;volatile
+	addwf	((c:3969)),c,w	;volatile
 	movwf	((c:3969)),c	;volatile
-	goto	l27
-	line	41
+	line	103
+	goto	l701
+	line	104
 	
-l28:
-	line	42
+l51:
 	
-l27:
-	movlw	high(0C350h)
-	movwf	((c:level@i+1)),c
-	movlw	low(0C350h)
-	movwf	((c:level@i)),c
-	goto	l656
-	
-l30:
-	
-l654:
-	infsnz	((c:level@i)),c
-	incf	((c:level@i+1)),c
-	goto	l656
-	
-l29:
-	
-l656:
-	movf	((c:level@i)),c,w
-iorwf	((c:level@i+1)),c,w
-	btfss	status,2
+l693:
+		movlw	017h-0
+	cpfslt	((c:patteren1@count)),c
 	goto	u31
 	goto	u30
 
 u31:
-	goto	l654
+	goto	l697
 u30:
-	goto	l32
+	line	106
 	
-l31:
-	line	43
+l695:
+	bsf	status,0
 	
-l32:
+	rrcf	((c:3969)),c	;volatile
+	line	108
+	goto	l701
+	line	109
+	
+l53:
+	
+l697:
+		movlw	01Fh-0
+	cpfslt	((c:patteren1@count)),c
+	goto	u41
+	goto	u40
+
+u41:
+	goto	l701
+u40:
+	line	111
+	
+l699:
+	bcf	status,0
+	rrcf	((c:3969)),c,w	;volatile
+	movwf	((c:3969)),c	;volatile
+	goto	l701
+	line	113
+	
+l55:
+	goto	l701
+	line	114
+	
+l54:
+	goto	l701
+	
+l52:
+	goto	l701
+	
+l50:
+	
+l701:
+	incf	((c:patteren1@count)),c
+	line	115
+	
+l703:
+	movlw	low(0)
+	movwf	((c:patteren1@delay)),c
+	goto	l56
+	line	119
+	
+l48:
+	line	120
+	
+l56:
 	return	;funcret
 	opt stack 0
-GLOBAL	__end_of_level
-	__end_of_level:
-	signat	_level,89
+GLOBAL	__end_of_patteren1
+	__end_of_patteren1:
+	signat	_patteren1,89
 	global	_init_config
 
 ;; *************** function _init_config *****************
 ;; Defined at:
-;;		line 25 in file "main.c"
+;;		line 57 in file "main.c"
 ;; Parameters:    Size  Location     Type
 ;;		None
 ;; Auto vars:     Size  Location     Type
@@ -1347,38 +2088,38 @@ GLOBAL	__end_of_level
 ;;		_main
 ;; This function uses a non-reentrant model
 ;;
-psect	text2,class=CODE,space=0,reloc=2
-	line	25
-global __ptext2
-__ptext2:
-psect	text2
+psect	text6,class=CODE,space=0,reloc=2
+	line	57
+global __ptext6
+__ptext6:
+psect	text6
 	file	"main.c"
-	line	25
+	line	57
 	global	__size_of_init_config
 	__size_of_init_config	equ	__end_of_init_config-_init_config
 	
 _init_config:
 ;incstack = 0
 	opt	stack 30
-	line	27
+	line	59
 	
-l642:
+l675:
 	movlw	low(0)
 	movwf	((c:3987)),c	;volatile
-	line	28
+	line	60
 	
-l644:
+l677:
 	movf	((c:3988)),c,w	;volatile
 	iorlw	low(0Fh)
 	movwf	((c:3988)),c	;volatile
-	line	29
+	line	61
 	
-l646:
+l679:
 	movlw	low(0)
 	movwf	((c:3969)),c	;volatile
-	line	30
+	line	62
 	
-l23:
+l36:
 	return	;funcret
 	opt stack 0
 GLOBAL	__end_of_init_config

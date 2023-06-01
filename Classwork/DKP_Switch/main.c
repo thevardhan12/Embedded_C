@@ -13,14 +13,14 @@ void level();
 void main()
 {
 init_config();
-/*while(1)
-{
-level();
-}*/
 while(1)
 {
-edge();
+level();
 }
+/*while(1)
+{
+edge();
+}*/
 }
 void init_config()
 {
@@ -56,5 +56,8 @@ else if(RC1==1)
 once=1;
 }
 for(unsigned int i=50000;i;i++);
+for(unsigned int i=50000;i;i++);
 }
+
+
 

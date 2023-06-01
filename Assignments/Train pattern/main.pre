@@ -18333,53 +18333,51 @@ extern __nonreentrant void _delay3(unsigned char);
 
 # 9 "main.c"
 void init_config();
-void edge();
-void level();
-
 void main()
 {
+void init_config();
 init_config();
+unsigned char count=0;
+unsigned long int delay=0;
+
 while(1)
 {
-level();
+if(++delay >=50000)
+{
+if(count <8)
+{
+PORTB=PORTB<<1 | 1;
+}
+else if( count <16)
+{
+PORTB=PORTB<<1;
+
+
+}
+else if(count <23)
+{
+PORTB=PORTB>>1 | 0x80;
+}
+else if(count <31)
+{
+PORTB=PORTB>>1;
+
 }
 
-# 24
+delay=0;
+count ++;
+
+
 }
+
+}
+
+}
+
 void init_config()
 {
 TRISB=0x00;
-TRISC=TRISC|0x0F;
 PORTB=0x00;
-}
 
-void level()
-{
-if(RC0==0)
-{
-PORTB=0xff;
-}
-else if(RC0==1)
-{
-PORTB=0x00;
-}
-for(unsigned int i=50000;i;i++);
-}
-
-
-void edge()
-{
-unsigned int once=1;
-if(RC1==0 && once)
-{
-PORTB=~PORTB;
-once=0;
-}
-else if(RC1==1)
-{
-once=1;
-}
-for(unsigned int i=50000;i;i++);
-for(unsigned int i=50000;i;i++);
 }
 

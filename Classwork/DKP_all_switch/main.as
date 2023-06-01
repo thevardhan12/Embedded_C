@@ -971,18 +971,25 @@ TOSH equ 0FFEh ;#
 # 35039 "/opt/microchip/xc8/v1.36/include/pic18f4580.h"
 TOSU equ 0FFFh ;# 
 	FNCALL	_main,_init_config
-	FNCALL	_main,_level
+	FNCALL	_main,_read_digital_keypad
 	FNROOT	_main
+	global	read_digital_keypad@once
+psect	idataCOMRAM,class=CODE,space=0,delta=1,noexec
+global __pidataCOMRAM
+__pidataCOMRAM:
+	file	"main.c"
+	line	45
+
+;initializer for read_digital_keypad@once
+	db	low(01h)
 	global	_PORTB
 _PORTB	set	0xF81
+	global	_PORTC
+_PORTC	set	0xF82
 	global	_TRISB
 _TRISB	set	0xF93
 	global	_TRISC
 _TRISC	set	0xF94
-	global	_RC0
-_RC0	set	0x7C10
-	global	_RC1
-_RC1	set	0x7C11
 ; #config settings
 	file	"main.as"
 	line	#
@@ -994,6 +1001,27 @@ start_initialization:
 
 global __initialization
 __initialization:
+psect	dataCOMRAM,class=COMRAM,space=1,noexec
+global __pdataCOMRAM
+__pdataCOMRAM:
+	file	"main.c"
+	line	45
+read_digital_keypad@once:
+       ds      1
+	file	"main.as"
+	line	#
+psect	cinit
+; Initialize objects allocated to COMRAM (1 bytes)
+	global __pidataCOMRAM
+	; load TBLPTR registers with __pidataCOMRAM
+	movlw	low (__pidataCOMRAM)
+	movwf	tblptrl
+	movlw	high(__pidataCOMRAM)
+	movwf	tblptrh
+	movlw	low highword(__pidataCOMRAM)
+	movwf	tblptru
+	tblrd*+ ;fetch initializer
+	movff	tablat, __pdataCOMRAM+0		
 psect cinit,class=CODE,delta=1
 global end_of_initialization,__end_of__initialization
 
@@ -1008,25 +1036,31 @@ global __pcstackCOMRAM
 __pcstackCOMRAM:
 ?_init_config:	; 1 bytes @ 0x0
 ??_init_config:	; 1 bytes @ 0x0
-?_level:	; 1 bytes @ 0x0
-??_level:	; 1 bytes @ 0x0
+?_read_digital_keypad:	; 1 bytes @ 0x0
+??_read_digital_keypad:	; 1 bytes @ 0x0
 ?_main:	; 1 bytes @ 0x0
-	global	level@i
-level@i:	; 2 bytes @ 0x0
+	global	read_digital_keypad@detection
+read_digital_keypad@detection:	; 1 bytes @ 0x0
+	ds   1
+??_main:	; 1 bytes @ 0x1
+	global	main@i
+main@i:	; 2 bytes @ 0x1
 	ds   2
-??_main:	; 1 bytes @ 0x2
+	global	main@key
+main@key:	; 1 bytes @ 0x3
+	ds   1
 ;!
 ;!Data Sizes:
 ;!    Strings     0
 ;!    Constant    0
-;!    Data        0
+;!    Data        1
 ;!    BSS         0
 ;!    Persistent  0
 ;!    Stack       0
 ;!
 ;!Auto Spaces:
 ;!    Space          Size  Autos    Used
-;!    COMRAM           95      2       2
+;!    COMRAM           95      4       5
 ;!    BANK0           160      0       0
 ;!    BANK1           256      0       0
 ;!    BANK2           256      0       0
@@ -1043,7 +1077,7 @@ level@i:	; 2 bytes @ 0x0
 ;!
 ;!Critical Paths under _main in COMRAM
 ;!
-;!    _main->_level
+;!    _main->_read_digital_keypad
 ;!
 ;!Critical Paths under _main in BANK0
 ;!
@@ -1079,12 +1113,13 @@ level@i:	; 2 bytes @ 0x0
 ;! ---------------------------------------------------------------------------------
 ;! (Depth) Function   	        Calls       Base Space   Used Autos Params    Refs
 ;! ---------------------------------------------------------------------------------
-;! (0) _main                                                 0     0      0      15
+;! (0) _main                                                 3     3      0      60
+;!                                              1 COMRAM     3     3      0
 ;!                        _init_config
-;!                              _level
+;!                _read_digital_keypad
 ;! ---------------------------------------------------------------------------------
-;! (1) _level                                                2     2      0      15
-;!                                              0 COMRAM     2     2      0
+;! (1) _read_digital_keypad                                  1     1      0      30
+;!                                              0 COMRAM     1     1      0
 ;! ---------------------------------------------------------------------------------
 ;! (1) _init_config                                          0     0      0       0
 ;! ---------------------------------------------------------------------------------
@@ -1095,33 +1130,28 @@ level@i:	; 2 bytes @ 0x0
 ;!
 ;! _main (ROOT)
 ;!   _init_config
-;!   _level
+;!   _read_digital_keypad
 ;!
 
 ;! Address spaces:
 
 ;!Name               Size   Autos  Total    Cost      Usage
-;!BITCOMRAM           5F      0       0       0        0.0%
+;!BIGRAM             5FF      0       0      16        0.0%
 ;!EEDATA             100      0       0       0        0.0%
-;!NULL                 0      0       0       0        0.0%
-;!CODE                 0      0       0       0        0.0%
-;!COMRAM              5F      2       2       1        2.1%
-;!STACK                0      0       0       2        0.0%
-;!ABS                  0      0       0       3        0.0%
-;!BITBANK0            A0      0       0       4        0.0%
-;!BANK0               A0      0       0       5        0.0%
-;!BITBANK1           100      0       0       6        0.0%
-;!BANK1              100      0       0       7        0.0%
-;!BITBANK2           100      0       0       8        0.0%
-;!BANK2              100      0       0       9        0.0%
-;!BITBANK3           100      0       0      10        0.0%
-;!BANK3              100      0       0      11        0.0%
-;!BITBANK4           100      0       0      12        0.0%
-;!BANK4              100      0       0      13        0.0%
 ;!BITBANK5           100      0       0      14        0.0%
 ;!BANK5              100      0       0      15        0.0%
-;!BIGRAM             5FF      0       0      16        0.0%
-;!DATA                 0      0       0      17        0.0%
+;!BITBANK4           100      0       0      12        0.0%
+;!BANK4              100      0       0      13        0.0%
+;!BITBANK3           100      0       0      10        0.0%
+;!BANK3              100      0       0      11        0.0%
+;!BITBANK2           100      0       0       8        0.0%
+;!BANK2              100      0       0       9        0.0%
+;!BITBANK1           100      0       0       6        0.0%
+;!BANK1              100      0       0       7        0.0%
+;!BITBANK0            A0      0       0       4        0.0%
+;!BANK0               A0      0       0       5        0.0%
+;!BITCOMRAM           5F      0       0       0        0.0%
+;!COMRAM              5F      4       5       1        5.3%
 ;!BITSFR_3             0      0       0      40        0.0%
 ;!SFR_3                0      0       0      40        0.0%
 ;!BITSFR_2             0      0       0      40        0.0%
@@ -1130,16 +1160,22 @@ level@i:	; 2 bytes @ 0x0
 ;!SFR_1                0      0       0      40        0.0%
 ;!BITSFR               0      0       0      40        0.0%
 ;!SFR                  0      0       0      40        0.0%
+;!STACK                0      0       0       2        0.0%
+;!NULL                 0      0       0       0        0.0%
+;!ABS                  0      0       5       3        0.0%
+;!DATA                 0      0       5      17        0.0%
+;!CODE                 0      0       0       0        0.0%
 
 	global	_main
 
 ;; *************** function _main *****************
 ;; Defined at:
-;;		line 13 in file "main.c"
+;;		line 12 in file "main.c"
 ;; Parameters:    Size  Location     Type
 ;;		None
 ;; Auto vars:     Size  Location     Type
-;;		None
+;;  i               2    1[COMRAM] unsigned int 
+;;  key             1    3[COMRAM] unsigned char 
 ;; Return value:  Size  Location     Type
 ;;                  1    wreg      void 
 ;; Registers used:
@@ -1150,26 +1186,26 @@ level@i:	; 2 bytes @ 0x0
 ;;		Unchanged: 0/0
 ;; Data sizes:     COMRAM   BANK0   BANK1   BANK2   BANK3   BANK4   BANK5
 ;;      Params:         0       0       0       0       0       0       0
-;;      Locals:         0       0       0       0       0       0       0
+;;      Locals:         3       0       0       0       0       0       0
 ;;      Temps:          0       0       0       0       0       0       0
-;;      Totals:         0       0       0       0       0       0       0
-;;Total ram usage:        0 bytes
+;;      Totals:         3       0       0       0       0       0       0
+;;Total ram usage:        3 bytes
 ;; Hardware stack levels required when called:    1
 ;; This function calls:
 ;;		_init_config
-;;		_level
+;;		_read_digital_keypad
 ;; This function is called by:
 ;;		Startup code after reset
 ;; This function uses a non-reentrant model
 ;;
 psect	text0,class=CODE,space=0,reloc=2
 	file	"main.c"
-	line	13
+	line	12
 global __ptext0
 __ptext0:
 psect	text0
 	file	"main.c"
-	line	13
+	line	12
 	global	__size_of_main
 	__size_of_main	equ	__end_of_main-_main
 	
@@ -1178,22 +1214,86 @@ _main:
 	opt	stack 30
 	line	15
 	
-l658:
+l663:
 	call	_init_config	;wreg free
 	line	16
 	
-l17:
-	line	18
-	call	_level	;wreg free
-	goto	l17
+l665:
+	movlw	high(0)
+	movwf	((c:main@i+1)),c
+	movlw	low(0)
+	movwf	((c:main@i)),c
+	goto	l667
+	line	17
+	
+l15:
 	line	19
 	
+l667:
+	movlw	(0)&0ffh
+	
+	call	_read_digital_keypad
+	movwf	((c:main@key)),c
+	line	20
+	
+l669:
+		movlw	136
+	xorwf	((c:main@i)),c,w
+	bnz	u41
+	movlw	19
+	xorwf	((c:main@i+1)),c,w
+	btfss	status,2
+	goto	u41
+	goto	u40
+
+u41:
+	goto	l677
+u40:
+	line	22
+	
+l671:
+		movlw	15
+	xorwf	((c:main@key)),c,w
+	btfsc	status,2
+	goto	u51
+	goto	u50
+
+u51:
+	goto	l677
+u50:
+	line	24
+	
+l673:
+	comf	((c:3969)),c	;volatile
+	line	25
+	
+l675:
+	movlw	high(0)
+	movwf	((c:main@i+1)),c
+	movlw	low(0)
+	movwf	((c:main@i)),c
+	goto	l677
+	line	27
+	
+l17:
+	goto	l677
+	line	28
+	
+l16:
+	line	30
+	
+l677:
+	infsnz	((c:main@i)),c
+	incf	((c:main@i+1)),c
+	goto	l667
+	line	33
+	
 l18:
-	line	16
-	goto	l17
+	line	17
+	goto	l667
 	
 l19:
-	line	24
+	line	36
 	
 l20:
 	global	start
@@ -1202,17 +1302,17 @@ l20:
 GLOBAL	__end_of_main
 	__end_of_main:
 	signat	_main,89
-	global	_level
+	global	_read_digital_keypad
 
-;; *************** function _level *****************
+;; *************** function _read_digital_keypad *****************
 ;; Defined at:
-;;		line 32 in file "main.c"
+;;		line 43 in file "main.c"
 ;; Parameters:    Size  Location     Type
-;;		None
+;;  detection       1    wreg     unsigned char 
 ;; Auto vars:     Size  Location     Type
-;;  i               2    0[COMRAM] unsigned int 
+;;  detection       1    0[COMRAM] unsigned char 
 ;; Return value:  Size  Location     Type
-;;                  1    wreg      void 
+;;                  1    wreg      unsigned char 
 ;; Registers used:
 ;;		wreg, status,2, status,0
 ;; Tracked objects:
@@ -1221,10 +1321,10 @@ GLOBAL	__end_of_main
 ;;		Unchanged: 0/0
 ;; Data sizes:     COMRAM   BANK0   BANK1   BANK2   BANK3   BANK4   BANK5
 ;;      Params:         0       0       0       0       0       0       0
-;;      Locals:         2       0       0       0       0       0       0
+;;      Locals:         1       0       0       0       0       0       0
 ;;      Temps:          0       0       0       0       0       0       0
-;;      Totals:         2       0       0       0       0       0       0
-;;Total ram usage:        2 bytes
+;;      Totals:         1       0       0       0       0       0       0
+;;Total ram usage:        1 bytes
 ;; Hardware stack levels used:    1
 ;; This function calls:
 ;;		Nothing
@@ -1233,95 +1333,123 @@ GLOBAL	__end_of_main
 ;; This function uses a non-reentrant model
 ;;
 psect	text1,class=CODE,space=0,reloc=2
-	line	32
+	line	43
 global __ptext1
 __ptext1:
 psect	text1
 	file	"main.c"
-	line	32
-	global	__size_of_level
-	__size_of_level	equ	__end_of_level-_level
+	line	43
+	global	__size_of_read_digital_keypad
+	__size_of_read_digital_keypad	equ	__end_of_read_digital_keypad-_read_digital_keypad
 	
-_level:
+_read_digital_keypad:
 ;incstack = 0
 	opt	stack 30
-	line	34
+	movwf	((c:read_digital_keypad@detection)),c
+	line	47
 	
-l648:
-	btfsc	c:(31760/8),(31760)&7	;volatile
+l637:
+	movf	((c:read_digital_keypad@detection)),c,w
+	btfss	status,2
 	goto	u11
 	goto	u10
 u11:
-	goto	l26
+	goto	l645
 u10:
-	line	36
+	line	49
 	
-l650:
-	setf	((c:3969)),c	;volatile
-	line	37
-	goto	l27
-	line	38
+l639:
+	movf	((c:3970)),c,w	;volatile
+	andlw	low(0Fh)
+	goto	l29
 	
-l26:
-	btfss	c:(31760/8),(31760)&7	;volatile
-	goto	u21
-	goto	u20
-u21:
-	goto	l27
-u20:
-	line	40
+l641:
+	goto	l29
+	line	51
 	
-l652:
-	movlw	low(0)
-	movwf	((c:3969)),c	;volatile
-	goto	l27
-	line	41
+l643:
+	goto	l29
+	line	52
 	
 l28:
-	line	42
 	
-l27:
-	movlw	high(0C350h)
-	movwf	((c:level@i+1)),c
-	movlw	low(0C350h)
-	movwf	((c:level@i)),c
-	goto	l656
+l645:
+		decf	((c:read_digital_keypad@detection)),c,w
+	btfss	status,2
+	goto	u21
+	goto	u20
+
+u21:
+	goto	l659
+u20:
+	line	55
 	
-l30:
+l647:
+	movlw	low(0)
+	movwf	((c:read_digital_keypad@once)),c
+	line	56
 	
-l654:
-	infsnz	((c:level@i)),c
-	incf	((c:level@i+1)),c
-	goto	l656
+l649:
+	movf	((c:3970)),c,w	;volatile
+	andlw	low(0Fh)
+	goto	l29
 	
-l29:
+l651:
+	goto	l29
+	line	58
 	
-l656:
-	movf	((c:level@i)),c,w
-iorwf	((c:level@i+1)),c,w
+l653:
+	movlw	(0Fh)&0ffh
+	goto	l29
+	
+l655:
+	goto	l29
+	line	59
+	
+l657:
+	goto	l29
+	line	61
+	
+l31:
+	
+l659:
+	movf	((c:3970)),c,w	;volatile
+	andlw	low(0Fh)
+	xorlw	0Fh
 	btfss	status,2
 	goto	u31
 	goto	u30
-
 u31:
-	goto	l654
+	goto	l29
 u30:
-	goto	l32
+	line	63
 	
-l31:
-	line	43
+l661:
+	movlw	low(01h)
+	movwf	((c:read_digital_keypad@once)),c
+	goto	l29
+	line	64
+	
+l33:
+	goto	l29
+	line	69
 	
 l32:
+	goto	l29
+	
+l30:
+	
+l29:
 	return	;funcret
 	opt stack 0
-GLOBAL	__end_of_level
-	__end_of_level:
-	signat	_level,89
+GLOBAL	__end_of_read_digital_keypad
+	__end_of_read_digital_keypad:
+	signat	_read_digital_keypad,4217
 	global	_init_config
 
 ;; *************** function _init_config *****************
 ;; Defined at:
-;;		line 25 in file "main.c"
+;;		line 37 in file "main.c"
 ;; Parameters:    Size  Location     Type
 ;;		None
 ;; Auto vars:     Size  Location     Type
@@ -1348,35 +1476,35 @@ GLOBAL	__end_of_level
 ;; This function uses a non-reentrant model
 ;;
 psect	text2,class=CODE,space=0,reloc=2
-	line	25
+	line	37
 global __ptext2
 __ptext2:
 psect	text2
 	file	"main.c"
-	line	25
+	line	37
 	global	__size_of_init_config
 	__size_of_init_config	equ	__end_of_init_config-_init_config
 	
 _init_config:
 ;incstack = 0
 	opt	stack 30
-	line	27
+	line	39
 	
-l642:
-	movlw	low(0)
-	movwf	((c:3987)),c	;volatile
-	line	28
-	
-l644:
+l631:
 	movf	((c:3988)),c,w	;volatile
 	iorlw	low(0Fh)
 	movwf	((c:3988)),c	;volatile
-	line	29
+	line	40
 	
-l646:
+l633:
+	movlw	low(0)
+	movwf	((c:3987)),c	;volatile
+	line	41
+	
+l635:
 	movlw	low(0)
 	movwf	((c:3969)),c	;volatile
-	line	30
+	line	42
 	
 l23:
 	return	;funcret

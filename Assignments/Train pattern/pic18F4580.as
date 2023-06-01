@@ -971,20 +971,13 @@ TOSH equ 0FFEh ;#
 # 35039 "/opt/microchip/xc8/v1.36/include/pic18f4580.h"
 TOSU equ 0FFFh ;# 
 	FNCALL	_main,_init_config
-	FNCALL	_main,_level
 	FNROOT	_main
 	global	_PORTB
 _PORTB	set	0xF81
 	global	_TRISB
 _TRISB	set	0xF93
-	global	_TRISC
-_TRISC	set	0xF94
-	global	_RC0
-_RC0	set	0x7C10
-	global	_RC1
-_RC1	set	0x7C11
 ; #config settings
-	file	"main.as"
+	file	"pic18F4580.as"
 	line	#
 psect	cinit,class=CODE,delta=1,reloc=2
 global __pcinit
@@ -1008,13 +1001,14 @@ global __pcstackCOMRAM
 __pcstackCOMRAM:
 ?_init_config:	; 1 bytes @ 0x0
 ??_init_config:	; 1 bytes @ 0x0
-?_level:	; 1 bytes @ 0x0
-??_level:	; 1 bytes @ 0x0
 ?_main:	; 1 bytes @ 0x0
-	global	level@i
-level@i:	; 2 bytes @ 0x0
-	ds   2
-??_main:	; 1 bytes @ 0x2
+??_main:	; 1 bytes @ 0x0
+	global	main@delay
+main@delay:	; 4 bytes @ 0x0
+	ds   4
+	global	main@count
+main@count:	; 1 bytes @ 0x4
+	ds   1
 ;!
 ;!Data Sizes:
 ;!    Strings     0
@@ -1026,7 +1020,7 @@ level@i:	; 2 bytes @ 0x0
 ;!
 ;!Auto Spaces:
 ;!    Space          Size  Autos    Used
-;!    COMRAM           95      2       2
+;!    COMRAM           95      5       5
 ;!    BANK0           160      0       0
 ;!    BANK1           256      0       0
 ;!    BANK2           256      0       0
@@ -1043,7 +1037,7 @@ level@i:	; 2 bytes @ 0x0
 ;!
 ;!Critical Paths under _main in COMRAM
 ;!
-;!    _main->_level
+;!    None.
 ;!
 ;!Critical Paths under _main in BANK0
 ;!
@@ -1079,12 +1073,9 @@ level@i:	; 2 bytes @ 0x0
 ;! ---------------------------------------------------------------------------------
 ;! (Depth) Function   	        Calls       Base Space   Used Autos Params    Refs
 ;! ---------------------------------------------------------------------------------
-;! (0) _main                                                 0     0      0      15
+;! (0) _main                                                 5     5      0      75
+;!                                              0 COMRAM     5     5      0
 ;!                        _init_config
-;!                              _level
-;! ---------------------------------------------------------------------------------
-;! (1) _level                                                2     2      0      15
-;!                                              0 COMRAM     2     2      0
 ;! ---------------------------------------------------------------------------------
 ;! (1) _init_config                                          0     0      0       0
 ;! ---------------------------------------------------------------------------------
@@ -1095,7 +1086,6 @@ level@i:	; 2 bytes @ 0x0
 ;!
 ;! _main (ROOT)
 ;!   _init_config
-;!   _level
 ;!
 
 ;! Address spaces:
@@ -1105,7 +1095,7 @@ level@i:	; 2 bytes @ 0x0
 ;!EEDATA             100      0       0       0        0.0%
 ;!NULL                 0      0       0       0        0.0%
 ;!CODE                 0      0       0       0        0.0%
-;!COMRAM              5F      2       2       1        2.1%
+;!COMRAM              5F      5       5       1        5.3%
 ;!STACK                0      0       0       2        0.0%
 ;!ABS                  0      0       0       3        0.0%
 ;!BITBANK0            A0      0       0       4        0.0%
@@ -1135,11 +1125,12 @@ level@i:	; 2 bytes @ 0x0
 
 ;; *************** function _main *****************
 ;; Defined at:
-;;		line 13 in file "main.c"
+;;		line 10 in file "main.c"
 ;; Parameters:    Size  Location     Type
 ;;		None
 ;; Auto vars:     Size  Location     Type
-;;		None
+;;  delay           4    0[COMRAM] unsigned long 
+;;  count           1    4[COMRAM] unsigned char 
 ;; Return value:  Size  Location     Type
 ;;                  1    wreg      void 
 ;; Registers used:
@@ -1150,50 +1141,225 @@ level@i:	; 2 bytes @ 0x0
 ;;		Unchanged: 0/0
 ;; Data sizes:     COMRAM   BANK0   BANK1   BANK2   BANK3   BANK4   BANK5
 ;;      Params:         0       0       0       0       0       0       0
-;;      Locals:         0       0       0       0       0       0       0
+;;      Locals:         5       0       0       0       0       0       0
 ;;      Temps:          0       0       0       0       0       0       0
-;;      Totals:         0       0       0       0       0       0       0
-;;Total ram usage:        0 bytes
+;;      Totals:         5       0       0       0       0       0       0
+;;Total ram usage:        5 bytes
 ;; Hardware stack levels required when called:    1
 ;; This function calls:
 ;;		_init_config
-;;		_level
 ;; This function is called by:
 ;;		Startup code after reset
 ;; This function uses a non-reentrant model
 ;;
 psect	text0,class=CODE,space=0,reloc=2
 	file	"main.c"
-	line	13
+	line	10
 global __ptext0
 __ptext0:
 psect	text0
 	file	"main.c"
-	line	13
+	line	10
 	global	__size_of_main
 	__size_of_main	equ	__end_of_main-_main
 	
 _main:
 ;incstack = 0
 	opt	stack 30
+	line	13
+	
+l623:
+;main.c: 12: void init_config();
+;main.c: 13: init_config();
+	call	_init_config	;wreg free
+	line	14
+	
+l625:
+;main.c: 14: unsigned char count=0;
+	movlw	low(0)
+	movwf	((c:main@count)),c
 	line	15
 	
-l658:
-	call	_init_config	;wreg free
-	line	16
+l627:
+;main.c: 15: unsigned long int delay=0;
+	movlw	low(0)
+	movwf	((c:main@delay)),c
+	movlw	high(0)
+	movwf	((c:main@delay+1)),c
+	movlw	low highword(0)
+	movwf	((c:main@delay+2)),c
+	movlw	high highword(0)
+	movwf	((c:main@delay+3)),c
+	goto	l629
+	line	17
+;main.c: 17: while(1)
 	
-l17:
-	line	18
-	call	_level	;wreg free
-	goto	l17
+l9:
 	line	19
 	
+l629:
+;main.c: 18: {
+;main.c: 19: if(++delay >=50000)
+	movlw	low(01h)
+	addwf	((c:main@delay)),c
+	movlw	0
+	addwfc	((c:main@delay+1)),c
+	addwfc	((c:main@delay+2)),c
+	addwfc	((c:main@delay+3)),c
+		movf	((c:main@delay+3)),c,w
+	iorwf	((c:main@delay+2)),c,w
+	bnz	u10
+	movlw	80
+	subwf	 ((c:main@delay)),c,w
+	movlw	195
+	subwfb	((c:main@delay+1)),c,w
+	btfss	status,0
+	goto	u11
+	goto	u10
+
+u11:
+	goto	l629
+u10:
+	line	21
+	
+l631:
+;main.c: 20: {
+;main.c: 21: if(count <8)
+		movlw	08h-0
+	cpfslt	((c:main@count)),c
+	goto	u21
+	goto	u20
+
+u21:
+	goto	l635
+u20:
+	line	23
+	
+l633:
+;main.c: 22: {
+;main.c: 23: PORTB=PORTB<<1 | 1;
+	bsf	status,0
+	
+	rlcf	((c:3969)),c	;volatile
+	line	24
+;main.c: 24: }
+	goto	l647
+	line	25
+	
+l11:
+	
+l635:
+;main.c: 25: else if( count <16)
+		movlw	010h-0
+	cpfslt	((c:main@count)),c
+	goto	u31
+	goto	u30
+
+u31:
+	goto	l639
+u30:
+	line	27
+	
+l637:
+;main.c: 26: {
+;main.c: 27: PORTB=PORTB<<1;
+	movf	((c:3969)),c,w	;volatile
+	addwf	((c:3969)),c,w	;volatile
+	movwf	((c:3969)),c	;volatile
+	line	30
+;main.c: 30: }
+	goto	l647
+	line	31
+	
+l13:
+	
+l639:
+;main.c: 31: else if(count <23)
+		movlw	017h-0
+	cpfslt	((c:main@count)),c
+	goto	u41
+	goto	u40
+
+u41:
+	goto	l643
+u40:
+	line	33
+	
+l641:
+;main.c: 32: {
+;main.c: 33: PORTB=PORTB>>1 | 0x80;
+	bsf	status,0
+	
+	rrcf	((c:3969)),c	;volatile
+	line	34
+;main.c: 34: }
+	goto	l647
+	line	35
+	
+l15:
+	
+l643:
+;main.c: 35: else if(count <31)
+		movlw	01Fh-0
+	cpfslt	((c:main@count)),c
+	goto	u51
+	goto	u50
+
+u51:
+	goto	l647
+u50:
+	line	37
+	
+l645:
+;main.c: 36: {
+;main.c: 37: PORTB=PORTB>>1;
+	bcf	status,0
+	rrcf	((c:3969)),c,w	;volatile
+	movwf	((c:3969)),c	;volatile
+	goto	l647
+	line	39
+	
+l17:
+	goto	l647
+	line	41
+	
+l16:
+	goto	l647
+	
+l14:
+	goto	l647
+	
+l12:
+	
+l647:
+;main.c: 39: }
+;main.c: 41: delay=0;
+	movlw	low(0)
+	movwf	((c:main@delay)),c
+	movlw	high(0)
+	movwf	((c:main@delay+1)),c
+	movlw	low highword(0)
+	movwf	((c:main@delay+2)),c
+	movlw	high highword(0)
+	movwf	((c:main@delay+3)),c
+	line	42
+	
+l649:
+;main.c: 42: count ++;
+	incf	((c:main@count)),c
+	goto	l629
+	line	45
+	
+l10:
+	goto	l629
+	line	47
+	
 l18:
-	line	16
-	goto	l17
+	line	17
+	goto	l629
 	
 l19:
-	line	24
+	line	49
 	
 l20:
 	global	start
@@ -1202,126 +1368,11 @@ l20:
 GLOBAL	__end_of_main
 	__end_of_main:
 	signat	_main,89
-	global	_level
-
-;; *************** function _level *****************
-;; Defined at:
-;;		line 32 in file "main.c"
-;; Parameters:    Size  Location     Type
-;;		None
-;; Auto vars:     Size  Location     Type
-;;  i               2    0[COMRAM] unsigned int 
-;; Return value:  Size  Location     Type
-;;                  1    wreg      void 
-;; Registers used:
-;;		wreg, status,2, status,0
-;; Tracked objects:
-;;		On entry : 0/0
-;;		On exit  : 0/0
-;;		Unchanged: 0/0
-;; Data sizes:     COMRAM   BANK0   BANK1   BANK2   BANK3   BANK4   BANK5
-;;      Params:         0       0       0       0       0       0       0
-;;      Locals:         2       0       0       0       0       0       0
-;;      Temps:          0       0       0       0       0       0       0
-;;      Totals:         2       0       0       0       0       0       0
-;;Total ram usage:        2 bytes
-;; Hardware stack levels used:    1
-;; This function calls:
-;;		Nothing
-;; This function is called by:
-;;		_main
-;; This function uses a non-reentrant model
-;;
-psect	text1,class=CODE,space=0,reloc=2
-	line	32
-global __ptext1
-__ptext1:
-psect	text1
-	file	"main.c"
-	line	32
-	global	__size_of_level
-	__size_of_level	equ	__end_of_level-_level
-	
-_level:
-;incstack = 0
-	opt	stack 30
-	line	34
-	
-l648:
-	btfsc	c:(31760/8),(31760)&7	;volatile
-	goto	u11
-	goto	u10
-u11:
-	goto	l26
-u10:
-	line	36
-	
-l650:
-	setf	((c:3969)),c	;volatile
-	line	37
-	goto	l27
-	line	38
-	
-l26:
-	btfss	c:(31760/8),(31760)&7	;volatile
-	goto	u21
-	goto	u20
-u21:
-	goto	l27
-u20:
-	line	40
-	
-l652:
-	movlw	low(0)
-	movwf	((c:3969)),c	;volatile
-	goto	l27
-	line	41
-	
-l28:
-	line	42
-	
-l27:
-	movlw	high(0C350h)
-	movwf	((c:level@i+1)),c
-	movlw	low(0C350h)
-	movwf	((c:level@i)),c
-	goto	l656
-	
-l30:
-	
-l654:
-	infsnz	((c:level@i)),c
-	incf	((c:level@i+1)),c
-	goto	l656
-	
-l29:
-	
-l656:
-	movf	((c:level@i)),c,w
-iorwf	((c:level@i+1)),c,w
-	btfss	status,2
-	goto	u31
-	goto	u30
-
-u31:
-	goto	l654
-u30:
-	goto	l32
-	
-l31:
-	line	43
-	
-l32:
-	return	;funcret
-	opt stack 0
-GLOBAL	__end_of_level
-	__end_of_level:
-	signat	_level,89
 	global	_init_config
 
 ;; *************** function _init_config *****************
 ;; Defined at:
-;;		line 25 in file "main.c"
+;;		line 51 in file "main.c"
 ;; Parameters:    Size  Location     Type
 ;;		None
 ;; Auto vars:     Size  Location     Type
@@ -1329,7 +1380,7 @@ GLOBAL	__end_of_level
 ;; Return value:  Size  Location     Type
 ;;                  1    wreg      void 
 ;; Registers used:
-;;		wreg, status,2, status,0
+;;		wreg, status,2
 ;; Tracked objects:
 ;;		On entry : 0/0
 ;;		On exit  : 0/0
@@ -1347,36 +1398,30 @@ GLOBAL	__end_of_level
 ;;		_main
 ;; This function uses a non-reentrant model
 ;;
-psect	text2,class=CODE,space=0,reloc=2
-	line	25
-global __ptext2
-__ptext2:
-psect	text2
+psect	text1,class=CODE,space=0,reloc=2
+	line	51
+global __ptext1
+__ptext1:
+psect	text1
 	file	"main.c"
-	line	25
+	line	51
 	global	__size_of_init_config
 	__size_of_init_config	equ	__end_of_init_config-_init_config
 	
 _init_config:
 ;incstack = 0
 	opt	stack 30
-	line	27
+	line	53
 	
-l642:
+l621:
+;main.c: 53: TRISB=0x00;
 	movlw	low(0)
 	movwf	((c:3987)),c	;volatile
-	line	28
-	
-l644:
-	movf	((c:3988)),c,w	;volatile
-	iorlw	low(0Fh)
-	movwf	((c:3988)),c	;volatile
-	line	29
-	
-l646:
+	line	54
+;main.c: 54: PORTB=0x00;
 	movlw	low(0)
 	movwf	((c:3969)),c	;volatile
-	line	30
+	line	56
 	
 l23:
 	return	;funcret

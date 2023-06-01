@@ -2,20 +2,16 @@ Version 3.2 HI-TECH Software Intermediate Code
 [p mainexit ]
 "9 main.c
 [v _init_config `(v ~T0 @X0 0 ef ]
-"11
-[v _level `(v ~T0 @X0 0 ef ]
-"29655 /opt/microchip/xc8/v1.36/include/pic18f4580.h
-[v _TRISB `Vuc ~T0 @X0 0 e@3987 ]
+"10
+[v _read_digital_keypad `(uc ~T0 @X0 0 ef1`uc ]
+"28209 /opt/microchip/xc8/v1.36/include/pic18f4580.h
+[v _PORTB `Vuc ~T0 @X0 0 e@3969 ]
 "29876
 [v _TRISC `Vuc ~T0 @X0 0 e@3988 ]
-"28209
-[v _PORTB `Vuc ~T0 @X0 0 e@3969 ]
-[t ~ __deprecated__ ]
-[t T20 __deprecated__ ]
-"37551
-[v _RC0 `Vb ~T20 @X0 0 e@31760 ]
-"37553
-[v _RC1 `Vb ~T20 @X0 0 e@31761 ]
+"29655
+[v _TRISB `Vuc ~T0 @X0 0 e@3987 ]
+"28382
+[v _PORTC `Vuc ~T0 @X0 0 e@3970 ]
 "51 /opt/microchip/xc8/v1.36/include/pic18f4580.h
 [; <" RXF6SIDH equ 0D60h ;# ">
 "183
@@ -842,137 +838,125 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; <" TOSH equ 0FFEh ;# ">
 "35039
 [; <" TOSU equ 0FFFh ;# ">
-"13 main.c
+"12 main.c
 [v _main `(v ~T0 @X0 1 ef ]
-"14
+"13
 {
 [e :U _main ]
 [f ]
+"14
+[v _key `uc ~T0 @X0 1 a ]
 "15
 [e ( _init_config ..  ]
 "16
-[e :U 2099 ]
+[v _i `ui ~T0 @X0 1 a ]
+[e = _i -> -> 0 `i `ui ]
 "17
-{
+[e :U 2099 ]
 "18
-[e ( _level ..  ]
+{
 "19
+[e = _key ( _read_digital_keypad (1 -> -> 0 `i `uc ]
+"20
+[e $ ! == _i -> -> 5000 `i `ui 2101  ]
+"21
+{
+"22
+[e $ ! != -> _key `i -> 15 `i 2102  ]
+"23
+{
+"24
+[e = _PORTB -> ~ -> _PORTB `i `uc ]
+"25
+[e = _i -> -> 0 `i `ui ]
+"27
+}
+[e :U 2102 ]
+"28
+}
+[e :U 2101 ]
+"30
+[e ++ _i -> -> 1 `i `ui ]
+"33
 }
 [e :U 2098 ]
-"16
+"17
 [e $U 2099  ]
 [e :U 2100 ]
-"24
+"36
 [e :UE 2097 ]
 }
-"25
+"37
 [v _init_config `(v ~T0 @X0 1 ef ]
-"26
+"38
 {
 [e :U _init_config ]
 [f ]
-"27
-[e = _TRISB -> -> 0 `i `uc ]
-"28
-[e = _TRISC -> | -> _TRISC `i -> 15 `i `uc ]
-"29
-[e = _PORTB -> -> 0 `i `uc ]
-"30
-[e :UE 2101 ]
-}
-"32
-[v _level `(v ~T0 @X0 1 ef ]
-"33
-{
-[e :U _level ]
-[f ]
-"34
-[e $ ! == -> _RC0 `i -> 0 `i 2103  ]
-"35
-{
-"36
-[e = _PORTB -> -> 255 `i `uc ]
-"37
-}
-[e $U 2104  ]
-"38
-[e :U 2103 ]
-[e $ ! == -> _RC0 `i -> 1 `i 2105  ]
 "39
-{
+[e = _TRISC -> | -> _TRISC `i -> 15 `i `uc ]
 "40
-[e = _PORTB -> -> 0 `i `uc ]
+[e = _TRISB -> -> 0 `i `uc ]
 "41
-}
-[e :U 2105 ]
+[e = _PORTB -> -> 0 `i `uc ]
 "42
-[e :U 2104 ]
-{
-[v _i `ui ~T0 @X0 1 a ]
-[e = _i -> -> 50000 `l `ui ]
-[e $U 2109  ]
-[e :U 2106 ]
-[e ++ _i -> -> 1 `i `ui ]
-[e :U 2109 ]
-[e $ != _i -> -> 0 `i `ui 2106  ]
-[e :U 2107 ]
+[e :UE 2103 ]
 }
 "43
-[e :UE 2102 ]
-}
-"46
-[v _edge `(v ~T0 @X0 1 ef ]
-"47
+[v _read_digital_keypad `(uc ~T0 @X0 1 ef1`uc ]
+"44
 {
-[e :U _edge ]
+[e :U _read_digital_keypad ]
+"43
+[v _detection `uc ~T0 @X0 1 r1 ]
+"44
 [f ]
+"45
+[v F15926 `uc ~T0 @X0 1 s once ]
+[i F15926
+-> -> 1 `i `uc
+]
+"47
+[e $ ! == -> _detection `i -> 0 `i 2105  ]
 "48
-[v _once `ui ~T0 @X0 1 a ]
-[e = _once -> -> 1 `i `ui ]
+{
 "49
-[e $ ! && == -> _RC1 `i -> 0 `i != _once -> -> 0 `i `ui 2111  ]
-"50
-{
+[e ) -> & -> _PORTC `i -> 15 `i `uc ]
+[e $UE 2104  ]
 "51
-[e = _PORTB -> ~ -> _PORTB `i `uc ]
-"52
-[e = _once -> -> 0 `i `ui ]
-"53
 }
-[e $U 2112  ]
-"54
-[e :U 2111 ]
-[e $ ! == -> _RC1 `i -> 1 `i 2113  ]
-"55
+[e $U 2106  ]
+"52
+[e :U 2105 ]
+[e $ ! == -> _detection `i -> 1 `i 2107  ]
+"53
 {
+"54
+{
+"55
+[e = F15926 -> -> 0 `i `uc ]
 "56
-[e = _once -> -> 1 `i `ui ]
+[e ) -> & -> _PORTC `i -> 15 `i `uc ]
+[e $UE 2104  ]
 "57
 }
-[e :U 2113 ]
 "58
-[e :U 2112 ]
-{
-[v _i `ui ~T0 @X0 1 a ]
-[e = _i -> -> 50000 `l `ui ]
-[e $U 2117  ]
-[e :U 2114 ]
-[e ++ _i -> -> 1 `i `ui ]
-[e :U 2117 ]
-[e $ != _i -> -> 0 `i `ui 2114  ]
-[e :U 2115 ]
-}
+[e ) -> -> 15 `i `uc ]
+[e $UE 2104  ]
 "59
-{
-[v _i `ui ~T0 @X0 1 a ]
-[e = _i -> -> 50000 `l `ui ]
-[e $U 2121  ]
-[e :U 2118 ]
-[e ++ _i -> -> 1 `i `ui ]
-[e :U 2121 ]
-[e $ != _i -> -> 0 `i `ui 2118  ]
-[e :U 2119 ]
 }
-"60
-[e :UE 2110 ]
+[e $U 2108  ]
+"61
+[e :U 2107 ]
+[e $ ! == & -> _PORTC `i -> 15 `i -> 15 `i 2109  ]
+"62
+{
+"63
+[e = F15926 -> -> 1 `i `uc ]
+"64
+}
+[e :U 2109 ]
+"69
+[e :U 2108 ]
+[e :U 2106 ]
+[e :UE 2104 ]
 }
