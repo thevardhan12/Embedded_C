@@ -14560,57 +14560,70 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e $U 2107  ]
 "35
 [e :U 2106 ]
-[; ;main.c: 35: else if(count <31)
-[e $ ! < -> _count `i -> 31 `i 2108  ]
+[; ;main.c: 35: else if(count <32)
+[e $ ! < -> _count `i -> 32 `i 2108  ]
 [; ;main.c: 36: {
 "36
 {
 [; ;main.c: 37: PORTB=PORTB>>1;
 "37
 [e = _PORTB -> >> -> _PORTB `i -> 1 `i `uc ]
+[; ;main.c: 38: if(count==31)
+"38
+[e $ ! == -> _count `i -> 31 `i 2109  ]
+[; ;main.c: 39: {
 "39
+{
+[; ;main.c: 40: count=0;
+"40
+[e = _count -> -> 0 `i `uc ]
+"41
+}
+[e :U 2109 ]
+"43
 }
 [e :U 2108 ]
-"41
+"46
 [e :U 2107 ]
 [e :U 2105 ]
 [e :U 2103 ]
-[; ;main.c: 39: }
-[; ;main.c: 41: delay=0;
+[; ;main.c: 41: }
+[; ;main.c: 43: }
+[; ;main.c: 46: delay=0;
 [e = _delay -> -> -> 0 `i `l `ul ]
-[; ;main.c: 42: count ++;
-"42
+[; ;main.c: 47: count ++;
+"47
 [e ++ _count -> -> 1 `i `uc ]
-"45
+"50
 }
 [e :U 2101 ]
-"47
+"52
 }
 [e :U 2098 ]
 "17
 [e $U 2099  ]
 [e :U 2100 ]
-[; ;main.c: 45: }
-[; ;main.c: 47: }
-[; ;main.c: 49: }
-"49
+[; ;main.c: 50: }
+[; ;main.c: 52: }
+[; ;main.c: 54: }
+"54
 [e :UE 2097 ]
 }
-"51
+"56
 [v _init_config `(v ~T0 @X0 1 ef ]
-"52
+"57
 {
-[; ;main.c: 51: void init_config()
-[; ;main.c: 52: {
+[; ;main.c: 56: void init_config()
+[; ;main.c: 57: {
 [e :U _init_config ]
 [f ]
-[; ;main.c: 53: TRISB=0x00;
-"53
+[; ;main.c: 58: TRISB=0x00;
+"58
 [e = _TRISB -> -> 0 `i `uc ]
-[; ;main.c: 54: PORTB=0x00;
-"54
+[; ;main.c: 59: PORTB=0x00;
+"59
 [e = _PORTB -> -> 0 `i `uc ]
-[; ;main.c: 56: }
-"56
-[e :UE 2109 ]
+[; ;main.c: 61: }
+"61
+[e :UE 2110 ]
 }

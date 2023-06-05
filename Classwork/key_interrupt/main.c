@@ -25,7 +25,7 @@ void init_config()
     PORTB=PORTB & 0X01;
     init_exr_config();
 
-}
+}m
 void   init_exr_config()
 {
     GIE=1;

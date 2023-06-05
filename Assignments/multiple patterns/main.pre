@@ -18364,6 +18364,10 @@ else if(key==0x07)
 {
 patteren4();
 }
+else
+{
+patteren1();
+}
 
 
 
@@ -18388,7 +18392,7 @@ static unsigned char once=1;
 
 if(detection ==1)
 {
-if((PORTC & 0x0f) && once)
+if(((PORTC & 0x0f) != 0x0f) && once)
 {
 once =0;
 return (PORTC & 0x0f);
@@ -18398,8 +18402,8 @@ return (PORTC & 0x0f);
 else if( (PORTC & 0x0f)==0x0f)
 {
 once=1;
-return 0x0f;
 }
+return 0x0f;
 
 }
 }

@@ -32,11 +32,16 @@ void main()
 	       {
 		    PORTB=PORTB>>1 | 0x80;
 	       }
-	       else if(count <31)
+	       else if(count <32)
 	       {
 		    PORTB=PORTB>>1;
+			if(count==31)
+			{
+				count=0;
+			}
 
 	       }
+		   
 
 	       delay=0;
 	       count ++;

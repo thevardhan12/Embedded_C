@@ -3,7 +3,7 @@ Microchip MPLAB XC8 Compiler V1.36 ()
 Linker command line:
 
 --edf=/opt/microchip/xc8/v1.36/dat/en_msgs.txt -cs -h+pic18F4580.sym \
-  --cmf=pic18F4580.cmf -z -Q18F4580 -o/tmp/xcXyC83P0 -Mpic18F4580.map \
+  --cmf=pic18F4580.cmf -z -Q18F4580 -o/tmp/xcXte2hEL -Mpic18F4580.map \
   -ver=XC8 -ASTACK=060h-05ffh -pstack=STACK -ACODE=00h-03000h \
   -ACONST=00h-03000h -ASMALLCONST=0600h-06FFhx42,03000h-03000h \
   -AMEDIUMCONST=0600h-03000h -ACOMRAM=01h-05Fh -AABS1=00h-05FFh \
@@ -33,19 +33,19 @@ Call graph: (short form)
 
                 Name                               Link     Load   Length Selector   Space Scale
 startup.obj     end_init                              0        0        4        0       0
-pic18F4580.obj  text1                              2F7C     2F7C        A     17BE       0
-                text0                              2F86     2F86       7A     17C3       0
+pic18F4580.obj  text1                              2F6E     2F6E        A     17B7       0
+                text0                              2F78     2F78       88     17BC       0
                 cstackCOMRAM                          1        1        5        1       1
-                cinit                              2F76     2F76        6     17BB       0
+                cinit                              2F68     2F68        6     17B4       0
 
 TOTAL           Name                               Link     Load   Length     Space
         CLASS   STACK          
 
         CLASS   CODE           
                 end_init                              0        0        4         0
-                text1                              2F7C     2F7C        A         0
-                text0                              2F86     2F86       7A         0
-                cinit                              2F76     2F76        6         0
+                text1                              2F6E     2F6E        A         0
+                text0                              2F78     2F78       88         0
+                cinit                              2F68     2F68        6         0
 
         CLASS   CONST          
 
@@ -90,9 +90,9 @@ SEGMENTS        Name                           Load    Length   Top    Selector 
 
                 reset_vec                      000000  000004  000004         0       0  CODE    
                 cstackCOMRAM                   000001  000005  000006         1       1  COMRAM  
-                cinit                          002F76  000006  002F7C      17BB       0  CODE    
-                text1                          002F7C  00000A  002F86      17BE       0  CODE    
-                text0                          002F86  00007A  003000      17C3       0  CODE    
+                cinit                          002F68  000006  002F6E      17B4       0  CODE    
+                text1                          002F6E  00000A  002F78      17B7       0  CODE    
+                text0                          002F78  000088  003000      17BC       0  CODE    
 
 
 UNUSED ADDRESS RANGES
@@ -105,19 +105,19 @@ UNUSED ADDRESS RANGES
         BANK4            0400-04FF            100
         BANK5            0500-05FF            100
         BIGRAM           0006-05FF            5FA
-        CODE             0004-2F75           2F72
+        CODE             0004-2F67           2F64
                          3000-3000              1
         COMRAM           0006-005F             5A
         CONFIG           300000-30000D              E
-        CONST            0004-2F75           2F72
+        CONST            0004-2F67           2F64
                          3000-3000              1
         EEDATA           F00000-F000FF            100
         IDLOC            200000-200007              8
-        MEDIUMCONST      0600-2F75           2976
+        MEDIUMCONST      0600-2F67           2968
                          3000-3000              1
         RAM              0060-05FF            100
         SFR              0D00-0FFF            100
-        SMALLCONST       0600-2F75            100
+        SMALLCONST       0600-2F67            100
                          3000-3000              1
         STACK            0060-05FF            5A0
 
@@ -253,22 +253,22 @@ ___rparam_used           (abs)        0001
 ___sp                    stack        0000
 __accesstop              (abs)        0060
 __activetblptr           (abs)        0000
-__end_of__initialization cinit        2F76
-__end_of_init_config     text1        2F86
+__end_of__initialization cinit        2F68
+__end_of_init_config     text1        2F78
 __end_of_main            text0        3000
-__initialization         cinit        2F76
+__initialization         cinit        2F68
 __mediumconst            mediumconst  0000
-__pcinit                 cinit        2F76
+__pcinit                 cinit        2F68
 __pcstackCOMRAM          cstackCOMRAM 0001
-__ptext0                 text0        2F86
-__ptext1                 text1        2F7C
+__ptext0                 text0        2F78
+__ptext1                 text1        2F6E
 __ramtop                 ramtop       0600
 __size_of_init_config    (abs)        0000
 __size_of_main           (abs)        0000
 __smallconst             smallconst   0000
-_init_config             text1        2F7C
-_main                    text0        2F86
-end_of_initialization    cinit        2F76
+_init_config             text1        2F6E
+_main                    text0        2F78
+end_of_initialization    cinit        2F68
 intlevel0                text         0000
 intlevel1                text         0000
 intlevel2                text         0000
@@ -278,7 +278,7 @@ main@delay               cstackCOMRAM 0001
 stackhi                  (abs)        05FF
 stacklo                  (abs)        0060
 start                    init         0000
-start_initialization     cinit        2F76
+start_initialization     cinit        2F68
 
 
 FUNCTION INFORMATION:
@@ -315,7 +315,7 @@ Total ram usage:        5 bytes
 
  *************** function _init_config *****************
  Defined at:
-		line 51 in file "main.c"
+		line 56 in file "main.c"
  Parameters:    Size  Location     Type
 		None
  Auto vars:     Size  Location     Type
@@ -347,13 +347,13 @@ MODULE INFORMATION
 
 Module		Function		Class		Link	Load	Size
 shared
-		__initialization		CODE           	2F76	0000	1
+		__initialization		CODE           	2F68	0000	1
 
 shared estimated size: 1
 
 main.c
-		_main          		CODE           	2F86	0000	123
-		_init_config   		CODE           	2F7C	0000	11
+		_main          		CODE           	2F78	0000	137
+		_init_config   		CODE           	2F6E	0000	11
 
-main.c estimated size: 134
+main.c estimated size: 148
 

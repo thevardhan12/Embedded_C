@@ -1073,7 +1073,7 @@ main@count:	; 1 bytes @ 0x4
 ;! ---------------------------------------------------------------------------------
 ;! (Depth) Function   	        Calls       Base Space   Used Autos Params    Refs
 ;! ---------------------------------------------------------------------------------
-;! (0) _main                                                 5     5      0      75
+;! (0) _main                                                 5     5      0      90
 ;!                                              0 COMRAM     5     5      0
 ;!                        _init_config
 ;! ---------------------------------------------------------------------------------
@@ -1168,19 +1168,19 @@ _main:
 	opt	stack 30
 	line	13
 	
-l623:
+l624:
 ;main.c: 12: void init_config();
 ;main.c: 13: init_config();
 	call	_init_config	;wreg free
 	line	14
 	
-l625:
+l626:
 ;main.c: 14: unsigned char count=0;
 	movlw	low(0)
 	movwf	((c:main@count)),c
 	line	15
 	
-l627:
+l628:
 ;main.c: 15: unsigned long int delay=0;
 	movlw	low(0)
 	movwf	((c:main@delay)),c
@@ -1190,14 +1190,14 @@ l627:
 	movwf	((c:main@delay+2)),c
 	movlw	high highword(0)
 	movwf	((c:main@delay+3)),c
-	goto	l629
+	goto	l630
 	line	17
 ;main.c: 17: while(1)
 	
 l9:
 	line	19
 	
-l629:
+l630:
 ;main.c: 18: {
 ;main.c: 19: if(++delay >=50000)
 	movlw	low(01h)
@@ -1218,11 +1218,11 @@ l629:
 	goto	u10
 
 u11:
-	goto	l629
+	goto	l630
 u10:
 	line	21
 	
-l631:
+l632:
 ;main.c: 20: {
 ;main.c: 21: if(count <8)
 		movlw	08h-0
@@ -1231,11 +1231,11 @@ l631:
 	goto	u20
 
 u21:
-	goto	l635
+	goto	l636
 u20:
 	line	23
 	
-l633:
+l634:
 ;main.c: 22: {
 ;main.c: 23: PORTB=PORTB<<1 | 1;
 	bsf	status,0
@@ -1243,12 +1243,12 @@ l633:
 	rlcf	((c:3969)),c	;volatile
 	line	24
 ;main.c: 24: }
-	goto	l647
+	goto	l12
 	line	25
 	
 l11:
 	
-l635:
+l636:
 ;main.c: 25: else if( count <16)
 		movlw	010h-0
 	cpfslt	((c:main@count)),c
@@ -1256,11 +1256,11 @@ l635:
 	goto	u30
 
 u31:
-	goto	l639
+	goto	l640
 u30:
 	line	27
 	
-l637:
+l638:
 ;main.c: 26: {
 ;main.c: 27: PORTB=PORTB<<1;
 	movf	((c:3969)),c,w	;volatile
@@ -1268,12 +1268,12 @@ l637:
 	movwf	((c:3969)),c	;volatile
 	line	30
 ;main.c: 30: }
-	goto	l647
+	goto	l12
 	line	31
 	
 l13:
 	
-l639:
+l640:
 ;main.c: 31: else if(count <23)
 		movlw	017h-0
 	cpfslt	((c:main@count)),c
@@ -1281,11 +1281,11 @@ l639:
 	goto	u40
 
 u41:
-	goto	l643
+	goto	l644
 u40:
 	line	33
 	
-l641:
+l642:
 ;main.c: 32: {
 ;main.c: 33: PORTB=PORTB>>1 | 0x80;
 	bsf	status,0
@@ -1293,47 +1293,67 @@ l641:
 	rrcf	((c:3969)),c	;volatile
 	line	34
 ;main.c: 34: }
-	goto	l647
+	goto	l12
 	line	35
 	
 l15:
 	
-l643:
-;main.c: 35: else if(count <31)
-		movlw	01Fh-0
+l644:
+;main.c: 35: else if(count <32)
+		movlw	020h-0
 	cpfslt	((c:main@count)),c
 	goto	u51
 	goto	u50
 
 u51:
-	goto	l647
+	goto	l12
 u50:
 	line	37
 	
-l645:
+l646:
 ;main.c: 36: {
 ;main.c: 37: PORTB=PORTB>>1;
 	bcf	status,0
 	rrcf	((c:3969)),c,w	;volatile
 	movwf	((c:3969)),c	;volatile
-	goto	l647
-	line	39
+	line	38
+;main.c: 38: if(count==31)
+		movlw	31
+	xorwf	((c:main@count)),c,w
+	btfss	status,2
+	goto	u61
+	goto	u60
+
+u61:
+	goto	l12
+u60:
+	line	40
 	
-l17:
-	goto	l647
+l648:
+;main.c: 39: {
+;main.c: 40: count=0;
+	movlw	low(0)
+	movwf	((c:main@count)),c
+	goto	l12
 	line	41
 	
+l18:
+	goto	l12
+	line	43
+	
+l17:
+	goto	l12
+	line	46
+	
 l16:
-	goto	l647
+	goto	l12
 	
 l14:
-	goto	l647
 	
 l12:
-	
-l647:
-;main.c: 39: }
-;main.c: 41: delay=0;
+;main.c: 41: }
+;main.c: 43: }
+;main.c: 46: delay=0;
 	movlw	low(0)
 	movwf	((c:main@delay)),c
 	movlw	high(0)
@@ -1342,26 +1362,26 @@ l647:
 	movwf	((c:main@delay+2)),c
 	movlw	high highword(0)
 	movwf	((c:main@delay+3)),c
-	line	42
-	
-l649:
-;main.c: 42: count ++;
-	incf	((c:main@count)),c
-	goto	l629
-	line	45
-	
-l10:
-	goto	l629
 	line	47
 	
-l18:
-	line	17
-	goto	l629
+l650:
+;main.c: 47: count ++;
+	incf	((c:main@count)),c
+	goto	l630
+	line	50
+	
+l10:
+	goto	l630
+	line	52
 	
 l19:
-	line	49
+	line	17
+	goto	l630
 	
 l20:
+	line	54
+	
+l21:
 	global	start
 	goto	start
 	opt stack 0
@@ -1372,7 +1392,7 @@ GLOBAL	__end_of_main
 
 ;; *************** function _init_config *****************
 ;; Defined at:
-;;		line 51 in file "main.c"
+;;		line 56 in file "main.c"
 ;; Parameters:    Size  Location     Type
 ;;		None
 ;; Auto vars:     Size  Location     Type
@@ -1399,31 +1419,31 @@ GLOBAL	__end_of_main
 ;; This function uses a non-reentrant model
 ;;
 psect	text1,class=CODE,space=0,reloc=2
-	line	51
+	line	56
 global __ptext1
 __ptext1:
 psect	text1
 	file	"main.c"
-	line	51
+	line	56
 	global	__size_of_init_config
 	__size_of_init_config	equ	__end_of_init_config-_init_config
 	
 _init_config:
 ;incstack = 0
 	opt	stack 30
-	line	53
+	line	58
 	
-l621:
-;main.c: 53: TRISB=0x00;
+l622:
+;main.c: 58: TRISB=0x00;
 	movlw	low(0)
 	movwf	((c:3987)),c	;volatile
-	line	54
-;main.c: 54: PORTB=0x00;
+	line	59
+;main.c: 59: PORTB=0x00;
 	movlw	low(0)
 	movwf	((c:3969)),c	;volatile
-	line	56
+	line	61
 	
-l23:
+l24:
 	return	;funcret
 	opt stack 0
 GLOBAL	__end_of_init_config

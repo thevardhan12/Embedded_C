@@ -31,7 +31,7 @@ void main()
 	  key=read_digital_keypad(edge);
 	  if(key==switch1)
 	  {
-	       patteren1();
+	    patteren1();
 	  }
 	  else if(key==switch2)
 	  {
@@ -44,6 +44,10 @@ void main()
 	  else if(key==switch4)
 	  {
 	       patteren4();
+	  }
+	  else
+	  {
+		patteren1();
 	  }
 
 
@@ -69,7 +73,7 @@ unsigned char read_digital_keypad(unsigned char detection)
 
      if(detection ==1)
      {
-	  if((PORTC & 0x0f) && once)
+	  if(((PORTC & 0x0f) != 0x0f) && once)
 	  {
 	       once =0;
 	       return (PORTC & 0x0f);
@@ -79,8 +83,8 @@ unsigned char read_digital_keypad(unsigned char detection)
      else if( (PORTC & 0x0f)==0x0f)
      {
 	  once=1;
-      return 0x0f;
      }
+      return 0x0f;
      
      }
 }

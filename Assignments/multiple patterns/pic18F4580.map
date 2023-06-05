@@ -3,7 +3,7 @@ Microchip MPLAB XC8 Compiler V1.36 ()
 Linker command line:
 
 --edf=/opt/microchip/xc8/v1.36/dat/en_msgs.txt -cs -h+pic18F4580.sym \
-  --cmf=pic18F4580.cmf -z -Q18F4580 -o/tmp/xcXAtwm3v -Mpic18F4580.map \
+  --cmf=pic18F4580.cmf -z -Q18F4580 -o/tmp/xcXe4aSdy -Mpic18F4580.map \
   -ver=XC8 -ASTACK=060h-05ffh -pstack=STACK -ACODE=00h-03000h \
   -ACONST=00h-03000h -ASMALLCONST=0600h-06FFhx42,03000h-03000h \
   -AMEDIUMCONST=0600h-03000h -ACOMRAM=01h-05Fh -AABS1=00h-05FFh \
@@ -33,16 +33,16 @@ Call graph: (short form)
 
                 Name                               Link     Load   Length Selector   Space Scale
 startup.obj     end_init                              0        0        4        0       0
-pic18F4580.obj  text6                              2DCA     2DCA       10     16E5       0
+pic18F4580.obj  text6                              2DC6     2DC6       10     16E3       0
                 text5                              2F8A     2F8A       76     17C5       0
                 text4                              2E70     2E70       5E     1738       0
                 text3                              2ECE     2ECE       5E     1767       0
                 text2                              2F2C     2F2C       5E     1796       0
-                text1                              2DF2     2DF2       36     16F9       0
-                text0                              2E28     2E28       48     1714       0
+                text1                              2DEE     2DEE       34     16F7       0
+                text0                              2E22     2E22       4E     1711       0
                 cstackCOMRAM                          1        1        A        1       1
                 dataCOMRAM                            B        B        1        1       1
-                cinit                              2DDA     2DDA       18     16ED       0
+                cinit                              2DD6     2DD6       18     16EB       0
                 idataCOMRAM                        3000     3000        1     17C5       0
 
 TOTAL           Name                               Link     Load   Length     Space
@@ -50,14 +50,14 @@ TOTAL           Name                               Link     Load   Length     Sp
 
         CLASS   CODE           
                 end_init                              0        0        4         0
-                text6                              2DCA     2DCA       10         0
+                text6                              2DC6     2DC6       10         0
                 text5                              2F8A     2F8A       76         0
                 text4                              2E70     2E70       5E         0
                 text3                              2ECE     2ECE       5E         0
                 text2                              2F2C     2F2C       5E         0
-                text1                              2DF2     2DF2       36         0
-                text0                              2E28     2E28       48         0
-                cinit                              2DDA     2DDA       18         0
+                text1                              2DEE     2DEE       34         0
+                text0                              2E22     2E22       4E         0
+                cinit                              2DD6     2DD6       18         0
                 idataCOMRAM                        3000     3000        1         0
 
         CLASS   CONST          
@@ -104,10 +104,10 @@ SEGMENTS        Name                           Load    Length   Top    Selector 
 
                 reset_vec                      000000  000004  000004         0       0  CODE    
                 cstackCOMRAM                   000001  00000B  00000C         1       1  COMRAM  
-                text6                          002DCA  000010  002DDA      16E5       0  CODE    
-                cinit                          002DDA  000018  002DF2      16ED       0  CODE    
-                text1                          002DF2  000036  002E28      16F9       0  CODE    
-                text0                          002E28  000048  002E70      1714       0  CODE    
+                text6                          002DC6  000010  002DD6      16E3       0  CODE    
+                cinit                          002DD6  000018  002DEE      16EB       0  CODE    
+                text1                          002DEE  000034  002E22      16F7       0  CODE    
+                text0                          002E22  00004E  002E70      1711       0  CODE    
                 text4                          002E70  00005E  002ECE      1738       0  CODE    
                 text3                          002ECE  00005E  002F2C      1767       0  CODE    
                 text2                          002F2C  00005E  002F8A      1796       0  CODE    
@@ -124,16 +124,16 @@ UNUSED ADDRESS RANGES
         BANK4            0400-04FF            100
         BANK5            0500-05FF            100
         BIGRAM           000C-05FF            5F4
-        CODE             0004-2DC9           2DC6
+        CODE             0004-2DC5           2DC2
         COMRAM           000C-005F             54
         CONFIG           300000-30000D              E
-        CONST            0004-2DC9           2DC6
+        CONST            0004-2DC5           2DC2
         EEDATA           F00000-F000FF            100
         IDLOC            200000-200007              8
-        MEDIUMCONST      0600-2DC9           27CA
+        MEDIUMCONST      0600-2DC5           27C6
         RAM              0060-05FF            100
         SFR              0D00-0FFF            100
-        SMALLCONST       0600-2DC9            100
+        SMALLCONST       0600-2DC5            100
         STACK            0060-05FF            5A0
 
                                   Symbol Table
@@ -284,27 +284,27 @@ ___rparam_used                (abs)        0001
 ___sp                         stack        0000
 __accesstop                   (abs)        0060
 __activetblptr                (abs)        0000
-__end_of__initialization      cinit        2DEC
-__end_of_init_config          text6        2DDA
+__end_of__initialization      cinit        2DE8
+__end_of_init_config          text6        2DD6
 __end_of_main                 text0        2E70
 __end_of_patteren1            text5        3000
 __end_of_patteren2            text4        2ECE
 __end_of_patteren3            text3        2F2C
 __end_of_patteren4            text2        2F8A
-__end_of_read_digital_keypad  text1        2E28
-__initialization              cinit        2DDA
+__end_of_read_digital_keypad  text1        2E22
+__initialization              cinit        2DD6
 __mediumconst                 mediumconst  0000
-__pcinit                      cinit        2DDA
+__pcinit                      cinit        2DD6
 __pcstackCOMRAM               cstackCOMRAM 0001
 __pdataCOMRAM                 dataCOMRAM   000B
 __pidataCOMRAM                idataCOMRAM  3000
-__ptext0                      text0        2E28
-__ptext1                      text1        2DF2
+__ptext0                      text0        2E22
+__ptext1                      text1        2DEE
 __ptext2                      text2        2F2C
 __ptext3                      text3        2ECE
 __ptext4                      text4        2E70
 __ptext5                      text5        2F8A
-__ptext6                      text6        2DCA
+__ptext6                      text6        2DC6
 __ramtop                      ramtop       0600
 __size_of_init_config         (abs)        0000
 __size_of_main                (abs)        0000
@@ -314,14 +314,14 @@ __size_of_patteren3           (abs)        0000
 __size_of_patteren4           (abs)        0000
 __size_of_read_digital_keypad (abs)        0000
 __smallconst                  smallconst   0000
-_init_config                  text6        2DCA
-_main                         text0        2E28
+_init_config                  text6        2DC6
+_main                         text0        2E22
 _patteren1                    text5        2F8A
 _patteren2                    text4        2E70
 _patteren3                    text3        2ECE
 _patteren4                    text2        2F2C
-_read_digital_keypad          text1        2DF2
-end_of_initialization         cinit        2DEC
+_read_digital_keypad          text1        2DEE
+end_of_initialization         cinit        2DE8
 intlevel0                     text         0000
 intlevel1                     text         0000
 intlevel2                     text         0000
@@ -335,12 +335,12 @@ patteren3@delay               cstackCOMRAM 0005
 patteren3@flag                cstackCOMRAM 0009
 patteren4@delay               cstackCOMRAM 0005
 patteren4@flag                cstackCOMRAM 0009
-read_digital_keypad@detection cstackCOMRAM 0002
+read_digital_keypad@detection cstackCOMRAM 0001
 read_digital_keypad@once      dataCOMRAM   000B
 stackhi                       (abs)        05FF
 stacklo                       (abs)        0060
 start                         init         0000
-start_initialization          cinit        2DDA
+start_initialization          cinit        2DD6
 
 
 FUNCTION INFORMATION:
@@ -381,11 +381,11 @@ Total ram usage:        1 bytes
 
  *************** function _read_digital_keypad *****************
  Defined at:
-		line 66 in file "main.c"
+		line 70 in file "main.c"
  Parameters:    Size  Location     Type
   detection       1    wreg     unsigned char 
  Auto vars:     Size  Location     Type
-  detection       1    1[COMRAM] unsigned char 
+  detection       1    0[COMRAM] unsigned char 
  Return value:  Size  Location     Type
                   1    wreg      unsigned char 
  Registers used:
@@ -397,9 +397,9 @@ Total ram usage:        1 bytes
  Data sizes:     COMRAM   BANK0   BANK1   BANK2   BANK3   BANK4   BANK5
       Params:         0       0       0       0       0       0       0
       Locals:         1       0       0       0       0       0       0
-      Temps:          1       0       0       0       0       0       0
-      Totals:         2       0       0       0       0       0       0
-Total ram usage:        2 bytes
+      Temps:          0       0       0       0       0       0       0
+      Totals:         1       0       0       0       0       0       0
+Total ram usage:        1 bytes
  Hardware stack levels used:    1
  This function calls:
 		Nothing
@@ -410,7 +410,7 @@ Total ram usage:        2 bytes
 
  *************** function _patteren4 *****************
  Defined at:
-		line 180 in file "main.c"
+		line 184 in file "main.c"
  Parameters:    Size  Location     Type
 		None
  Auto vars:     Size  Location     Type
@@ -440,7 +440,7 @@ Total ram usage:        9 bytes
 
  *************** function _patteren3 *****************
  Defined at:
-		line 154 in file "main.c"
+		line 158 in file "main.c"
  Parameters:    Size  Location     Type
 		None
  Auto vars:     Size  Location     Type
@@ -470,7 +470,7 @@ Total ram usage:        9 bytes
 
  *************** function _patteren2 *****************
  Defined at:
-		line 128 in file "main.c"
+		line 132 in file "main.c"
  Parameters:    Size  Location     Type
 		None
  Auto vars:     Size  Location     Type
@@ -500,7 +500,7 @@ Total ram usage:        5 bytes
 
  *************** function _patteren1 *****************
  Defined at:
-		line 90 in file "main.c"
+		line 94 in file "main.c"
  Parameters:    Size  Location     Type
 		None
  Auto vars:     Size  Location     Type
@@ -530,7 +530,7 @@ Total ram usage:        5 bytes
 
  *************** function _init_config *****************
  Defined at:
-		line 57 in file "main.c"
+		line 61 in file "main.c"
  Parameters:    Size  Location     Type
 		None
  Auto vars:     Size  Location     Type
@@ -562,18 +562,18 @@ MODULE INFORMATION
 
 Module		Function		Class		Link	Load	Size
 shared
-		__initialization		CODE           	2DDA	0000	19
+		__initialization		CODE           	2DD6	0000	19
 
 shared estimated size: 19
 
 main.c
-		_main          		CODE           	2E28	0000	73
+		_main          		CODE           	2E22	0000	79
 		_patteren1     		CODE           	2F8A	0000	119
 		_patteren2     		CODE           	2E70	0000	95
 		_patteren3     		CODE           	2ECE	0000	95
 		_patteren4     		CODE           	2F2C	0000	95
-		_init_config   		CODE           	2DCA	0000	17
-		_read_digital_keypad		CODE           	2DF2	0000	55
+		_init_config   		CODE           	2DC6	0000	17
+		_read_digital_keypad		CODE           	2DEE	0000	53
 
-main.c estimated size: 549
+main.c estimated size: 553
 

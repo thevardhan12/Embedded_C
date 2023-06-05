@@ -982,7 +982,7 @@ psect	idataCOMRAM,class=CODE,space=0,delta=1,noexec
 global __pidataCOMRAM
 __pidataCOMRAM:
 	file	"main.c"
-	line	68
+	line	72
 
 ;initializer for read_digital_keypad@once
 	db	low(01h)
@@ -1009,7 +1009,7 @@ psect	dataCOMRAM,class=COMRAM,space=1,noexec
 global __pdataCOMRAM
 __pdataCOMRAM:
 	file	"main.c"
-	line	68
+	line	72
 read_digital_keypad@once:
        ds      1
 	file	"pic18F4580.as"
@@ -1051,14 +1051,13 @@ __pcstackCOMRAM:
 ?_patteren4:	; 1 bytes @ 0x0
 ??_patteren4:	; 1 bytes @ 0x0
 ?_main:	; 1 bytes @ 0x0
+	global	read_digital_keypad@detection
+read_digital_keypad@detection:	; 1 bytes @ 0x0
 	global	patteren1@delay
 patteren1@delay:	; 4 bytes @ 0x0
 	global	patteren2@delay
 patteren2@delay:	; 4 bytes @ 0x0
-	ds   1
-	global	read_digital_keypad@detection
-read_digital_keypad@detection:	; 1 bytes @ 0x1
-	ds   3
+	ds   4
 	global	patteren1@count
 patteren1@count:	; 1 bytes @ 0x4
 	global	patteren2@count
@@ -1151,8 +1150,8 @@ main@key:	; 1 bytes @ 0x9
 ;!                          _patteren4
 ;!                _read_digital_keypad
 ;! ---------------------------------------------------------------------------------
-;! (1) _read_digital_keypad                                  2     2      0      15
-;!                                              0 COMRAM     2     2      0
+;! (1) _read_digital_keypad                                  1     1      0      15
+;!                                              0 COMRAM     1     1      0
 ;! ---------------------------------------------------------------------------------
 ;! (1) _patteren4                                            9     9      0      45
 ;!                                              0 COMRAM     9     9      0
@@ -1266,7 +1265,7 @@ _main:
 	opt	stack 30
 	line	25
 	
-l775:
+l776:
 ;main.c: 25: init_config();
 	call	_init_config	;wreg free
 	line	27
@@ -1286,7 +1285,7 @@ l23:
 	movwf	((c:main@key)),c
 	line	32
 	
-l777:
+l778:
 ;main.c: 32: if(key==0x0e)
 		movlw	14
 	xorwf	((c:main@key)),c,w
@@ -1295,11 +1294,11 @@ l777:
 	goto	u190
 
 u191:
-	goto	l781
+	goto	l782
 u190:
 	line	34
 	
-l779:
+l780:
 ;main.c: 33: {
 ;main.c: 34: patteren1();
 	call	_patteren1	;wreg free
@@ -1310,7 +1309,7 @@ l779:
 	
 l24:
 	
-l781:
+l782:
 ;main.c: 36: else if(key==0x0d)
 		movlw	13
 	xorwf	((c:main@key)),c,w
@@ -1319,11 +1318,11 @@ l781:
 	goto	u200
 
 u201:
-	goto	l785
+	goto	l786
 u200:
 	line	38
 	
-l783:
+l784:
 ;main.c: 37: {
 ;main.c: 38: patteren2();
 	call	_patteren2	;wreg free
@@ -1334,7 +1333,7 @@ l783:
 	
 l26:
 	
-l785:
+l786:
 ;main.c: 40: else if(key==0x0b)
 		movlw	11
 	xorwf	((c:main@key)),c,w
@@ -1343,11 +1342,11 @@ l785:
 	goto	u210
 
 u211:
-	goto	l789
+	goto	l790
 u210:
 	line	42
 	
-l787:
+l788:
 ;main.c: 41: {
 ;main.c: 42: patteren3();
 	call	_patteren3	;wreg free
@@ -1358,7 +1357,7 @@ l787:
 	
 l28:
 	
-l789:
+l790:
 ;main.c: 44: else if(key==0x07)
 		movlw	7
 	xorwf	((c:main@key)),c,w
@@ -1367,20 +1366,32 @@ l789:
 	goto	u220
 
 u221:
-	goto	l23
+	goto	l794
 u220:
 	line	46
 	
-l791:
+l792:
 ;main.c: 45: {
 ;main.c: 46: patteren4();
 	call	_patteren4	;wreg free
-	goto	l23
 	line	47
+;main.c: 47: }
+	goto	l23
+	line	48
 	
 l30:
+	line	50
+	
+l794:
+;main.c: 48: else
+;main.c: 49: {
+;main.c: 50: patteren1();
+	call	_patteren1	;wreg free
 	goto	l23
 	line	51
+	
+l31:
+	goto	l23
 	
 l29:
 	goto	l23
@@ -1390,15 +1401,16 @@ l27:
 	
 l25:
 	goto	l23
+	line	55
 	
-l31:
+l32:
 	line	28
 	goto	l23
 	
-l32:
-	line	54
-	
 l33:
+	line	58
+	
+l34:
 	global	start
 	goto	start
 	opt stack 0
@@ -1409,11 +1421,11 @@ GLOBAL	__end_of_main
 
 ;; *************** function _read_digital_keypad *****************
 ;; Defined at:
-;;		line 66 in file "main.c"
+;;		line 70 in file "main.c"
 ;; Parameters:    Size  Location     Type
 ;;  detection       1    wreg     unsigned char 
 ;; Auto vars:     Size  Location     Type
-;;  detection       1    1[COMRAM] unsigned char 
+;;  detection       1    0[COMRAM] unsigned char 
 ;; Return value:  Size  Location     Type
 ;;                  1    wreg      unsigned char 
 ;; Registers used:
@@ -1425,9 +1437,9 @@ GLOBAL	__end_of_main
 ;; Data sizes:     COMRAM   BANK0   BANK1   BANK2   BANK3   BANK4   BANK5
 ;;      Params:         0       0       0       0       0       0       0
 ;;      Locals:         1       0       0       0       0       0       0
-;;      Temps:          1       0       0       0       0       0       0
-;;      Totals:         2       0       0       0       0       0       0
-;;Total ram usage:        2 bytes
+;;      Temps:          0       0       0       0       0       0       0
+;;      Totals:         1       0       0       0       0       0       0
+;;Total ram usage:        1 bytes
 ;; Hardware stack levels used:    1
 ;; This function calls:
 ;;		Nothing
@@ -1436,12 +1448,12 @@ GLOBAL	__end_of_main
 ;; This function uses a non-reentrant model
 ;;
 psect	text1,class=CODE,space=0,reloc=2
-	line	66
+	line	70
 global __ptext1
 __ptext1:
 psect	text1
 	file	"main.c"
-	line	66
+	line	70
 	global	__size_of_read_digital_keypad
 	__size_of_read_digital_keypad	equ	__end_of_read_digital_keypad-_read_digital_keypad
 	
@@ -1450,70 +1462,70 @@ _read_digital_keypad:
 	opt	stack 30
 ;read_digital_keypad@detection stored from wreg
 	movwf	((c:read_digital_keypad@detection)),c
-	line	70
+	line	74
 	
-l705:
-;main.c: 68: static unsigned char once=1;
-;main.c: 70: if(detection ==1)
+l706:
+;main.c: 72: static unsigned char once=1;
+;main.c: 74: if(detection ==1)
 		decf	((c:read_digital_keypad@detection)),c,w
 	btfss	status,2
 	goto	u61
 	goto	u60
 
 u61:
-	goto	l43
+	goto	l44
 u60:
-	line	72
+	line	76
 	
-l707:
-;main.c: 71: {
-;main.c: 72: if((PORTC & 0x0f) && once)
-	movff	(c:3970),??_read_digital_keypad+0+0	;volatile
-	movlw	0Fh
-	andwf	(??_read_digital_keypad+0+0),c
+l708:
+;main.c: 75: {
+;main.c: 76: if(((PORTC & 0x0f) != 0x0f) && once)
+	movf	((c:3970)),c,w	;volatile
+	andlw	low(0Fh)
+	xorlw	0Fh
 	btfsc	status,2
 	goto	u71
 	goto	u70
 u71:
-	goto	l719
+	goto	l720
 u70:
 	
-l709:
+l710:
 	movf	((c:read_digital_keypad@once)),c,w
 	btfsc	status,2
 	goto	u81
 	goto	u80
 u81:
-	goto	l719
+	goto	l720
 u80:
-	line	74
+	line	78
 	
-l711:
-;main.c: 73: {
-;main.c: 74: once =0;
+l712:
+;main.c: 77: {
+;main.c: 78: once =0;
 	movlw	low(0)
 	movwf	((c:read_digital_keypad@once)),c
-	line	75
-	
-l713:
-;main.c: 75: return (PORTC & 0x0f);
-	movf	((c:3970)),c,w	;volatile
-	andlw	low(0Fh)
-	goto	l43
-	
-l715:
-	goto	l43
-	line	76
-	
-l717:
-;main.c: 76: }
-	goto	l43
 	line	79
 	
-l42:
+l714:
+;main.c: 79: return (PORTC & 0x0f);
+	movf	((c:3970)),c,w	;volatile
+	andlw	low(0Fh)
+	goto	l44
 	
-l719:
-;main.c: 79: else if( (PORTC & 0x0f)==0x0f)
+l716:
+	goto	l44
+	line	80
+	
+l718:
+;main.c: 80: }
+	goto	l724
+	line	83
+	
+l43:
+	
+l720:
+;main.c: 83: else if( (PORTC & 0x0f)==0x0f)
 	movf	((c:3970)),c,w	;volatile
 	andlw	low(0Fh)
 	xorlw	0Fh
@@ -1521,37 +1533,38 @@ l719:
 	goto	u91
 	goto	u90
 u91:
-	goto	l43
+	goto	l724
 u90:
-	line	81
-	
-l721:
-;main.c: 80: {
-;main.c: 81: once=1;
-	movlw	low(01h)
-	movwf	((c:read_digital_keypad@once)),c
-	line	82
-	
-l723:
-;main.c: 82: return 0x0f;
-	movlw	(0Fh)&0ffh
-	goto	l43
-	
-l725:
-	goto	l43
-	line	83
-	
-l45:
-	goto	l43
 	line	85
 	
-l44:
-	goto	l43
-	
-l41:
+l722:
+;main.c: 84: {
+;main.c: 85: once=1;
+	movlw	low(01h)
+	movwf	((c:read_digital_keypad@once)),c
+	goto	l724
 	line	86
 	
-l43:
+l46:
+	goto	l724
+	line	87
+	
+l45:
+	
+l724:
+;main.c: 86: }
+;main.c: 87: return 0x0f;
+	movlw	(0Fh)&0ffh
+	goto	l44
+	
+l726:
+	goto	l44
+	line	89
+	
+l42:
+	line	90
+	
+l44:
 	return	;funcret
 	opt stack 0
 GLOBAL	__end_of_read_digital_keypad
@@ -1561,7 +1574,7 @@ GLOBAL	__end_of_read_digital_keypad
 
 ;; *************** function _patteren4 *****************
 ;; Defined at:
-;;		line 180 in file "main.c"
+;;		line 184 in file "main.c"
 ;; Parameters:    Size  Location     Type
 ;;		None
 ;; Auto vars:     Size  Location     Type
@@ -1589,22 +1602,22 @@ GLOBAL	__end_of_read_digital_keypad
 ;; This function uses a non-reentrant model
 ;;
 psect	text2,class=CODE,space=0,reloc=2
-	line	180
+	line	184
 global __ptext2
 __ptext2:
 psect	text2
 	file	"main.c"
-	line	180
+	line	184
 	global	__size_of_patteren4
 	__size_of_patteren4	equ	__end_of_patteren4-_patteren4
 	
 _patteren4:
 ;incstack = 0
 	opt	stack 30
-	line	182
+	line	186
 	
-l759:
-;main.c: 182: unsigned long int delay=0;
+l760:
+;main.c: 186: unsigned long int delay=0;
 	movlw	low(0)
 	movwf	((c:patteren4@delay)),c
 	movlw	high(0)
@@ -1613,14 +1626,14 @@ l759:
 	movwf	((c:patteren4@delay+2)),c
 	movlw	high highword(0)
 	movwf	((c:patteren4@delay+3)),c
-	line	183
-;main.c: 183: unsigned char flag=1;
+	line	187
+;main.c: 187: unsigned char flag=1;
 	movlw	low(01h)
 	movwf	((c:patteren4@flag)),c
-	line	184
+	line	188
 	
-l761:
-;main.c: 184: if(delay++ >= 50000)
+l762:
+;main.c: 188: if(delay++ >= 50000)
 	movff	(c:patteren4@delay),??_patteren4+0+0+0
 	movff	(c:patteren4@delay+1),??_patteren4+0+0+1
 	movff	(c:patteren4@delay+2),??_patteren4+0+0+2
@@ -1642,42 +1655,42 @@ l761:
 	goto	u160
 
 u161:
-	goto	l77
+	goto	l78
 u160:
-	line	186
+	line	190
 	
-l763:
-;main.c: 185: {
-;main.c: 186: if(flag==1)
+l764:
+;main.c: 189: {
+;main.c: 190: if(flag==1)
 		decf	((c:patteren4@flag)),c,w
 	btfss	status,2
 	goto	u171
 	goto	u170
 
 u171:
-	goto	l769
+	goto	l770
 u170:
-	line	188
-	
-l765:
-;main.c: 187: {
-;main.c: 188: PORTB=0xf0;
-	movlw	low(0F0h)
-	movwf	((c:3969)),c	;volatile
-	line	189
-	
-l767:
-;main.c: 189: flag++;
-	incf	((c:patteren4@flag)),c
-	line	191
-;main.c: 191: }
-	goto	l77
 	line	192
 	
-l74:
+l766:
+;main.c: 191: {
+;main.c: 192: PORTB=0xf0;
+	movlw	low(0F0h)
+	movwf	((c:3969)),c	;volatile
+	line	193
 	
-l769:
-;main.c: 192: else if(flag==2)
+l768:
+;main.c: 193: flag++;
+	incf	((c:patteren4@flag)),c
+	line	195
+;main.c: 195: }
+	goto	l78
+	line	196
+	
+l75:
+	
+l770:
+;main.c: 196: else if(flag==2)
 		movlw	2
 	xorwf	((c:patteren4@flag)),c,w
 	btfss	status,2
@@ -1685,34 +1698,34 @@ l769:
 	goto	u180
 
 u181:
-	goto	l77
+	goto	l78
 u180:
-	line	194
+	line	198
 	
-l771:
-;main.c: 193: {
-;main.c: 194: PORTB=~PORTB;
+l772:
+;main.c: 197: {
+;main.c: 198: PORTB=~PORTB;
 	comf	((c:3969)),c	;volatile
-	line	195
+	line	199
 	
-l773:
-;main.c: 195: flag=1;
+l774:
+;main.c: 199: flag=1;
 	movlw	low(01h)
 	movwf	((c:patteren4@flag)),c
-	goto	l77
-	line	196
-	
-l76:
-	goto	l77
+	goto	l78
 	line	200
 	
-l75:
-	goto	l77
-	
-l73:
+l77:
+	goto	l78
 	line	204
 	
-l77:
+l76:
+	goto	l78
+	
+l74:
+	line	208
+	
+l78:
 	return	;funcret
 	opt stack 0
 GLOBAL	__end_of_patteren4
@@ -1722,7 +1735,7 @@ GLOBAL	__end_of_patteren4
 
 ;; *************** function _patteren3 *****************
 ;; Defined at:
-;;		line 154 in file "main.c"
+;;		line 158 in file "main.c"
 ;; Parameters:    Size  Location     Type
 ;;		None
 ;; Auto vars:     Size  Location     Type
@@ -1750,22 +1763,22 @@ GLOBAL	__end_of_patteren4
 ;; This function uses a non-reentrant model
 ;;
 psect	text3,class=CODE,space=0,reloc=2
-	line	154
+	line	158
 global __ptext3
 __ptext3:
 psect	text3
 	file	"main.c"
-	line	154
+	line	158
 	global	__size_of_patteren3
 	__size_of_patteren3	equ	__end_of_patteren3-_patteren3
 	
 _patteren3:
 ;incstack = 0
 	opt	stack 30
-	line	157
+	line	161
 	
-l743:
-;main.c: 157: unsigned long int delay=0;
+l744:
+;main.c: 161: unsigned long int delay=0;
 	movlw	low(0)
 	movwf	((c:patteren3@delay)),c
 	movlw	high(0)
@@ -1774,14 +1787,14 @@ l743:
 	movwf	((c:patteren3@delay+2)),c
 	movlw	high highword(0)
 	movwf	((c:patteren3@delay+3)),c
-	line	158
-;main.c: 158: unsigned char flag=1;
+	line	162
+;main.c: 162: unsigned char flag=1;
 	movlw	low(01h)
 	movwf	((c:patteren3@flag)),c
-	line	159
+	line	163
 	
-l745:
-;main.c: 159: if(delay++ >= 50000)
+l746:
+;main.c: 163: if(delay++ >= 50000)
 	movff	(c:patteren3@delay),??_patteren3+0+0+0
 	movff	(c:patteren3@delay+1),??_patteren3+0+0+1
 	movff	(c:patteren3@delay+2),??_patteren3+0+0+2
@@ -1803,42 +1816,42 @@ l745:
 	goto	u130
 
 u131:
-	goto	l70
+	goto	l71
 u130:
-	line	161
+	line	165
 	
-l747:
-;main.c: 160: {
-;main.c: 161: if(flag==1)
+l748:
+;main.c: 164: {
+;main.c: 165: if(flag==1)
 		decf	((c:patteren3@flag)),c,w
 	btfss	status,2
 	goto	u141
 	goto	u140
 
 u141:
-	goto	l753
+	goto	l754
 u140:
-	line	163
+	line	167
 	
-l749:
-;main.c: 162: {
-;main.c: 163: PORTB=0xaa;
+l750:
+;main.c: 166: {
+;main.c: 167: PORTB=0xaa;
 	movlw	low(0AAh)
 	movwf	((c:3969)),c	;volatile
-	line	164
-	
-l751:
-;main.c: 164: flag++;
-	incf	((c:patteren3@flag)),c
-	line	166
-;main.c: 166: }
-	goto	l70
 	line	168
 	
-l67:
+l752:
+;main.c: 168: flag++;
+	incf	((c:patteren3@flag)),c
+	line	170
+;main.c: 170: }
+	goto	l71
+	line	172
 	
-l753:
-;main.c: 168: else if(flag==2)
+l68:
+	
+l754:
+;main.c: 172: else if(flag==2)
 		movlw	2
 	xorwf	((c:patteren3@flag)),c,w
 	btfss	status,2
@@ -1846,34 +1859,34 @@ l753:
 	goto	u150
 
 u151:
-	goto	l70
+	goto	l71
 u150:
-	line	170
+	line	174
 	
-l755:
-;main.c: 169: {
-;main.c: 170: PORTB=~PORTB;
+l756:
+;main.c: 173: {
+;main.c: 174: PORTB=~PORTB;
 	comf	((c:3969)),c	;volatile
-	line	171
-	
-l757:
-;main.c: 171: flag=1;
-	movlw	low(01h)
-	movwf	((c:patteren3@flag)),c
-	goto	l70
-	line	172
-	
-l69:
-	goto	l70
 	line	175
 	
-l68:
-	goto	l70
-	
-l66:
-	line	179
+l758:
+;main.c: 175: flag=1;
+	movlw	low(01h)
+	movwf	((c:patteren3@flag)),c
+	goto	l71
+	line	176
 	
 l70:
+	goto	l71
+	line	179
+	
+l69:
+	goto	l71
+	
+l67:
+	line	183
+	
+l71:
 	return	;funcret
 	opt stack 0
 GLOBAL	__end_of_patteren3
@@ -1883,7 +1896,7 @@ GLOBAL	__end_of_patteren3
 
 ;; *************** function _patteren2 *****************
 ;; Defined at:
-;;		line 128 in file "main.c"
+;;		line 132 in file "main.c"
 ;; Parameters:    Size  Location     Type
 ;;		None
 ;; Auto vars:     Size  Location     Type
@@ -1911,26 +1924,26 @@ GLOBAL	__end_of_patteren3
 ;; This function uses a non-reentrant model
 ;;
 psect	text4,class=CODE,space=0,reloc=2
-	line	128
+	line	132
 global __ptext4
 __ptext4:
 psect	text4
 	file	"main.c"
-	line	128
+	line	132
 	global	__size_of_patteren2
 	__size_of_patteren2	equ	__end_of_patteren2-_patteren2
 	
 _patteren2:
 ;incstack = 0
 	opt	stack 30
-	line	130
+	line	134
 	
-l727:
-;main.c: 130: unsigned char count=0;
+l728:
+;main.c: 134: unsigned char count=0;
 	movlw	low(0)
 	movwf	((c:patteren2@count)),c
-	line	131
-;main.c: 131: unsigned long int delay=0;
+	line	135
+;main.c: 135: unsigned long int delay=0;
 	movlw	low(0)
 	movwf	((c:patteren2@delay)),c
 	movlw	high(0)
@@ -1939,10 +1952,10 @@ l727:
 	movwf	((c:patteren2@delay+2)),c
 	movlw	high highword(0)
 	movwf	((c:patteren2@delay+3)),c
-	line	132
+	line	136
 	
-l729:
-;main.c: 132: if(++delay >=5000)
+l730:
+;main.c: 136: if(++delay >=5000)
 	movlw	low(01h)
 	addwf	((c:patteren2@delay)),c
 	movlw	0
@@ -1961,76 +1974,76 @@ l729:
 	goto	u100
 
 u101:
-	goto	l739
+	goto	l740
 u100:
-	line	134
+	line	138
 	
-l731:
-;main.c: 133: {
-;main.c: 134: if(count <8)
+l732:
+;main.c: 137: {
+;main.c: 138: if(count <8)
 		movlw	08h-0
 	cpfslt	((c:patteren2@count)),c
 	goto	u111
 	goto	u110
 
 u111:
-	goto	l735
+	goto	l736
 u110:
-	line	136
+	line	140
 	
-l733:
-;main.c: 135: {
-;main.c: 136: PORTB=PORTB<<1 | 1;
+l734:
+;main.c: 139: {
+;main.c: 140: PORTB=PORTB<<1 | 1;
 	bsf	status,0
 	
 	rlcf	((c:3969)),c	;volatile
-	line	137
-;main.c: 137: }
-	goto	l739
-	line	138
+	line	141
+;main.c: 141: }
+	goto	l740
+	line	142
 	
-l60:
+l61:
 	
-l735:
-;main.c: 138: else if( count <16)
+l736:
+;main.c: 142: else if( count <16)
 		movlw	010h-0
 	cpfslt	((c:patteren2@count)),c
 	goto	u121
 	goto	u120
 
 u121:
-	goto	l739
+	goto	l740
 u120:
-	line	140
+	line	144
 	
-l737:
-;main.c: 139: {
-;main.c: 140: PORTB=PORTB<<1;
+l738:
+;main.c: 143: {
+;main.c: 144: PORTB=PORTB<<1;
 	movf	((c:3969)),c,w	;volatile
 	addwf	((c:3969)),c,w	;volatile
 	movwf	((c:3969)),c	;volatile
-	goto	l739
-	line	141
-	
-l62:
-	goto	l739
-	line	143
-	
-l61:
-	goto	l739
-	
-l59:
-	line	144
-	
-l739:
-;main.c: 141: }
-;main.c: 143: }
-;main.c: 144: count ++;
-	incf	((c:patteren2@count)),c
+	goto	l740
 	line	145
 	
-l741:
-;main.c: 145: delay=0;
+l63:
+	goto	l740
+	line	147
+	
+l62:
+	goto	l740
+	
+l60:
+	line	148
+	
+l740:
+;main.c: 145: }
+;main.c: 147: }
+;main.c: 148: count ++;
+	incf	((c:patteren2@count)),c
+	line	149
+	
+l742:
+;main.c: 149: delay=0;
 	movlw	low(0)
 	movwf	((c:patteren2@delay)),c
 	movlw	high(0)
@@ -2039,9 +2052,9 @@ l741:
 	movwf	((c:patteren2@delay+2)),c
 	movlw	high highword(0)
 	movwf	((c:patteren2@delay+3)),c
-	line	149
+	line	153
 	
-l63:
+l64:
 	return	;funcret
 	opt stack 0
 GLOBAL	__end_of_patteren2
@@ -2051,7 +2064,7 @@ GLOBAL	__end_of_patteren2
 
 ;; *************** function _patteren1 *****************
 ;; Defined at:
-;;		line 90 in file "main.c"
+;;		line 94 in file "main.c"
 ;; Parameters:    Size  Location     Type
 ;;		None
 ;; Auto vars:     Size  Location     Type
@@ -2079,26 +2092,26 @@ GLOBAL	__end_of_patteren2
 ;; This function uses a non-reentrant model
 ;;
 psect	text5,class=CODE,space=0,reloc=2
-	line	90
+	line	94
 global __ptext5
 __ptext5:
 psect	text5
 	file	"main.c"
-	line	90
+	line	94
 	global	__size_of_patteren1
 	__size_of_patteren1	equ	__end_of_patteren1-_patteren1
 	
 _patteren1:
 ;incstack = 0
 	opt	stack 30
-	line	92
+	line	96
 	
-l681:
-;main.c: 92: unsigned char count=0;
+l682:
+;main.c: 96: unsigned char count=0;
 	movlw	low(0)
 	movwf	((c:patteren1@count)),c
-	line	93
-;main.c: 93: unsigned long int delay=0;
+	line	97
+;main.c: 97: unsigned long int delay=0;
 	movlw	low(0)
 	movwf	((c:patteren1@delay)),c
 	movlw	high(0)
@@ -2107,10 +2120,10 @@ l681:
 	movwf	((c:patteren1@delay+2)),c
 	movlw	high highword(0)
 	movwf	((c:patteren1@delay+3)),c
-	line	95
+	line	99
 	
-l683:
-;main.c: 95: if(++delay >=5000)
+l684:
+;main.c: 99: if(++delay >=5000)
 	movlw	low(01h)
 	addwf	((c:patteren1@delay)),c
 	movlw	0
@@ -2129,127 +2142,127 @@ l683:
 	goto	u10
 
 u11:
-	goto	l56
+	goto	l57
 u10:
-	line	97
+	line	101
 	
-l685:
-;main.c: 96: {
-;main.c: 97: if(count <8)
+l686:
+;main.c: 100: {
+;main.c: 101: if(count <8)
 		movlw	08h-0
 	cpfslt	((c:patteren1@count)),c
 	goto	u21
 	goto	u20
 
 u21:
-	goto	l689
+	goto	l690
 u20:
-	line	99
+	line	103
 	
-l687:
-;main.c: 98: {
-;main.c: 99: PORTB=PORTB<<1 | 1;
+l688:
+;main.c: 102: {
+;main.c: 103: PORTB=PORTB<<1 | 1;
 	bsf	status,0
 	
 	rlcf	((c:3969)),c	;volatile
-	line	100
-;main.c: 100: }
-	goto	l701
-	line	101
+	line	104
+;main.c: 104: }
+	goto	l702
+	line	105
 	
-l49:
+l50:
 	
-l689:
-;main.c: 101: else if( count <16)
+l690:
+;main.c: 105: else if( count <16)
 		movlw	010h-0
 	cpfslt	((c:patteren1@count)),c
 	goto	u31
 	goto	u30
 
 u31:
-	goto	l693
+	goto	l694
 u30:
-	line	103
+	line	107
 	
-l691:
-;main.c: 102: {
-;main.c: 103: PORTB=PORTB<<1;
+l692:
+;main.c: 106: {
+;main.c: 107: PORTB=PORTB<<1;
 	movf	((c:3969)),c,w	;volatile
 	addwf	((c:3969)),c,w	;volatile
 	movwf	((c:3969)),c	;volatile
-	line	106
-;main.c: 106: }
-	goto	l701
-	line	107
+	line	110
+;main.c: 110: }
+	goto	l702
+	line	111
 	
-l51:
+l52:
 	
-l693:
-;main.c: 107: else if(count <23)
+l694:
+;main.c: 111: else if(count <23)
 		movlw	017h-0
 	cpfslt	((c:patteren1@count)),c
 	goto	u41
 	goto	u40
 
 u41:
-	goto	l697
+	goto	l698
 u40:
-	line	109
+	line	113
 	
-l695:
-;main.c: 108: {
-;main.c: 109: PORTB=PORTB>>1 | 0x80;
+l696:
+;main.c: 112: {
+;main.c: 113: PORTB=PORTB>>1 | 0x80;
 	bsf	status,0
 	
 	rrcf	((c:3969)),c	;volatile
-	line	111
-;main.c: 111: }
-	goto	l701
-	line	112
+	line	115
+;main.c: 115: }
+	goto	l702
+	line	116
 	
-l53:
+l54:
 	
-l697:
-;main.c: 112: else if(count <31)
+l698:
+;main.c: 116: else if(count <31)
 		movlw	01Fh-0
 	cpfslt	((c:patteren1@count)),c
 	goto	u51
 	goto	u50
 
 u51:
-	goto	l701
+	goto	l702
 u50:
-	line	114
+	line	118
 	
-l699:
-;main.c: 113: {
-;main.c: 114: PORTB=PORTB>>1;
+l700:
+;main.c: 117: {
+;main.c: 118: PORTB=PORTB>>1;
 	bcf	status,0
 	rrcf	((c:3969)),c,w	;volatile
 	movwf	((c:3969)),c	;volatile
-	goto	l701
-	line	116
+	goto	l702
+	line	120
+	
+l56:
+	goto	l702
+	line	121
 	
 l55:
-	goto	l701
-	line	117
+	goto	l702
 	
-l54:
-	goto	l701
+l53:
+	goto	l702
 	
-l52:
-	goto	l701
+l51:
 	
-l50:
-	
-l701:
-;main.c: 116: }
-;main.c: 117: count ++;
+l702:
+;main.c: 120: }
+;main.c: 121: count ++;
 	incf	((c:patteren1@count)),c
-	line	118
+	line	122
 	
-l703:
-;main.c: 118: delay=0;
+l704:
+;main.c: 122: delay=0;
 	movlw	low(0)
 	movwf	((c:patteren1@delay)),c
 	movlw	high(0)
@@ -2258,13 +2271,13 @@ l703:
 	movwf	((c:patteren1@delay+2)),c
 	movlw	high highword(0)
 	movwf	((c:patteren1@delay+3)),c
-	goto	l56
-	line	122
+	goto	l57
+	line	126
 	
-l48:
-	line	123
+l49:
+	line	127
 	
-l56:
+l57:
 	return	;funcret
 	opt stack 0
 GLOBAL	__end_of_patteren1
@@ -2274,7 +2287,7 @@ GLOBAL	__end_of_patteren1
 
 ;; *************** function _init_config *****************
 ;; Defined at:
-;;		line 57 in file "main.c"
+;;		line 61 in file "main.c"
 ;; Parameters:    Size  Location     Type
 ;;		None
 ;; Auto vars:     Size  Location     Type
@@ -2301,40 +2314,40 @@ GLOBAL	__end_of_patteren1
 ;; This function uses a non-reentrant model
 ;;
 psect	text6,class=CODE,space=0,reloc=2
-	line	57
+	line	61
 global __ptext6
 __ptext6:
 psect	text6
 	file	"main.c"
-	line	57
+	line	61
 	global	__size_of_init_config
 	__size_of_init_config	equ	__end_of_init_config-_init_config
 	
 _init_config:
 ;incstack = 0
 	opt	stack 30
-	line	59
+	line	63
 	
-l675:
-;main.c: 59: TRISB=0x00;
+l676:
+;main.c: 63: TRISB=0x00;
 	movlw	low(0)
 	movwf	((c:3987)),c	;volatile
-	line	60
+	line	64
 	
-l677:
-;main.c: 60: TRISC=TRISC|0x0F;
+l678:
+;main.c: 64: TRISC=TRISC|0x0F;
 	movf	((c:3988)),c,w	;volatile
 	iorlw	low(0Fh)
 	movwf	((c:3988)),c	;volatile
-	line	61
+	line	65
 	
-l679:
-;main.c: 61: PORTB=0x00;
+l680:
+;main.c: 65: PORTB=0x00;
 	movlw	low(0)
 	movwf	((c:3969)),c	;volatile
-	line	62
+	line	66
 	
-l36:
+l37:
 	return	;funcret
 	opt stack 0
 GLOBAL	__end_of_init_config
