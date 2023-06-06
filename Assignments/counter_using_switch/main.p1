@@ -14690,9 +14690,9 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;main.c: 80: PORTD=ssd[i];
 "80
 [e = _PORTD *U + _ssd * -> _i `x -> -> # *U _ssd `i `x ]
-[; ;main.c: 81: PORTA=(PORTD & 0Xf0 ) | (1<<i);
+[; ;main.c: 81: PORTA=(PORTA & 0Xf0 ) | (1<<i);
 "81
-[e = _PORTA -> | & -> _PORTD `i -> 240 `i << -> 1 `i _i `uc ]
+[e = _PORTA -> | & -> _PORTA `i -> 240 `i << -> 1 `i _i `uc ]
 [; ;main.c: 82: for(unsigned int j =0;j<1000;j++);
 "82
 {

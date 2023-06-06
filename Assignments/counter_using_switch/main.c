@@ -52,21 +52,12 @@ void main()
      }
 
 }
-
-
-
-
-
-
-
-
-
 void init_config()
 {
      TRISD=0X00;
      TRISA=TRISA & 0XF0;
 	 TRISC0=1;
-     PORTD=PORTD & 0XF0;
+     PORTD=0x00;
 }
 unsigned char read_digital_key()
 {
@@ -78,7 +69,7 @@ void display(unsigned char *ssd)
      for(int i=0;i < 4;i++)
      {
 	  PORTD=ssd[i];
-	  PORTA=(PORTD & 0Xf0 ) | (1<<i);
+	  PORTA=(PORTA & 0Xf0 ) | (1<<i);
 	  for(unsigned int j =0;j<1000;j++);
      }
 

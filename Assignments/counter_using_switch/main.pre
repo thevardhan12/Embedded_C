@@ -18393,7 +18393,7 @@ void display(unsigned char *ssd)
 for(int i=0;i < 4;i++)
 {
 PORTD=ssd[i];
-PORTA=(PORTD & 0Xf0 ) | (1<<i);
+PORTA=(PORTA & 0Xf0 ) | (1<<i);
 for(unsigned int j =0;j<1000;j++);
 }
 

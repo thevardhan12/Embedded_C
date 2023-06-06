@@ -24,31 +24,56 @@ void main()
 {
      init_config();
      unsigned char key;
+	 unsigned char flag=0;
      patteren1();
      while(1)
      {
 
 	  key=read_digital_keypad(edge);
+
 	  if(key==switch1)
 	  {
-	    patteren1();
+		flag=1;
+		PORTB=0X00;
 	  }
 	  else if(key==switch2)
 	  {
-	       patteren2();
+	       flag=2;
+		   		PORTB=0X00;
+
+
 	  }
 	  else if(key==switch3)
 	  {
-	       patteren3();
+	       flag=3;
 	  }
 	  else if(key==switch4)
 	  {
-	       patteren4();
+	       flag=4;
 	  }
 	  else
 	  {
+		flag=1;
+	  }
+
+
+	  if(flag==1)
+	  {
 		patteren1();
 	  }
+	  else if(flag==2)
+	  {
+		patteren2();
+	  }
+		else if(flag==3)
+		{
+			patteren3();
+		}
+		else if(flag==4)
+		{
+			patteren4();
+		}
+
 
 
 
@@ -69,7 +94,7 @@ void init_config()
 
 unsigned char read_digital_keypad(unsigned char detection)
 {
-     static unsigned char once=1;
+     /*static unsigned char once=1;
 
      if(detection ==1)
      {
@@ -86,7 +111,8 @@ unsigned char read_digital_keypad(unsigned char detection)
      }
       return 0x0f;
      
-     }
+     }*/
+	 return (PORTC & 0X0F);
 }
 
 

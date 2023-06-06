@@ -3,7 +3,7 @@ Microchip MPLAB XC8 Compiler V1.36 ()
 Linker command line:
 
 --edf=/opt/microchip/xc8/v1.36/dat/en_msgs.txt -cs -h+pic18F4580.sym \
-  --cmf=pic18F4580.cmf -z -Q18F4580 -o/tmp/xcXOeo31g -Mpic18F4580.map \
+  --cmf=pic18F4580.cmf -z -Q18F4580 -o/tmp/xcXtWfKQ7 -Mpic18F4580.map \
   -ver=XC8 -ASTACK=060h-05ffh -pstack=STACK -ACODE=00h-03000h \
   -ACONST=00h-03000h -ASMALLCONST=0600h-06FFhx42,03000h-03000h \
   -AMEDIUMCONST=0600h-03000h -ACOMRAM=01h-05Fh -AABS1=00h-05FFh \

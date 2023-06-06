@@ -25,17 +25,17 @@
 [v ___lmul __lmul `(ul  1 e 4 0 ]
 "23 /home/harsha/repo/MC/Embedded_C/Assignments/multiple patterns/main.c
 [v _main main `(v  1 e 1 0 ]
-"61
+"86
 [v _init_config init_config `(v  1 e 1 0 ]
-"70
+"95
 [v _read_digital_keypad read_digital_keypad `(uc  1 e 1 0 ]
-"94
+"120
 [v _patteren1 patteren1 `(v  1 e 1 0 ]
-"132
-[v _patteren2 patteren2 `(v  1 e 1 0 ]
 "158
-[v _patteren3 patteren3 `(v  1 e 1 0 ]
+[v _patteren2 patteren2 `(v  1 e 1 0 ]
 "184
+[v _patteren3 patteren3 `(v  1 e 1 0 ]
+"210
 [v _patteren4 patteren4 `(v  1 e 1 0 ]
 "28209 /opt/microchip/xc8/v1.36/include/pic18f4580.h
 [v _PORTB PORTB `VEuc  1 e 1 @3969 ]
@@ -48,59 +48,55 @@
 "23 /home/harsha/repo/MC/Embedded_C/Assignments/multiple patterns/main.c
 [v _main main `(v  1 e 1 0 ]
 {
+"27
+[v main@flag flag `uc  1 a 1 10 ]
 "26
 [v main@key key `uc  1 a 1 9 ]
-"58
+"83
 } 0
-"70
+"95
 [v _read_digital_keypad read_digital_keypad `(uc  1 e 1 0 ]
 {
-[v read_digital_keypad@detection detection `uc  1 a 1 wreg ]
-[v read_digital_keypad@detection detection `uc  1 a 1 wreg ]
-"72
-[v read_digital_keypad@once once `uc  1 s 1 once ]
-"74
-[v read_digital_keypad@detection detection `uc  1 a 1 0 ]
-"90
+"116
 } 0
-"184
+"210
 [v _patteren4 patteren4 `(v  1 e 1 0 ]
 {
-"186
+"212
 [v patteren4@delay delay `ul  1 a 4 4 ]
-"187
+"213
 [v patteren4@flag flag `uc  1 a 1 8 ]
-"208
+"234
 } 0
-"158
+"184
 [v _patteren3 patteren3 `(v  1 e 1 0 ]
 {
-"161
+"187
 [v patteren3@delay delay `ul  1 a 4 4 ]
-"162
+"188
 [v patteren3@flag flag `uc  1 a 1 8 ]
-"183
+"209
 } 0
-"132
+"158
 [v _patteren2 patteren2 `(v  1 e 1 0 ]
 {
-"135
+"161
 [v patteren2@delay delay `ul  1 a 4 0 ]
-"134
+"160
 [v patteren2@count count `uc  1 a 1 4 ]
-"153
+"179
 } 0
-"94
+"120
 [v _patteren1 patteren1 `(v  1 e 1 0 ]
 {
-"97
+"123
 [v patteren1@delay delay `ul  1 a 4 0 ]
-"96
+"122
 [v patteren1@count count `uc  1 a 1 4 ]
-"127
+"153
 } 0
-"61
+"86
 [v _init_config init_config `(v  1 e 1 0 ]
 {
-"66
+"91
 } 0

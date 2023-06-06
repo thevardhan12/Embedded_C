@@ -1802,7 +1802,7 @@ l774:
 	line	81
 	
 l776:
-;main.c: 81: PORTA=(PORTD & 0Xf0 ) | (1<<i);
+;main.c: 81: PORTA=(PORTA & 0Xf0 ) | (1<<i);
 	movff	(c:display@i),??_display+0+0
 	movlw	(01h)&0ffh
 	movwf	(??_display+1+0)&0ffh,c
@@ -1814,7 +1814,7 @@ u175:
 u174:
 	decfsz	(??_display+0+0),c
 	goto	u175
-	movf	((c:3971)),c,w	;volatile
+	movf	((c:3968)),c,w	;volatile
 	andlw	low(0F0h)
 	iorwf	((??_display+1+0)),c,w
 	movwf	((c:3968)),c	;volatile

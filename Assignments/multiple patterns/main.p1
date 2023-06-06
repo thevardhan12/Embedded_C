@@ -6,7 +6,9 @@ Version 3.2 HI-TECH Software Intermediate Code
 [v _patteren1 `(v ~T0 @X0 0 ef ]
 "18
 [v _read_digital_keypad `(uc ~T0 @X0 0 ef1`uc ]
-"20
+"28209 /opt/microchip/xc8/v1.36/include/pic18f4580.h
+[v _PORTB `Vuc ~T0 @X0 0 e@3969 ]
+"20 main.c
 [v _patteren2 `(v ~T0 @X0 0 ef ]
 "21
 [v _patteren3 `(v ~T0 @X0 0 ef ]
@@ -16,8 +18,6 @@ Version 3.2 HI-TECH Software Intermediate Code
 [v _TRISB `Vuc ~T0 @X0 0 e@3987 ]
 "29876
 [v _TRISC `Vuc ~T0 @X0 0 e@3988 ]
-"28209
-[v _PORTB `Vuc ~T0 @X0 0 e@3969 ]
 "28382
 [v _PORTC `Vuc ~T0 @X0 0 e@3970 ]
 [; ;htc.h: 26: extern const char __xc8_OPTIM_SPEED;
@@ -14518,472 +14518,492 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e ( _init_config ..  ]
 "26
 [v _key `uc ~T0 @X0 1 a ]
-[; ;main.c: 26: unsigned char key;
-[; ;main.c: 27: patteren1();
 "27
-[e ( _patteren1 ..  ]
-[; ;main.c: 28: while(1)
+[v _flag `uc ~T0 @X0 1 a ]
+[; ;main.c: 26: unsigned char key;
+[; ;main.c: 27: unsigned char flag=0;
+[e = _flag -> -> 0 `i `uc ]
+[; ;main.c: 28: patteren1();
 "28
-[e :U 2099 ]
-[; ;main.c: 29: {
+[e ( _patteren1 ..  ]
+[; ;main.c: 29: while(1)
 "29
+[e :U 2099 ]
+[; ;main.c: 30: {
+"30
 {
-[; ;main.c: 31: key=read_digital_keypad(1);
-"31
-[e = _key ( _read_digital_keypad (1 -> -> 1 `i `uc ]
-[; ;main.c: 32: if(key==0x0e)
+[; ;main.c: 32: key=read_digital_keypad(1);
 "32
-[e $ ! == -> _key `i -> 14 `i 2101  ]
-[; ;main.c: 33: {
-"33
-{
-[; ;main.c: 34: patteren1();
+[e = _key ( _read_digital_keypad (1 -> -> 1 `i `uc ]
+[; ;main.c: 34: if(key==0x0e)
 "34
-[e ( _patteren1 ..  ]
+[e $ ! == -> _key `i -> 14 `i 2101  ]
+[; ;main.c: 35: {
 "35
-}
-[; ;main.c: 35: }
-[e $U 2102  ]
+{
+[; ;main.c: 36: flag=1;
 "36
-[e :U 2101 ]
-[; ;main.c: 36: else if(key==0x0d)
-[e $ ! == -> _key `i -> 13 `i 2103  ]
-[; ;main.c: 37: {
+[e = _flag -> -> 1 `i `uc ]
+[; ;main.c: 37: PORTB=0X00;
 "37
-{
-[; ;main.c: 38: patteren2();
+[e = _PORTB -> -> 0 `i `uc ]
 "38
-[e ( _patteren2 ..  ]
+}
+[; ;main.c: 38: }
+[e $U 2102  ]
 "39
-}
-[; ;main.c: 39: }
-[e $U 2104  ]
+[e :U 2101 ]
+[; ;main.c: 39: else if(key==0x0d)
+[e $ ! == -> _key `i -> 13 `i 2103  ]
+[; ;main.c: 40: {
 "40
-[e :U 2103 ]
-[; ;main.c: 40: else if(key==0x0b)
-[e $ ! == -> _key `i -> 11 `i 2105  ]
-[; ;main.c: 41: {
+{
+[; ;main.c: 41: flag=2;
 "41
-{
-[; ;main.c: 42: patteren3();
+[e = _flag -> -> 2 `i `uc ]
+[; ;main.c: 42: PORTB=0X00;
 "42
-[e ( _patteren3 ..  ]
-"43
-}
-[; ;main.c: 43: }
-[e $U 2106  ]
-"44
-[e :U 2105 ]
-[; ;main.c: 44: else if(key==0x07)
-[e $ ! == -> _key `i -> 7 `i 2107  ]
-[; ;main.c: 45: {
+[e = _PORTB -> -> 0 `i `uc ]
 "45
-{
-[; ;main.c: 46: patteren4();
-"46
-[e ( _patteren4 ..  ]
-"47
 }
-[; ;main.c: 47: }
-[e $U 2108  ]
-"48
-[e :U 2107 ]
-[; ;main.c: 48: else
-[; ;main.c: 49: {
-"49
+[; ;main.c: 45: }
+[e $U 2104  ]
+"46
+[e :U 2103 ]
+[; ;main.c: 46: else if(key==0x0b)
+[e $ ! == -> _key `i -> 11 `i 2105  ]
+[; ;main.c: 47: {
+"47
 {
-[; ;main.c: 50: patteren1();
+[; ;main.c: 48: flag=3;
+"48
+[e = _flag -> -> 3 `i `uc ]
+"49
+}
+[; ;main.c: 49: }
+[e $U 2106  ]
 "50
-[e ( _patteren1 ..  ]
+[e :U 2105 ]
+[; ;main.c: 50: else if(key==0x07)
+[e $ ! == -> _key `i -> 7 `i 2107  ]
+[; ;main.c: 51: {
 "51
+{
+[; ;main.c: 52: flag=4;
+"52
+[e = _flag -> -> 4 `i `uc ]
+"53
+}
+[; ;main.c: 53: }
+[e $U 2108  ]
+"54
+[e :U 2107 ]
+[; ;main.c: 54: else
+[; ;main.c: 55: {
+"55
+{
+[; ;main.c: 56: flag=1;
+"56
+[e = _flag -> -> 1 `i `uc ]
+"57
 }
 [e :U 2108 ]
 [e :U 2106 ]
 [e :U 2104 ]
 [e :U 2102 ]
-"55
+[; ;main.c: 57: }
+[; ;main.c: 60: if(flag==1)
+"60
+[e $ ! == -> _flag `i -> 1 `i 2109  ]
+[; ;main.c: 61: {
+"61
+{
+[; ;main.c: 62: patteren1();
+"62
+[e ( _patteren1 ..  ]
+"63
+}
+[; ;main.c: 63: }
+[e $U 2110  ]
+"64
+[e :U 2109 ]
+[; ;main.c: 64: else if(flag==2)
+[e $ ! == -> _flag `i -> 2 `i 2111  ]
+[; ;main.c: 65: {
+"65
+{
+[; ;main.c: 66: patteren2();
+"66
+[e ( _patteren2 ..  ]
+"67
+}
+[; ;main.c: 67: }
+[e $U 2112  ]
+"68
+[e :U 2111 ]
+[; ;main.c: 68: else if(flag==3)
+[e $ ! == -> _flag `i -> 3 `i 2113  ]
+[; ;main.c: 69: {
+"69
+{
+[; ;main.c: 70: patteren3();
+"70
+[e ( _patteren3 ..  ]
+"71
+}
+[; ;main.c: 71: }
+[e $U 2114  ]
+"72
+[e :U 2113 ]
+[; ;main.c: 72: else if(flag==4)
+[e $ ! == -> _flag `i -> 4 `i 2115  ]
+[; ;main.c: 73: {
+"73
+{
+[; ;main.c: 74: patteren4();
+"74
+[e ( _patteren4 ..  ]
+"75
+}
+[e :U 2115 ]
+"80
+[e :U 2114 ]
+[e :U 2112 ]
+[e :U 2110 ]
 }
 [e :U 2098 ]
-"28
+"29
 [e $U 2099  ]
 [e :U 2100 ]
-[; ;main.c: 51: }
-[; ;main.c: 55: }
-[; ;main.c: 58: }
-"58
+[; ;main.c: 75: }
+[; ;main.c: 80: }
+[; ;main.c: 83: }
+"83
 [e :UE 2097 ]
 }
-"61
+"86
 [v _init_config `(v ~T0 @X0 1 ef ]
-"62
+"87
 {
-[; ;main.c: 61: void init_config()
-[; ;main.c: 62: {
+[; ;main.c: 86: void init_config()
+[; ;main.c: 87: {
 [e :U _init_config ]
 [f ]
-[; ;main.c: 63: TRISB=0x00;
-"63
+[; ;main.c: 88: TRISB=0x00;
+"88
 [e = _TRISB -> -> 0 `i `uc ]
-[; ;main.c: 64: TRISC=TRISC|0x0F;
-"64
-[e = _TRISC -> | -> _TRISC `i -> 15 `i `uc ]
-[; ;main.c: 65: PORTB=0x00;
-"65
-[e = _PORTB -> -> 0 `i `uc ]
-[; ;main.c: 66: }
-"66
-[e :UE 2109 ]
-}
-"70
-[v _read_digital_keypad `(uc ~T0 @X0 1 ef1`uc ]
-"71
-{
-[; ;main.c: 70: unsigned char read_digital_keypad(unsigned char detection)
-[; ;main.c: 71: {
-[e :U _read_digital_keypad ]
-"70
-[v _detection `uc ~T0 @X0 1 r1 ]
-"71
-[f ]
-"72
-[v F15929 `uc ~T0 @X0 1 s once ]
-[i F15929
--> -> 1 `i `uc
-]
-[; ;main.c: 72: static unsigned char once=1;
-[; ;main.c: 74: if(detection ==1)
-"74
-[e $ ! == -> _detection `i -> 1 `i 2111  ]
-[; ;main.c: 75: {
-"75
-{
-[; ;main.c: 76: if(((PORTC & 0x0f) != 0x0f) && once)
-"76
-[e $ ! && != & -> _PORTC `i -> 15 `i -> 15 `i != -> F15929 `i -> -> -> 0 `i `uc `i 2112  ]
-[; ;main.c: 77: {
-"77
-{
-[; ;main.c: 78: once =0;
-"78
-[e = F15929 -> -> 0 `i `uc ]
-[; ;main.c: 79: return (PORTC & 0x0f);
-"79
-[e ) -> & -> _PORTC `i -> 15 `i `uc ]
-[e $UE 2110  ]
-"80
-}
-[; ;main.c: 80: }
-[e $U 2113  ]
-"83
-[e :U 2112 ]
-[; ;main.c: 83: else if( (PORTC & 0x0f)==0x0f)
-[e $ ! == & -> _PORTC `i -> 15 `i -> 15 `i 2114  ]
-[; ;main.c: 84: {
-"84
-{
-[; ;main.c: 85: once=1;
-"85
-[e = F15929 -> -> 1 `i `uc ]
-"86
-}
-[e :U 2114 ]
-"87
-[e :U 2113 ]
-[; ;main.c: 86: }
-[; ;main.c: 87: return 0x0f;
-[e ) -> -> 15 `i `uc ]
-[e $UE 2110  ]
+[; ;main.c: 89: TRISC=TRISC|0x0F;
 "89
-}
-[e :U 2111 ]
-[; ;main.c: 89: }
-[; ;main.c: 90: }
+[e = _TRISC -> | -> _TRISC `i -> 15 `i `uc ]
+[; ;main.c: 90: PORTB=0x00;
 "90
-[e :UE 2110 ]
+[e = _PORTB -> -> 0 `i `uc ]
+[; ;main.c: 91: }
+"91
+[e :UE 2116 ]
 }
-"94
-[v _patteren1 `(v ~T0 @X0 1 ef ]
 "95
+[v _read_digital_keypad `(uc ~T0 @X0 1 ef1`uc ]
+"96
 {
-[; ;main.c: 94: void patteren1()
-[; ;main.c: 95: {
+[; ;main.c: 95: unsigned char read_digital_keypad(unsigned char detection)
+[; ;main.c: 96: {
+[e :U _read_digital_keypad ]
+"95
+[v _detection `uc ~T0 @X0 1 r1 ]
+"96
+[f ]
+[; ;main.c: 115: return (PORTC & 0X0F);
+"115
+[e ) -> & -> _PORTC `i -> 15 `i `uc ]
+[e $UE 2117  ]
+[; ;main.c: 116: }
+"116
+[e :UE 2117 ]
+}
+"120
+[v _patteren1 `(v ~T0 @X0 1 ef ]
+"121
+{
+[; ;main.c: 120: void patteren1()
+[; ;main.c: 121: {
 [e :U _patteren1 ]
 [f ]
-"96
-[v _count `uc ~T0 @X0 1 a ]
-[; ;main.c: 96: unsigned char count=0;
-[e = _count -> -> 0 `i `uc ]
-"97
-[v _delay `ul ~T0 @X0 1 a ]
-[; ;main.c: 97: unsigned long int delay=0;
-[e = _delay -> -> -> 0 `i `l `ul ]
-[; ;main.c: 99: if(++delay >=5000)
-"99
-[e $ ! >= =+ _delay -> -> -> 1 `i `l `ul -> -> -> 5000 `i `l `ul 2116  ]
-[; ;main.c: 100: {
-"100
-{
-[; ;main.c: 101: if(count <8)
-"101
-[e $ ! < -> _count `i -> 8 `i 2117  ]
-[; ;main.c: 102: {
-"102
-{
-[; ;main.c: 103: PORTB=PORTB<<1 | 1;
-"103
-[e = _PORTB -> | << -> _PORTB `i -> 1 `i -> 1 `i `uc ]
-"104
-}
-[; ;main.c: 104: }
-[e $U 2118  ]
-"105
-[e :U 2117 ]
-[; ;main.c: 105: else if( count <16)
-[e $ ! < -> _count `i -> 16 `i 2119  ]
-[; ;main.c: 106: {
-"106
-{
-[; ;main.c: 107: PORTB=PORTB<<1;
-"107
-[e = _PORTB -> << -> _PORTB `i -> 1 `i `uc ]
-"110
-}
-[; ;main.c: 110: }
-[e $U 2120  ]
-"111
-[e :U 2119 ]
-[; ;main.c: 111: else if(count <23)
-[e $ ! < -> _count `i -> 23 `i 2121  ]
-[; ;main.c: 112: {
-"112
-{
-[; ;main.c: 113: PORTB=PORTB>>1 | 0x80;
-"113
-[e = _PORTB -> | >> -> _PORTB `i -> 1 `i -> 128 `i `uc ]
-"115
-}
-[; ;main.c: 115: }
-[e $U 2122  ]
-"116
-[e :U 2121 ]
-[; ;main.c: 116: else if(count <31)
-[e $ ! < -> _count `i -> 31 `i 2123  ]
-[; ;main.c: 117: {
-"117
-{
-[; ;main.c: 118: PORTB=PORTB>>1;
-"118
-[e = _PORTB -> >> -> _PORTB `i -> 1 `i `uc ]
-"120
-}
-[e :U 2123 ]
-"121
-[e :U 2122 ]
-[e :U 2120 ]
-[e :U 2118 ]
-[; ;main.c: 120: }
-[; ;main.c: 121: count ++;
-[e ++ _count -> -> 1 `i `uc ]
-[; ;main.c: 122: delay=0;
 "122
-[e = _delay -> -> -> 0 `i `l `ul ]
-"126
-}
-[e :U 2116 ]
-[; ;main.c: 126: }
-[; ;main.c: 127: }
-"127
-[e :UE 2115 ]
-}
-"132
-[v _patteren2 `(v ~T0 @X0 1 ef ]
-"133
-{
-[; ;main.c: 132: void patteren2()
-[; ;main.c: 133: {
-[e :U _patteren2 ]
-[f ]
-"134
 [v _count `uc ~T0 @X0 1 a ]
-[; ;main.c: 134: unsigned char count=0;
+[; ;main.c: 122: unsigned char count=0;
 [e = _count -> -> 0 `i `uc ]
-"135
+"123
 [v _delay `ul ~T0 @X0 1 a ]
-[; ;main.c: 135: unsigned long int delay=0;
+[; ;main.c: 123: unsigned long int delay=0;
 [e = _delay -> -> -> 0 `i `l `ul ]
-[; ;main.c: 136: if(++delay >=5000)
-"136
-[e $ ! >= =+ _delay -> -> -> 1 `i `l `ul -> -> -> 5000 `i `l `ul 2125  ]
-[; ;main.c: 137: {
-"137
+[; ;main.c: 125: if(++delay >=5000)
+"125
+[e $ ! >= =+ _delay -> -> -> 1 `i `l `ul -> -> -> 5000 `i `l `ul 2119  ]
+[; ;main.c: 126: {
+"126
 {
-[; ;main.c: 138: if(count <8)
-"138
-[e $ ! < -> _count `i -> 8 `i 2126  ]
-[; ;main.c: 139: {
-"139
+[; ;main.c: 127: if(count <8)
+"127
+[e $ ! < -> _count `i -> 8 `i 2120  ]
+[; ;main.c: 128: {
+"128
 {
-[; ;main.c: 140: PORTB=PORTB<<1 | 1;
-"140
+[; ;main.c: 129: PORTB=PORTB<<1 | 1;
+"129
 [e = _PORTB -> | << -> _PORTB `i -> 1 `i -> 1 `i `uc ]
+"130
+}
+[; ;main.c: 130: }
+[e $U 2121  ]
+"131
+[e :U 2120 ]
+[; ;main.c: 131: else if( count <16)
+[e $ ! < -> _count `i -> 16 `i 2122  ]
+[; ;main.c: 132: {
+"132
+{
+[; ;main.c: 133: PORTB=PORTB<<1;
+"133
+[e = _PORTB -> << -> _PORTB `i -> 1 `i `uc ]
+"136
+}
+[; ;main.c: 136: }
+[e $U 2123  ]
+"137
+[e :U 2122 ]
+[; ;main.c: 137: else if(count <23)
+[e $ ! < -> _count `i -> 23 `i 2124  ]
+[; ;main.c: 138: {
+"138
+{
+[; ;main.c: 139: PORTB=PORTB>>1 | 0x80;
+"139
+[e = _PORTB -> | >> -> _PORTB `i -> 1 `i -> 128 `i `uc ]
 "141
 }
 [; ;main.c: 141: }
-[e $U 2127  ]
+[e $U 2125  ]
 "142
-[e :U 2126 ]
-[; ;main.c: 142: else if( count <16)
-[e $ ! < -> _count `i -> 16 `i 2128  ]
+[e :U 2124 ]
+[; ;main.c: 142: else if(count <31)
+[e $ ! < -> _count `i -> 31 `i 2126  ]
 [; ;main.c: 143: {
 "143
 {
-[; ;main.c: 144: PORTB=PORTB<<1;
+[; ;main.c: 144: PORTB=PORTB>>1;
 "144
-[e = _PORTB -> << -> _PORTB `i -> 1 `i `uc ]
-"145
+[e = _PORTB -> >> -> _PORTB `i -> 1 `i `uc ]
+"146
 }
-[e :U 2128 ]
+[e :U 2126 ]
 "147
-[e :U 2127 ]
-}
 [e :U 2125 ]
-[; ;main.c: 145: }
-[; ;main.c: 147: }
-[; ;main.c: 148: count ++;
-"148
+[e :U 2123 ]
+[e :U 2121 ]
+[; ;main.c: 146: }
+[; ;main.c: 147: count ++;
 [e ++ _count -> -> 1 `i `uc ]
-[; ;main.c: 149: delay=0;
-"149
+[; ;main.c: 148: delay=0;
+"148
 [e = _delay -> -> -> 0 `i `l `ul ]
+"152
+}
+[e :U 2119 ]
+[; ;main.c: 152: }
 [; ;main.c: 153: }
 "153
-[e :UE 2124 ]
+[e :UE 2118 ]
 }
 "158
-[v _patteren3 `(v ~T0 @X0 1 ef ]
+[v _patteren2 `(v ~T0 @X0 1 ef ]
 "159
 {
-[; ;main.c: 158: void patteren3()
+[; ;main.c: 158: void patteren2()
 [; ;main.c: 159: {
-[e :U _patteren3 ]
+[e :U _patteren2 ]
 [f ]
+"160
+[v _count `uc ~T0 @X0 1 a ]
+[; ;main.c: 160: unsigned char count=0;
+[e = _count -> -> 0 `i `uc ]
 "161
 [v _delay `ul ~T0 @X0 1 a ]
 [; ;main.c: 161: unsigned long int delay=0;
 [e = _delay -> -> -> 0 `i `l `ul ]
+[; ;main.c: 162: if(++delay >=5000)
 "162
-[v _flag `uc ~T0 @X0 1 a ]
-[; ;main.c: 162: unsigned char flag=1;
-[e = _flag -> -> 1 `i `uc ]
-[; ;main.c: 163: if(delay++ >= 50000)
+[e $ ! >= =+ _delay -> -> -> 1 `i `l `ul -> -> -> 5000 `i `l `ul 2128  ]
+[; ;main.c: 163: {
 "163
-[e $ ! >= ++ _delay -> -> -> 1 `i `l `ul -> -> 50000 `l `ul 2130  ]
-[; ;main.c: 164: {
+{
+[; ;main.c: 164: if(count <8)
 "164
-{
-[; ;main.c: 165: if(flag==1)
+[e $ ! < -> _count `i -> 8 `i 2129  ]
+[; ;main.c: 165: {
 "165
-[e $ ! == -> _flag `i -> 1 `i 2131  ]
-[; ;main.c: 166: {
+{
+[; ;main.c: 166: PORTB=PORTB<<1 | 1;
 "166
-{
-[; ;main.c: 167: PORTB=0xaa;
+[e = _PORTB -> | << -> _PORTB `i -> 1 `i -> 1 `i `uc ]
 "167
-[e = _PORTB -> -> 170 `i `uc ]
-[; ;main.c: 168: flag++;
+}
+[; ;main.c: 167: }
+[e $U 2130  ]
 "168
-[e ++ _flag -> -> 1 `i `uc ]
-"170
-}
-[; ;main.c: 170: }
-[e $U 2132  ]
-"172
-[e :U 2131 ]
-[; ;main.c: 172: else if(flag==2)
-[e $ ! == -> _flag `i -> 2 `i 2133  ]
-[; ;main.c: 173: {
-"173
+[e :U 2129 ]
+[; ;main.c: 168: else if( count <16)
+[e $ ! < -> _count `i -> 16 `i 2131  ]
+[; ;main.c: 169: {
+"169
 {
-[; ;main.c: 174: PORTB=~PORTB;
-"174
-[e = _PORTB -> ~ -> _PORTB `i `uc ]
-[; ;main.c: 175: flag=1;
-"175
-[e = _flag -> -> 1 `i `uc ]
-"176
+[; ;main.c: 170: PORTB=PORTB<<1;
+"170
+[e = _PORTB -> << -> _PORTB `i -> 1 `i `uc ]
+"171
 }
-[e :U 2133 ]
-"179
-[e :U 2132 ]
-}
+[e :U 2131 ]
+"173
 [e :U 2130 ]
-[; ;main.c: 176: }
+}
+[e :U 2128 ]
+[; ;main.c: 171: }
+[; ;main.c: 173: }
+[; ;main.c: 174: count ++;
+"174
+[e ++ _count -> -> 1 `i `uc ]
+[; ;main.c: 175: delay=0;
+"175
+[e = _delay -> -> -> 0 `i `l `ul ]
 [; ;main.c: 179: }
-[; ;main.c: 183: }
-"183
-[e :UE 2129 ]
+"179
+[e :UE 2127 ]
 }
 "184
-[v _patteren4 `(v ~T0 @X0 1 ef ]
+[v _patteren3 `(v ~T0 @X0 1 ef ]
 "185
 {
-[; ;main.c: 184: void patteren4()
+[; ;main.c: 184: void patteren3()
 [; ;main.c: 185: {
+[e :U _patteren3 ]
+[f ]
+"187
+[v _delay `ul ~T0 @X0 1 a ]
+[; ;main.c: 187: unsigned long int delay=0;
+[e = _delay -> -> -> 0 `i `l `ul ]
+"188
+[v _flag `uc ~T0 @X0 1 a ]
+[; ;main.c: 188: unsigned char flag=1;
+[e = _flag -> -> 1 `i `uc ]
+[; ;main.c: 189: if(delay++ >= 50000)
+"189
+[e $ ! >= ++ _delay -> -> -> 1 `i `l `ul -> -> 50000 `l `ul 2133  ]
+[; ;main.c: 190: {
+"190
+{
+[; ;main.c: 191: if(flag==1)
+"191
+[e $ ! == -> _flag `i -> 1 `i 2134  ]
+[; ;main.c: 192: {
+"192
+{
+[; ;main.c: 193: PORTB=0xaa;
+"193
+[e = _PORTB -> -> 170 `i `uc ]
+[; ;main.c: 194: flag++;
+"194
+[e ++ _flag -> -> 1 `i `uc ]
+"196
+}
+[; ;main.c: 196: }
+[e $U 2135  ]
+"198
+[e :U 2134 ]
+[; ;main.c: 198: else if(flag==2)
+[e $ ! == -> _flag `i -> 2 `i 2136  ]
+[; ;main.c: 199: {
+"199
+{
+[; ;main.c: 200: PORTB=~PORTB;
+"200
+[e = _PORTB -> ~ -> _PORTB `i `uc ]
+[; ;main.c: 201: flag=1;
+"201
+[e = _flag -> -> 1 `i `uc ]
+"202
+}
+[e :U 2136 ]
+"205
+[e :U 2135 ]
+}
+[e :U 2133 ]
+[; ;main.c: 202: }
+[; ;main.c: 205: }
+[; ;main.c: 209: }
+"209
+[e :UE 2132 ]
+}
+"210
+[v _patteren4 `(v ~T0 @X0 1 ef ]
+"211
+{
+[; ;main.c: 210: void patteren4()
+[; ;main.c: 211: {
 [e :U _patteren4 ]
 [f ]
-"186
+"212
 [v _delay `ul ~T0 @X0 1 a ]
-[; ;main.c: 186: unsigned long int delay=0;
+[; ;main.c: 212: unsigned long int delay=0;
 [e = _delay -> -> -> 0 `i `l `ul ]
-"187
+"213
 [v _flag `uc ~T0 @X0 1 a ]
-[; ;main.c: 187: unsigned char flag=1;
+[; ;main.c: 213: unsigned char flag=1;
 [e = _flag -> -> 1 `i `uc ]
-[; ;main.c: 188: if(delay++ >= 50000)
-"188
-[e $ ! >= ++ _delay -> -> -> 1 `i `l `ul -> -> 50000 `l `ul 2135  ]
-[; ;main.c: 189: {
-"189
+[; ;main.c: 214: if(delay++ >= 50000)
+"214
+[e $ ! >= ++ _delay -> -> -> 1 `i `l `ul -> -> 50000 `l `ul 2138  ]
+[; ;main.c: 215: {
+"215
 {
-[; ;main.c: 190: if(flag==1)
-"190
-[e $ ! == -> _flag `i -> 1 `i 2136  ]
-[; ;main.c: 191: {
-"191
+[; ;main.c: 216: if(flag==1)
+"216
+[e $ ! == -> _flag `i -> 1 `i 2139  ]
+[; ;main.c: 217: {
+"217
 {
-[; ;main.c: 192: PORTB=0xf0;
-"192
+[; ;main.c: 218: PORTB=0xf0;
+"218
 [e = _PORTB -> -> 240 `i `uc ]
-[; ;main.c: 193: flag++;
-"193
+[; ;main.c: 219: flag++;
+"219
 [e ++ _flag -> -> 1 `i `uc ]
-"195
+"221
 }
-[; ;main.c: 195: }
-[e $U 2137  ]
-"196
-[e :U 2136 ]
-[; ;main.c: 196: else if(flag==2)
-[e $ ! == -> _flag `i -> 2 `i 2138  ]
-[; ;main.c: 197: {
-"197
+[; ;main.c: 221: }
+[e $U 2140  ]
+"222
+[e :U 2139 ]
+[; ;main.c: 222: else if(flag==2)
+[e $ ! == -> _flag `i -> 2 `i 2141  ]
+[; ;main.c: 223: {
+"223
 {
-[; ;main.c: 198: PORTB=~PORTB;
-"198
+[; ;main.c: 224: PORTB=~PORTB;
+"224
 [e = _PORTB -> ~ -> _PORTB `i `uc ]
-[; ;main.c: 199: flag=1;
-"199
+[; ;main.c: 225: flag=1;
+"225
 [e = _flag -> -> 1 `i `uc ]
-"200
+"226
+}
+[e :U 2141 ]
+"230
+[e :U 2140 ]
 }
 [e :U 2138 ]
-"204
-[e :U 2137 ]
-}
-[e :U 2135 ]
-[; ;main.c: 200: }
-[; ;main.c: 204: }
-[; ;main.c: 208: }
-"208
-[e :UE 2134 ]
+[; ;main.c: 226: }
+[; ;main.c: 230: }
+[; ;main.c: 234: }
+"234
+[e :UE 2137 ]
 }

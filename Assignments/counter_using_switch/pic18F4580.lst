@@ -1,7 +1,7 @@
 
 
 Microchip Technology PIC18 LITE Macro Assembler V1.36 build -262312587 
-                                                                                               Mon Jun  5 07:33:06 2023
+                                                                                               Tue Jun  6 03:24:21 2023
 
 Microchip Technology Omniscient Code Generator v1.36 (Free mode) build 201601150325
      1                           	processor	18F4580
@@ -613,7 +613,7 @@ Microchip Technology Omniscient Code Generator v1.36 (Free mode) build 201601150
    607  002E98  50DF               	movf	indf2,w,c
    608  002E9A  6E83               	movwf	3971,c	;volatile
    609                           
-   610                           ;main.c: 81: PORTA=(PORTD & 0Xf0 ) | (1<<i);
+   610                           ;main.c: 81: PORTA=(PORTA & 0Xf0 ) | (1<<i);
    611  002E9C  C007  F003         	movff	display@i,??_display
    612  002EA0  0E01               	movlw	1
    613  002EA2  6E04               	movwf	(??_display+1)& (0+255),c
@@ -625,7 +625,7 @@ Microchip Technology Omniscient Code Generator v1.36 (Free mode) build 201601150
    619  002EAC                     u174:
    620  002EAC  2E03               	decfsz	??_display,f,c
    621  002EAE  D7FC               	goto	u175
-   622  002EB0  5083               	movf	3971,w,c	;volatile
+   622  002EB0  5080               	movf	3968,w,c	;volatile
    623  002EB2  0BF0               	andlw	240
    624  002EB4  1004               	iorwf	??_display+1,w,c
    625  002EB6  6E80               	movwf	3968,c	;volatile
@@ -1000,7 +1000,7 @@ CODE                 0      0       0       0        0.0%
 
 
 Microchip Technology PIC18 Macro Assembler V1.36 build -262312587 
-Symbol Table                                                                                   Mon Jun  5 07:33:06 2023
+Symbol Table                                                                                   Tue Jun  6 03:24:21 2023
 
                        l46 2ED8                        l800 2E40                        l449 2E6A  
                       l810 2E60                        l802 2E44                        l459 2E18  

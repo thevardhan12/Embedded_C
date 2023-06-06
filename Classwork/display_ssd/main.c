@@ -1,5 +1,5 @@
 #include<xc.h>
-int main()
+void main()
 {
     void init_config();
     init_config();
