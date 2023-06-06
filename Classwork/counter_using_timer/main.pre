@@ -18333,34 +18333,13 @@ extern __nonreentrant void _delay3(unsigned char);
 
 # 9 "main.c"
 void init_config();
-void init_interrupt();
-
-void display(unsigned char *ssd);
+void init_timer0();
 void main()
 {
 init_config();
-unsigned char ssd[4];
-unsigned char count=0;
-unsigned int delay=0;
 
 while(1)
 {
-ssd[0]=0x21;
-ssd[1]=0xcb;
-ssd[2]=0x6b;
-ssd[3]=0x2d;
-display(ssd);
-if(delay++ == 100)
-{
-count++;
-RB1=~RB1;
-delay=0;
-}
-if(count == 5)
-{
-count = 0;
-asm(" sleep");
-}
 
 
 
@@ -18368,45 +18347,57 @@ asm(" sleep");
 
 
 }
+
 void init_config()
 {
 TRISD=0X00;
 TRISA=TRISA & 0XF0;
-RB1=0;
-TRISB0=1;
-TRISB1=0;
 PORTA=PORTA & 0XF0;
-PORTD=0X00;
-init_interrupt();
+init_timer0();
 
 }
-void display(unsigned char *ssd)
-{
-for (int i = 0; i <4; i++)
-{
-PORTD=ssd[i];
-PORTA=(PORTA & 0XF0) | (1<<i);
-for (int j = 0; j < 1000; j++)
-{
-
-}
-
-}
-
-}
-void init_interrupt()
+void init_timer0()
 {
 GIE=1;
 PEIE=1;
-INT0IF=0;
-INT0IE=1;
-INTEDG0=0;
+TMR0IE=1;
+TMR0IF=0;
+TMR0ON=1;
+T08BIT=1;
+T0CS=0;
+PSA=1;
+TMR0=6;
 }
 void interrupt isr()
 {
-if(INT0IF)
+unsigned char ssd[4];
+unsigned char data[]={0xe7,0x21,0xcb,0x6b,0x2d,0x6e,0xee,0x23,0xef,0x6f};
+
+
+static int count;
+static int number;
+if(TMR0IF)
 {
-PORTD=0X00;
-INT0IF=0;
+TMR0=TMR0 +8;
+if(count++ == 20000)
+{
+number++;
+count=0;
+ssd[3]=data[number % 10];
+ssd[2]=data[(number / 10)%10];
+ssd[1]=data[(number /100)%10];
+ssd[0]=data[(number/1000)];
+for(int i=0;i < 4;i++)
+{
+PORTD=ssd[i];
+PORTA=(PORTA & 0Xf0 ) | (1<<i);
+for(unsigned int j =0;j<1000;j++);
+}
+
+
+
+}
+TMR0IF=0;
+
 }
 }

@@ -80,6 +80,7 @@ void interrupt isr()
 {
     if(INT0IF)
     {
+        PORTD=0X00;
         INT0IF=0;
     }
 }

@@ -1,5 +1,5 @@
 _RB1 7C09 0 ABS 0
-__S0 18A 0 ABS 0
+__S0 190 0 ABS 0
 __S1 1F 0 ABS 0
 __S2 0 0 ABS 0
 _GIE 7F97 0 ABS 0
@@ -9,7 +9,7 @@ _isr 8 0 CODE 0
 display@i 15 0 COMRAM 1
 display@j 13 0 COMRAM 1
 _PEIE 7F96 0 ABS 0
-_main F6 0 CODE 0
+_main FC 0 CODE 0
 ___sp 0 0 STACK 2
 btemp 1E 0 COMRAM 1
 start 16 0 CODE 0
@@ -41,7 +41,7 @@ __Hnvrram 0 0 COMRAM 1
 __Lnvrram 0 0 COMRAM 1
 int$flags 1E 0 COMRAM 1
 _TRISB0 7C98 0 ABS 0
-__end_of_display F6 0 CODE 0
+__end_of_display FC 0 CODE 0
 _TRISB1 7C99 0 ABS 0
 __Heeprom_data 0 0 EEDATA 0
 __Leeprom_data 0 0 EEDATA 0
@@ -85,11 +85,11 @@ __Linit 16 0 CODE 0
 __Hintcodelo 16 0 CODE 0
 __Lintcodelo 16 0 CODE 0
 __Hrbss 0 0 COMRAM 1
-__end_of_main 154 0 CODE 0
+__end_of_main 15A 0 CODE 0
 __Lrbss 0 0 COMRAM 1
 __Htext 0 0 ABS 0
 __Ltext 0 0 ABS 0
-end_of_initialization 180 0 CODE 0
+end_of_initialization 186 0 CODE 0
 _INTEDG0 7F8E 0 ABS 0
 main@delay 1B 0 COMRAM 1
 __Hibigdata 0 0 CODE 0
@@ -115,19 +115,19 @@ __Htext0 0 0 ABS 0
 __Ltext0 0 0 ABS 0
 __Htext1 0 0 ABS 0
 __Ltext1 0 0 ABS 0
-__ptext0 F6 0 CODE 0
+__ptext0 FC 0 CODE 0
 __Htext2 0 0 ABS 0
 __Ltext2 0 0 ABS 0
-__ptext1 154 0 CODE 0
+__ptext1 15A 0 CODE 0
 __Htext3 0 0 ABS 0
 __Ltext3 0 0 ABS 0
-__ptext2 174 0 CODE 0
-__ptext3 8C 0 CODE 0
+__ptext2 17A 0 CODE 0
+__ptext3 92 0 CODE 0
 __Hclrtext 0 0 ABS 0
 __Lclrtext 0 0 ABS 0
 display@ssd F 0 COMRAM 1
-__end_of_init_interrupt 180 0 CODE 0
-__end_of__initialization 180 0 CODE 0
+__end_of_init_interrupt 186 0 CODE 0
+__end_of__initialization 186 0 CODE 0
 ___rparam_used 1 0 ABS 0
 __Hidata 0 0 CODE 0
 __Lidata 0 0 CODE 0
@@ -145,7 +145,7 @@ __Hspace_0 600 0 ABS 0
 __HcstackCOMRAM 0 0 ABS 0
 __Lspace_0 0 0 ABS 0
 __LcstackCOMRAM 0 0 ABS 0
-__end_of_isr 8C 0 CODE 0
+__end_of_isr 92 0 CODE 0
 __pcstackCOMRAM 1 0 COMRAM 1
 __Hspace_1 1F 0 ABS 0
 __Lspace_1 0 0 ABS 0
@@ -157,10 +157,10 @@ __Hnvbit 0 0 COMRAM 1
 __Lnvbit 0 0 COMRAM 1
 __Hcinit 0 0 ABS 0
 __Lcinit 0 0 ABS 0
-__pcinit 180 0 CODE 0
+__pcinit 186 0 CODE 0
 __ramtop 600 0 RAM 0
 __mediumconst 0 0 MEDIUMCONST 0
-_display 8C 0 CODE 0
+_display 92 0 CODE 0
 __size_of_main 0 0 ABS 0
 __Hconst 0 0 CONST 0
 __Lconst 0 0 CONST 0
@@ -178,19 +178,19 @@ __Lintcode_body 0 0 ABS 0
 __pintcode_body 1A 0 CODE 0
 intlevel0 0 0 CODE 0
 intlevel1 0 0 CODE 0
-__end_of_init_config 174 0 CODE 0
+__end_of_init_config 17A 0 CODE 0
 intlevel2 0 0 CODE 0
 __size_of_display 0 0 ABS 0
 intlevel3 0 0 CODE 0
-_init_interrupt 174 0 CODE 0
-start_initialization 180 0 CODE 0
-_init_config 154 0 CODE 0
-__initialization 180 0 CODE 0
+_init_interrupt 17A 0 CODE 0
+start_initialization 186 0 CODE 0
+_init_config 15A 0 CODE 0
+__initialization 186 0 CODE 0
 __size_of_init_config 0 0 ABS 0
 __activetblptr 0 0 ABS 0
 %segments
 reset_vec 0 3 CODE 0 0
-intcode 8 189 CODE 8 0
+intcode 8 18F CODE 8 0
 cstackCOMRAM 1 1E COMRAM 1 1
 %locals
 startup.obj
@@ -210,64 +210,65 @@ startup.as
 pic18F4580.obj
 /opt/microchip/xc8/v1.36/include/pic18f4580.h
 pic18F4580.as
-1009 180 0 CODE 0
-1011 180 0 CODE 0
-1014 180 0 CODE 0
-1020 180 0 CODE 0
-1022 180 0 CODE 0
-1023 182 0 CODE 0
-1024 184 0 CODE 0
-1025 186 0 CODE 0
+1009 186 0 CODE 0
+1011 186 0 CODE 0
+1014 186 0 CODE 0
+1020 186 0 CODE 0
+1022 186 0 CODE 0
+1023 188 0 CODE 0
+1024 18A 0 CODE 0
+1025 18C 0 CODE 0
 main.c
-13 F6 0 CODE 0
-15 F6 0 CODE 0
-17 FA 0 CODE 0
-18 FE 0 CODE 0
-22 106 0 CODE 0
-23 10A 0 CODE 0
-24 10E 0 CODE 0
-25 112 0 CODE 0
-26 116 0 CODE 0
-27 122 0 CODE 0
-29 130 0 CODE 0
-30 132 0 CODE 0
-31 13C 0 CODE 0
-33 144 0 CODE 0
-35 14C 0 CODE 0
-36 150 0 CODE 0
-20 152 0 CODE 0
+13 FC 0 CODE 0
+15 FC 0 CODE 0
+17 100 0 CODE 0
+18 104 0 CODE 0
+22 10C 0 CODE 0
+23 110 0 CODE 0
+24 114 0 CODE 0
+25 118 0 CODE 0
+26 11C 0 CODE 0
+27 128 0 CODE 0
+29 136 0 CODE 0
+30 138 0 CODE 0
+31 142 0 CODE 0
+33 14A 0 CODE 0
+35 152 0 CODE 0
+36 156 0 CODE 0
+20 158 0 CODE 0
 main.c
-45 154 0 CODE 0
-47 154 0 CODE 0
-48 158 0 CODE 0
-49 15E 0 CODE 0
-50 160 0 CODE 0
-51 162 0 CODE 0
-52 164 0 CODE 0
-53 16A 0 CODE 0
-54 16E 0 CODE 0
-56 172 0 CODE 0
+45 15A 0 CODE 0
+47 15A 0 CODE 0
+48 15E 0 CODE 0
+49 164 0 CODE 0
+50 166 0 CODE 0
+51 168 0 CODE 0
+52 16A 0 CODE 0
+53 170 0 CODE 0
+54 174 0 CODE 0
+56 178 0 CODE 0
 main.c
-71 174 0 CODE 0
-73 174 0 CODE 0
-74 176 0 CODE 0
-75 178 0 CODE 0
-76 17A 0 CODE 0
-77 17C 0 CODE 0
-78 17E 0 CODE 0
+71 17A 0 CODE 0
+73 17A 0 CODE 0
+74 17C 0 CODE 0
+75 17E 0 CODE 0
+76 180 0 CODE 0
+77 182 0 CODE 0
+78 184 0 CODE 0
 main.c
-57 8C 0 CODE 0
-59 8C 0 CODE 0
-61 A4 0 CODE 0
-62 B4 0 CODE 0
-63 D0 0 CODE 0
-59 EE 0 CODE 0
-70 F4 0 CODE 0
+57 92 0 CODE 0
+59 92 0 CODE 0
+61 AA 0 CODE 0
+62 BA 0 CODE 0
+63 D6 0 CODE 0
+59 F4 0 CODE 0
+70 FA 0 CODE 0
 main.c
 70 8 0 CODE 0
 79 8 0 CODE 0
 main.c
 79 1A 0 CODE 0
 81 4C 0 CODE 0
-83 4E 0 CODE 0
-85 50 0 CODE 0
+83 50 0 CODE 0
+84 54 0 CODE 0
+86 56 0 CODE 0

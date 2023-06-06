@@ -970,13 +970,36 @@ TOSL equ 0FFDh ;#
 TOSH equ 0FFEh ;# 
 # 35039 "/opt/microchip/xc8/v1.36/include/pic18f4580.h"
 TOSU equ 0FFFh ;# 
-	FNCALL	_main,_display
 	FNCALL	_main,_init_config
-	FNCALL	_init_config,_init_interrupt
+	FNCALL	_init_config,_init_timer0
 	FNROOT	_main
+	FNCALL	_isr,___awdiv
+	FNCALL	_isr,___awmod
 	FNCALL	intlevel2,_isr
 	global	intlevel2
 	FNROOT	intlevel2
+	global	isr@F15926
+psect	idataCOMRAM,class=CODE,space=0,delta=1,noexec
+global __pidataCOMRAM
+__pidataCOMRAM:
+	file	"main.c"
+	line	47
+
+;initializer for isr@F15926
+	db	low(0E7h)
+	db	low(021h)
+	db	low(0CBh)
+	db	low(06Bh)
+	db	low(02Dh)
+	db	low(06Eh)
+	db	low(0EEh)
+	db	low(023h)
+	db	low(0EFh)
+	db	low(06Fh)
+	global	isr@count
+	global	isr@number
+	global	_TMR0
+_TMR0	set	0xFD6
 	global	_PORTA
 _PORTA	set	0xF80
 	global	_PORTD
@@ -987,20 +1010,20 @@ _TRISA	set	0xF92
 _TRISD	set	0xF95
 	global	_GIE
 _GIE	set	0x7F97
-	global	_INT0IE
-_INT0IE	set	0x7F94
-	global	_INT0IF
-_INT0IF	set	0x7F91
-	global	_INTEDG0
-_INTEDG0	set	0x7F8E
 	global	_PEIE
 _PEIE	set	0x7F96
-	global	_RB1
-_RB1	set	0x7C09
-	global	_TRISB0
-_TRISB0	set	0x7C98
-	global	_TRISB1
-_TRISB1	set	0x7C99
+	global	_PSA
+_PSA	set	0x7EAB
+	global	_T08BIT
+_T08BIT	set	0x7EAE
+	global	_T0CS
+_T0CS	set	0x7EAD
+	global	_TMR0IE
+_TMR0IE	set	0x7F95
+	global	_TMR0IF
+_TMR0IF	set	0x7F92
+	global	_TMR0ON
+_TMR0ON	set	0x7EAF
 ; #config settings
 	file	"pic18F4580.as"
 	line	#
@@ -1012,6 +1035,47 @@ start_initialization:
 
 global __initialization
 __initialization:
+psect	bssCOMRAM,class=COMRAM,space=1,noexec
+global __pbssCOMRAM
+__pbssCOMRAM:
+isr@count:
+       ds      2
+isr@number:
+       ds      2
+psect	dataCOMRAM,class=COMRAM,space=1,noexec
+global __pdataCOMRAM
+__pdataCOMRAM:
+	file	"main.c"
+	line	47
+isr@F15926:
+       ds      10
+	file	"pic18F4580.as"
+	line	#
+psect	cinit
+; Clear objects allocated to COMRAM (4 bytes)
+	global __pbssCOMRAM
+clrf	(__pbssCOMRAM+3)&0xffh,c
+clrf	(__pbssCOMRAM+2)&0xffh,c
+clrf	(__pbssCOMRAM+1)&0xffh,c
+clrf	(__pbssCOMRAM+0)&0xffh,c
+	line	#
+; Initialize objects allocated to COMRAM (10 bytes)
+	global __pidataCOMRAM
+	; load TBLPTR registers with __pidataCOMRAM
+	movlw	low (__pidataCOMRAM)
+	movwf	tblptrl
+	movlw	high(__pidataCOMRAM)
+	movwf	tblptrh
+	movlw	low highword(__pidataCOMRAM)
+	movwf	tblptru
+	lfsr	0,__pdataCOMRAM
+	lfsr	1,10
+	copy_data0:
+	tblrd	*+
+	movff	tablat, postinc0
+	movf	postdec1,w
+	movf	fsr1l,w
+	bnz	copy_data0
 psect cinit,class=CODE,delta=1
 global end_of_initialization,__end_of__initialization
 
@@ -1023,51 +1087,78 @@ __end_of__initialization:
 	bcf int$flags,1,c ;clear compiler interrupt flag (level 2)
 movlb 0
 goto _main	;jump to C main() function
+psect	cstackBANK0,class=BANK0,space=1,noexec
+global __pcstackBANK0
+__pcstackBANK0:
+??_init_config:	; 1 bytes @ 0x0
+??_init_timer0:	; 1 bytes @ 0x0
+??_main:	; 1 bytes @ 0x0
 psect	cstackCOMRAM,class=COMRAM,space=1,noexec
 global __pcstackCOMRAM
 __pcstackCOMRAM:
 ?_init_config:	; 1 bytes @ 0x0
-?_init_interrupt:	; 1 bytes @ 0x0
+?_init_timer0:	; 1 bytes @ 0x0
 ?_main:	; 1 bytes @ 0x0
 ?_isr:	; 1 bytes @ 0x0
-??_isr:	; 1 bytes @ 0x0
-	ds   14
-??_init_config:	; 1 bytes @ 0xE
-?_display:	; 1 bytes @ 0xE
-??_init_interrupt:	; 1 bytes @ 0xE
-	global	display@ssd
-display@ssd:	; 2 bytes @ 0xE
+	global	?___awdiv
+?___awdiv:	; 2 bytes @ 0x0
+	global	___awdiv@dividend
+___awdiv@dividend:	; 2 bytes @ 0x0
 	ds   2
-??_display:	; 1 bytes @ 0x10
+	global	___awdiv@divisor
+___awdiv@divisor:	; 2 bytes @ 0x2
 	ds   2
-	global	display@j
-display@j:	; 2 bytes @ 0x12
-	ds   2
-	global	display@i
-display@i:	; 2 bytes @ 0x14
-	ds   2
-??_main:	; 1 bytes @ 0x16
-	global	main@ssd
-main@ssd:	; 4 bytes @ 0x16
-	ds   4
-	global	main@delay
-main@delay:	; 2 bytes @ 0x1A
-	ds   2
-	global	main@count
-main@count:	; 1 bytes @ 0x1C
+??___awdiv:	; 1 bytes @ 0x4
+	global	___awdiv@counter
+___awdiv@counter:	; 1 bytes @ 0x4
 	ds   1
+	global	___awdiv@sign
+___awdiv@sign:	; 1 bytes @ 0x5
+	ds   1
+	global	___awdiv@quotient
+___awdiv@quotient:	; 2 bytes @ 0x6
+	ds   2
+	global	?___awmod
+?___awmod:	; 2 bytes @ 0x8
+	global	___awmod@dividend
+___awmod@dividend:	; 2 bytes @ 0x8
+	ds   2
+	global	___awmod@divisor
+___awmod@divisor:	; 2 bytes @ 0xA
+	ds   2
+??___awmod:	; 1 bytes @ 0xC
+	global	___awmod@counter
+___awmod@counter:	; 1 bytes @ 0xC
+	ds   1
+	global	___awmod@sign
+___awmod@sign:	; 1 bytes @ 0xD
+	ds   1
+??_isr:	; 1 bytes @ 0xE
+	ds   16
+	global	isr@data
+isr@data:	; 10 bytes @ 0x1E
+	ds   10
+	global	isr@ssd
+isr@ssd:	; 4 bytes @ 0x28
+	ds   4
+	global	isr@j
+isr@j:	; 2 bytes @ 0x2C
+	ds   2
+	global	isr@i
+isr@i:	; 2 bytes @ 0x2E
+	ds   2
 ;!
 ;!Data Sizes:
 ;!    Strings     0
 ;!    Constant    0
-;!    Data        0
-;!    BSS         0
+;!    Data        10
+;!    BSS         4
 ;!    Persistent  0
 ;!    Stack       0
 ;!
 ;!Auto Spaces:
 ;!    Space          Size  Autos    Used
-;!    COMRAM           94     29      29
+;!    COMRAM           94     48      62
 ;!    BANK0           160      0       0
 ;!    BANK1           256      0       0
 ;!    BANK2           256      0       0
@@ -1078,19 +1169,18 @@ main@count:	; 1 bytes @ 0x1C
 ;!
 ;!Pointer List with Targets:
 ;!
-;!    display@ssd	PTR unsigned char  size(2) Largest target is 4
-;!		 -> main@ssd(COMRAM[4]), 
-;!
+;!    None.
 
 
 ;!
 ;!Critical Paths under _main in COMRAM
 ;!
-;!    _main->_display
+;!    None.
 ;!
 ;!Critical Paths under _isr in COMRAM
 ;!
-;!    None.
+;!    _isr->___awmod
+;!    ___awmod->___awdiv
 ;!
 ;!Critical Paths under _main in BANK0
 ;!
@@ -1150,63 +1240,64 @@ main@count:	; 1 bytes @ 0x1C
 ;! ---------------------------------------------------------------------------------
 ;! (Depth) Function   	        Calls       Base Space   Used Autos Params    Refs
 ;! ---------------------------------------------------------------------------------
-;! (0) _main                                                 7     7      0     367
-;!                                             22 COMRAM     7     7      0
-;!                            _display
+;! (0) _main                                                 0     0      0       0
 ;!                        _init_config
 ;! ---------------------------------------------------------------------------------
 ;! (1) _init_config                                          0     0      0       0
-;!                     _init_interrupt
+;!                        _init_timer0
 ;! ---------------------------------------------------------------------------------
-;! (2) _init_interrupt                                       0     0      0       0
-;! ---------------------------------------------------------------------------------
-;! (1) _display                                              8     6      2     222
-;!                                             14 COMRAM     8     6      2
+;! (2) _init_timer0                                          0     0      0       0
 ;! ---------------------------------------------------------------------------------
 ;! Estimated maximum stack depth 2
 ;! ---------------------------------------------------------------------------------
 ;! (Depth) Function   	        Calls       Base Space   Used Autos Params    Refs
 ;! ---------------------------------------------------------------------------------
-;! (3) _isr                                                 14    14      0       0
-;!                                              0 COMRAM    14    14      0
+;! (3) _isr                                                 34    34      0    1437
+;!                                             14 COMRAM    34    34      0
+;!                            ___awdiv
+;!                            ___awmod
 ;! ---------------------------------------------------------------------------------
-;! Estimated maximum stack depth 3
+;! (4) ___awmod                                              6     2      4     554
+;!                                              8 COMRAM     6     2      4
+;!                            ___awdiv (ARG)
+;! ---------------------------------------------------------------------------------
+;! (4) ___awdiv                                              8     4      4     558
+;!                                              0 COMRAM     8     4      4
+;! ---------------------------------------------------------------------------------
+;! Estimated maximum stack depth 4
 ;! ---------------------------------------------------------------------------------
 ;!
 ;! Call Graph Graphs:
 ;!
 ;! _main (ROOT)
-;!   _display
 ;!   _init_config
-;!     _init_interrupt
+;!     _init_timer0
 ;!
 ;! _isr (ROOT)
+;!   ___awdiv
+;!   ___awmod
+;!     ___awdiv (ARG)
 ;!
 
 ;! Address spaces:
 
 ;!Name               Size   Autos  Total    Cost      Usage
-;!BITCOMRAM           5E      0       0       0        0.0%
+;!BIGRAM             5FF      0       0      16        0.0%
 ;!EEDATA             100      0       0       0        0.0%
-;!NULL                 0      0       0       0        0.0%
-;!CODE                 0      0       0       0        0.0%
-;!COMRAM              5E     1D      1D       1       30.9%
-;!STACK                0      0       0       2        0.0%
-;!ABS                  0      0       0       3        0.0%
-;!BITBANK0            A0      0       0       4        0.0%
-;!BANK0               A0      0       0       5        0.0%
-;!BITBANK1           100      0       0       6        0.0%
-;!BANK1              100      0       0       7        0.0%
-;!BITBANK2           100      0       0       8        0.0%
-;!BANK2              100      0       0       9        0.0%
-;!BITBANK3           100      0       0      10        0.0%
-;!BANK3              100      0       0      11        0.0%
-;!BITBANK4           100      0       0      12        0.0%
-;!BANK4              100      0       0      13        0.0%
 ;!BITBANK5           100      0       0      14        0.0%
 ;!BANK5              100      0       0      15        0.0%
-;!BIGRAM             5FF      0       0      16        0.0%
-;!DATA                 0      0       0      17        0.0%
+;!BITBANK4           100      0       0      12        0.0%
+;!BANK4              100      0       0      13        0.0%
+;!BITBANK3           100      0       0      10        0.0%
+;!BANK3              100      0       0      11        0.0%
+;!BITBANK2           100      0       0       8        0.0%
+;!BANK2              100      0       0       9        0.0%
+;!BITBANK1           100      0       0       6        0.0%
+;!BANK1              100      0       0       7        0.0%
+;!BITBANK0            A0      0       0       4        0.0%
+;!BANK0               A0      0       0       5        0.0%
+;!BITCOMRAM           5E      0       0       0        0.0%
+;!COMRAM              5E     30      3E       1       66.0%
 ;!BITSFR_3             0      0       0      40        0.0%
 ;!SFR_3                0      0       0      40        0.0%
 ;!BITSFR_2             0      0       0      40        0.0%
@@ -1215,35 +1306,37 @@ main@count:	; 1 bytes @ 0x1C
 ;!SFR_1                0      0       0      40        0.0%
 ;!BITSFR               0      0       0      40        0.0%
 ;!SFR                  0      0       0      40        0.0%
+;!STACK                0      0       0       2        0.0%
+;!NULL                 0      0       0       0        0.0%
+;!ABS                  0      0      3E       3        0.0%
+;!DATA                 0      0      3E      17        0.0%
+;!CODE                 0      0       0       0        0.0%
 
 	global	_main
 
 ;; *************** function _main *****************
 ;; Defined at:
-;;		line 13 in file "main.c"
+;;		line 11 in file "main.c"
 ;; Parameters:    Size  Location     Type
 ;;		None
 ;; Auto vars:     Size  Location     Type
-;;  ssd             4   22[COMRAM] unsigned char [4]
-;;  delay           2   26[COMRAM] unsigned int 
-;;  count           1   28[COMRAM] unsigned char 
+;;		None
 ;; Return value:  Size  Location     Type
 ;;                  1    wreg      void 
 ;; Registers used:
-;;		wreg, fsr2l, fsr2h, status,2, status,0, cstack
+;;		wreg, status,2, status,0, cstack
 ;; Tracked objects:
 ;;		On entry : 0/0
 ;;		On exit  : 0/0
 ;;		Unchanged: 0/0
 ;; Data sizes:     COMRAM   BANK0   BANK1   BANK2   BANK3   BANK4   BANK5
 ;;      Params:         0       0       0       0       0       0       0
-;;      Locals:         7       0       0       0       0       0       0
+;;      Locals:         0       0       0       0       0       0       0
 ;;      Temps:          0       0       0       0       0       0       0
-;;      Totals:         7       0       0       0       0       0       0
-;;Total ram usage:        7 bytes
-;; Hardware stack levels required when called:    3
+;;      Totals:         0       0       0       0       0       0       0
+;;Total ram usage:        0 bytes
+;; Hardware stack levels required when called:    4
 ;; This function calls:
-;;		_display
 ;;		_init_config
 ;; This function is called by:
 ;;		Startup code after reset
@@ -1251,165 +1344,38 @@ main@count:	; 1 bytes @ 0x1C
 ;;
 psect	text0,class=CODE,space=0,reloc=2
 	file	"main.c"
-	line	13
+	line	11
 global __ptext0
 __ptext0:
 psect	text0
 	file	"main.c"
-	line	13
+	line	11
 	global	__size_of_main
 	__size_of_main	equ	__end_of_main-_main
 	
 _main:
 ;incstack = 0
-	opt	stack 28
-	line	15
+	opt	stack 27
+	line	13
 	
-l767:
-;main.c: 15: init_config();
+l883:
+;main.c: 13: init_config();
 	call	_init_config	;wreg free
-	line	17
-	
-l769:
-;main.c: 16: unsigned char ssd[4];
-;main.c: 17: unsigned char count=0;
-	movlw	low(0)
-	movwf	((c:main@count)),c
-	line	18
-	
-l771:
-;main.c: 18: unsigned int delay=0;
-	movlw	high(0)
-	movwf	((c:main@delay+1)),c
-	movlw	low(0)
-	movwf	((c:main@delay)),c
-	goto	l773
-	line	20
-;main.c: 20: while(1)
+	line	15
+;main.c: 15: while(1)
 	
 l33:
-	line	22
-	
-l773:
-;main.c: 21: {
-;main.c: 22: ssd[0]=0x21;
-	movlw	low(021h)
-	movwf	((c:main@ssd)),c
-	line	23
-	
-l775:
-;main.c: 23: ssd[1]=0xcb;
-	movlw	low(0CBh)
-	movwf	(0+((c:main@ssd)+01h)),c
-	line	24
-	
-l777:
-;main.c: 24: ssd[2]=0x6b;
-	movlw	low(06Bh)
-	movwf	(0+((c:main@ssd)+02h)),c
-	line	25
-	
-l779:
-;main.c: 25: ssd[3]=0x2d;
-	movlw	low(02Dh)
-	movwf	(0+((c:main@ssd)+03h)),c
-	line	26
-	
-l781:
-;main.c: 26: display(ssd);
-		movlw	low(main@ssd)
-	movwf	((c:display@ssd)),c
-	movlw	high(main@ssd)
-	movwf	((c:display@ssd+1)),c
-
-	call	_display	;wreg free
-	line	27
-	
-l783:
-;main.c: 27: if(delay++ == 100)
-	infsnz	((c:main@delay)),c
-	incf	((c:main@delay+1)),c
-		movlw	101
-	xorwf	((c:main@delay)),c,w
-iorwf	((c:main@delay+1)),c,w
-	btfss	status,2
-	goto	u161
-	goto	u160
-
-u161:
-	goto	l791
-u160:
-	line	29
-	
-l785:
-;main.c: 28: {
-;main.c: 29: count++;
-	incf	((c:main@count)),c
-	line	30
-	
-l787:
-;main.c: 30: RB1=~RB1;
-	btfss	c:(31753/8),(31753)&7	;volatile
-	goto	u171
-	goto	u170
-u171:
-	bsf	c:(31753/8),(31753)&7	;volatile
-	goto	u185
-u170:
-	bcf	c:(31753/8),(31753)&7	;volatile
-u185:
-	line	31
-	
-l789:
-;main.c: 31: delay=0;
-	movlw	high(0)
-	movwf	((c:main@delay+1)),c
-	movlw	low(0)
-	movwf	((c:main@delay)),c
-	goto	l791
-	line	32
+	line	20
+;main.c: 16: {
 	
 l34:
-	line	33
-	
-l791:
-;main.c: 32: }
-;main.c: 33: if(count == 5)
-		movlw	5
-	xorwf	((c:main@count)),c,w
-	btfss	status,2
-	goto	u191
-	goto	u190
-
-u191:
-	goto	l773
-u190:
-	line	35
-	
-l793:
-;main.c: 34: {
-;main.c: 35: count = 0;
-	movlw	low(0)
-	movwf	((c:main@count)),c
-	line	36
-# 36 "main.c"
-sleep ;# 
-psect	text0
-	goto	l773
-	line	37
+	line	15
+	goto	l33
 	
 l35:
-	goto	l773
-	line	41
+	line	23
 	
 l36:
-	line	20
-	goto	l773
-	
-l37:
-	line	44
-	
-l38:
 	global	start
 	goto	start
 	opt stack 0
@@ -1420,7 +1386,7 @@ GLOBAL	__end_of_main
 
 ;; *************** function _init_config *****************
 ;; Defined at:
-;;		line 45 in file "main.c"
+;;		line 25 in file "main.c"
 ;; Parameters:    Size  Location     Type
 ;;		None
 ;; Auto vars:     Size  Location     Type
@@ -1440,345 +1406,64 @@ GLOBAL	__end_of_main
 ;;      Totals:         0       0       0       0       0       0       0
 ;;Total ram usage:        0 bytes
 ;; Hardware stack levels used:    1
-;; Hardware stack levels required when called:    2
+;; Hardware stack levels required when called:    3
 ;; This function calls:
-;;		_init_interrupt
+;;		_init_timer0
 ;; This function is called by:
 ;;		_main
 ;; This function uses a non-reentrant model
 ;;
 psect	text1,class=CODE,space=0,reloc=2
-	line	45
+	line	25
 global __ptext1
 __ptext1:
 psect	text1
 	file	"main.c"
-	line	45
+	line	25
 	global	__size_of_init_config
 	__size_of_init_config	equ	__end_of_init_config-_init_config
 	
 _init_config:
 ;incstack = 0
-	opt	stack 28
-	line	47
+	opt	stack 27
+	line	27
 	
-l671:
-;main.c: 47: TRISD=0X00;
+l795:
+;main.c: 27: TRISD=0X00;
 	movlw	low(0)
 	movwf	((c:3989)),c	;volatile
-	line	48
+	line	28
 	
-l673:
-;main.c: 48: TRISA=TRISA & 0XF0;
+l797:
+;main.c: 28: TRISA=TRISA & 0XF0;
 	movf	((c:3986)),c,w	;volatile
 	andlw	low(0F0h)
 	movwf	((c:3986)),c	;volatile
-	line	49
+	line	29
 	
-l675:
-;main.c: 49: RB1=0;
-	bcf	c:(31753/8),(31753)&7	;volatile
-	line	50
-	
-l677:
-;main.c: 50: TRISB0=1;
-	bsf	c:(31896/8),(31896)&7	;volatile
-	line	51
-	
-l679:
-;main.c: 51: TRISB1=0;
-	bcf	c:(31897/8),(31897)&7	;volatile
-	line	52
-	
-l681:
-;main.c: 52: PORTA=PORTA & 0XF0;
+l799:
+;main.c: 29: PORTA=PORTA & 0XF0;
 	movf	((c:3968)),c,w	;volatile
 	andlw	low(0F0h)
 	movwf	((c:3968)),c	;volatile
-	line	53
-;main.c: 53: PORTD=0X00;
-	movlw	low(0)
-	movwf	((c:3971)),c	;volatile
-	line	54
+	line	30
 	
-l683:
-;main.c: 54: init_interrupt();
-	call	_init_interrupt	;wreg free
-	line	56
+l801:
+;main.c: 30: init_timer0();
+	call	_init_timer0	;wreg free
+	line	32
 	
-l41:
+l39:
 	return	;funcret
 	opt stack 0
 GLOBAL	__end_of_init_config
 	__end_of_init_config:
 	signat	_init_config,89
-	global	_init_interrupt
+	global	_init_timer0
 
-;; *************** function _init_interrupt *****************
+;; *************** function _init_timer0 *****************
 ;; Defined at:
-;;		line 71 in file "main.c"
-;; Parameters:    Size  Location     Type
-;;		None
-;; Auto vars:     Size  Location     Type
-;;		None
-;; Return value:  Size  Location     Type
-;;                  1    wreg      void 
-;; Registers used:
-;;		None
-;; Tracked objects:
-;;		On entry : 0/0
-;;		On exit  : 0/0
-;;		Unchanged: 0/0
-;; Data sizes:     COMRAM   BANK0   BANK1   BANK2   BANK3   BANK4   BANK5
-;;      Params:         0       0       0       0       0       0       0
-;;      Locals:         0       0       0       0       0       0       0
-;;      Temps:          0       0       0       0       0       0       0
-;;      Totals:         0       0       0       0       0       0       0
-;;Total ram usage:        0 bytes
-;; Hardware stack levels used:    1
-;; Hardware stack levels required when called:    1
-;; This function calls:
-;;		Nothing
-;; This function is called by:
-;;		_init_config
-;; This function uses a non-reentrant model
-;;
-psect	text2,class=CODE,space=0,reloc=2
-	line	71
-global __ptext2
-__ptext2:
-psect	text2
-	file	"main.c"
-	line	71
-	global	__size_of_init_interrupt
-	__size_of_init_interrupt	equ	__end_of_init_interrupt-_init_interrupt
-	
-_init_interrupt:
-;incstack = 0
-	opt	stack 28
-	line	73
-	
-l669:
-;main.c: 73: GIE=1;
-	bsf	c:(32663/8),(32663)&7	;volatile
-	line	74
-;main.c: 74: PEIE=1;
-	bsf	c:(32662/8),(32662)&7	;volatile
-	line	75
-;main.c: 75: INT0IF=0;
-	bcf	c:(32657/8),(32657)&7	;volatile
-	line	76
-;main.c: 76: INT0IE=1;
-	bsf	c:(32660/8),(32660)&7	;volatile
-	line	77
-;main.c: 77: INTEDG0=0;
-	bcf	c:(32654/8),(32654)&7	;volatile
-	line	78
-	
-l51:
-	return	;funcret
-	opt stack 0
-GLOBAL	__end_of_init_interrupt
-	__end_of_init_interrupt:
-	signat	_init_interrupt,89
-	global	_display
-
-;; *************** function _display *****************
-;; Defined at:
-;;		line 57 in file "main.c"
-;; Parameters:    Size  Location     Type
-;;  ssd             2   14[COMRAM] PTR unsigned char 
-;;		 -> main@ssd(4), 
-;; Auto vars:     Size  Location     Type
-;;  j               2   18[COMRAM] int 
-;;  i               2   20[COMRAM] int 
-;; Return value:  Size  Location     Type
-;;                  1    wreg      void 
-;; Registers used:
-;;		wreg, fsr2l, fsr2h, status,2, status,0
-;; Tracked objects:
-;;		On entry : 0/0
-;;		On exit  : 0/0
-;;		Unchanged: 0/0
-;; Data sizes:     COMRAM   BANK0   BANK1   BANK2   BANK3   BANK4   BANK5
-;;      Params:         2       0       0       0       0       0       0
-;;      Locals:         4       0       0       0       0       0       0
-;;      Temps:          2       0       0       0       0       0       0
-;;      Totals:         8       0       0       0       0       0       0
-;;Total ram usage:        8 bytes
-;; Hardware stack levels used:    1
-;; Hardware stack levels required when called:    1
-;; This function calls:
-;;		Nothing
-;; This function is called by:
-;;		_main
-;; This function uses a non-reentrant model
-;;
-psect	text3,class=CODE,space=0,reloc=2
-	line	57
-global __ptext3
-__ptext3:
-psect	text3
-	file	"main.c"
-	line	57
-	global	__size_of_display
-	__size_of_display	equ	__end_of_display-_display
-	
-_display:
-;incstack = 0
-	opt	stack 29
-	line	59
-	
-l743:
-;main.c: 59: for (int i = 0; i <4; i++)
-	movlw	high(0)
-	movwf	((c:display@i+1)),c
-	movlw	low(0)
-	movwf	((c:display@i)),c
-	
-l745:
-	btfsc	((c:display@i+1)),c,7
-	goto	u111
-	movf	((c:display@i+1)),c,w
-	bnz	u110
-	movlw	4
-	subwf	 ((c:display@i)),c,w
-	btfss	status,0
-	goto	u111
-	goto	u110
-
-u111:
-	goto	l749
-u110:
-	goto	l48
-	
-l747:
-	goto	l48
-	line	60
-	
-l44:
-	line	61
-	
-l749:
-;main.c: 60: {
-;main.c: 61: PORTD=ssd[i];
-	movf	((c:display@i)),c,w
-	addwf	((c:display@ssd)),c,w
-	movwf	c:fsr2l
-	movf	((c:display@i+1)),c,w
-	addwfc	((c:display@ssd+1)),c,w
-	movwf	1+c:fsr2l
-	movf	indf2,w
-	movwf	((c:3971)),c	;volatile
-	line	62
-	
-l751:
-;main.c: 62: PORTA=(PORTA & 0XF0) | (1<<i);
-	movff	(c:display@i),??_display+0+0
-	movlw	(01h)&0ffh
-	movwf	(??_display+1+0)&0ffh,c
-	incf	(??_display+0+0),c
-	goto	u124
-u125:
-	bcf	status,0
-	rlcf	((??_display+1+0)),c
-u124:
-	decfsz	(??_display+0+0),c
-	goto	u125
-	movf	((c:3968)),c,w	;volatile
-	andlw	low(0F0h)
-	iorwf	((??_display+1+0)),c,w
-	movwf	((c:3968)),c	;volatile
-	line	63
-	
-l753:
-;main.c: 63: for (int j = 0; j < 1000; j++)
-	movlw	high(0)
-	movwf	((c:display@j+1)),c
-	movlw	low(0)
-	movwf	((c:display@j)),c
-	
-l755:
-	btfsc	((c:display@j+1)),c,7
-	goto	u131
-	movlw	232
-	subwf	 ((c:display@j)),c,w
-	movlw	3
-	subwfb	((c:display@j+1)),c,w
-	btfss	status,0
-	goto	u131
-	goto	u130
-
-u131:
-	goto	l759
-u130:
-	goto	l763
-	
-l757:
-	goto	l763
-	line	64
-	
-l46:
-	line	63
-	
-l759:
-;main.c: 64: {
-	infsnz	((c:display@j)),c
-	incf	((c:display@j+1)),c
-	
-l761:
-	btfsc	((c:display@j+1)),c,7
-	goto	u141
-	movlw	232
-	subwf	 ((c:display@j)),c,w
-	movlw	3
-	subwfb	((c:display@j+1)),c,w
-	btfss	status,0
-	goto	u141
-	goto	u140
-
-u141:
-	goto	l759
-u140:
-	goto	l763
-	
-l47:
-	line	59
-	
-l763:
-	infsnz	((c:display@i)),c
-	incf	((c:display@i+1)),c
-	
-l765:
-	btfsc	((c:display@i+1)),c,7
-	goto	u151
-	movf	((c:display@i+1)),c,w
-	bnz	u150
-	movlw	4
-	subwf	 ((c:display@i)),c,w
-	btfss	status,0
-	goto	u151
-	goto	u150
-
-u151:
-	goto	l749
-u150:
-	goto	l48
-	
-l45:
-	line	70
-	
-l48:
-	return	;funcret
-	opt stack 0
-GLOBAL	__end_of_display
-	__end_of_display:
-	signat	_display,4217
-	global	_isr
-
-;; *************** function _isr *****************
-;; Defined at:
-;;		line 79 in file "main.c"
+;;		line 33 in file "main.c"
 ;; Parameters:    Size  Location     Type
 ;;		None
 ;; Auto vars:     Size  Location     Type
@@ -1794,12 +1479,103 @@ GLOBAL	__end_of_display
 ;; Data sizes:     COMRAM   BANK0   BANK1   BANK2   BANK3   BANK4   BANK5
 ;;      Params:         0       0       0       0       0       0       0
 ;;      Locals:         0       0       0       0       0       0       0
-;;      Temps:         14       0       0       0       0       0       0
-;;      Totals:        14       0       0       0       0       0       0
-;;Total ram usage:       14 bytes
+;;      Temps:          0       0       0       0       0       0       0
+;;      Totals:         0       0       0       0       0       0       0
+;;Total ram usage:        0 bytes
 ;; Hardware stack levels used:    1
+;; Hardware stack levels required when called:    2
 ;; This function calls:
 ;;		Nothing
+;; This function is called by:
+;;		_init_config
+;; This function uses a non-reentrant model
+;;
+psect	text2,class=CODE,space=0,reloc=2
+	line	33
+global __ptext2
+__ptext2:
+psect	text2
+	file	"main.c"
+	line	33
+	global	__size_of_init_timer0
+	__size_of_init_timer0	equ	__end_of_init_timer0-_init_timer0
+	
+_init_timer0:
+;incstack = 0
+	opt	stack 27
+	line	35
+	
+l791:
+;main.c: 35: GIE=1;
+	bsf	c:(32663/8),(32663)&7	;volatile
+	line	36
+;main.c: 36: PEIE=1;
+	bsf	c:(32662/8),(32662)&7	;volatile
+	line	37
+;main.c: 37: TMR0IE=1;
+	bsf	c:(32661/8),(32661)&7	;volatile
+	line	38
+;main.c: 38: TMR0IF=0;
+	bcf	c:(32658/8),(32658)&7	;volatile
+	line	39
+;main.c: 39: TMR0ON=1;
+	bsf	c:(32431/8),(32431)&7	;volatile
+	line	40
+;main.c: 40: T08BIT=1;
+	bsf	c:(32430/8),(32430)&7	;volatile
+	line	41
+;main.c: 41: T0CS=0;
+	bcf	c:(32429/8),(32429)&7	;volatile
+	line	42
+;main.c: 42: PSA=1;
+	bsf	c:(32427/8),(32427)&7	;volatile
+	line	43
+	
+l793:
+;main.c: 43: TMR0=6;
+	movlw	high(06h)
+	movwf	((c:4054+1)),c	;volatile
+	movlw	low(06h)
+	movwf	((c:4054)),c	;volatile
+	line	44
+	
+l42:
+	return	;funcret
+	opt stack 0
+GLOBAL	__end_of_init_timer0
+	__end_of_init_timer0:
+	signat	_init_timer0,89
+	global	_isr
+
+;; *************** function _isr *****************
+;; Defined at:
+;;		line 45 in file "main.c"
+;; Parameters:    Size  Location     Type
+;;		None
+;; Auto vars:     Size  Location     Type
+;;  j               2   44[COMRAM] unsigned int 
+;;  i               2   46[COMRAM] int 
+;;  data           10   30[COMRAM] unsigned char [10]
+;;  ssd             4   40[COMRAM] unsigned char [4]
+;; Return value:  Size  Location     Type
+;;                  1    wreg      void 
+;; Registers used:
+;;		wreg, fsr1l, fsr1h, fsr2l, fsr2h, status,2, status,0, cstack
+;; Tracked objects:
+;;		On entry : 0/0
+;;		On exit  : 0/0
+;;		Unchanged: 0/0
+;; Data sizes:     COMRAM   BANK0   BANK1   BANK2   BANK3   BANK4   BANK5
+;;      Params:         0       0       0       0       0       0       0
+;;      Locals:        18       0       0       0       0       0       0
+;;      Temps:         16       0       0       0       0       0       0
+;;      Totals:        34       0       0       0       0       0       0
+;;Total ram usage:       34 bytes
+;; Hardware stack levels used:    1
+;; Hardware stack levels required when called:    1
+;; This function calls:
+;;		___awdiv
+;;		___awmod
 ;; This function is called by:
 ;;		Interrupt level 2
 ;; This function uses a non-reentrant model
@@ -1809,16 +1585,16 @@ global __pintcode
 __pintcode:
 psect	intcode
 	file	"main.c"
-	line	79
+	line	45
 	global	__size_of_isr
 	__size_of_isr	equ	__end_of_isr-_isr
 	
 _isr:
 ;incstack = 0
-	opt	stack 28
+	opt	stack 27
 	bsf int$flags,1,c ;set compiler interrupt flag (level 2)
-	movff	pclat+0,??_isr+0
-	movff	pclat+1,??_isr+1
+	movff	pclat+0,??_isr+2
+	movff	pclat+1,??_isr+3
 	global	int_func
 	call	int_func,f	;refresh shadow registers
 psect	intcode_body,class=CODE,space=0,reloc=2
@@ -1827,67 +1603,821 @@ __pintcode_body:
 int_func:
 
 	pop	; remove dummy address from shadow register refresh
-	movff	fsr0l+0,??_isr+2
-	movff	fsr0h+0,??_isr+3
-	movff	fsr1l+0,??_isr+4
-	movff	fsr1h+0,??_isr+5
-	movff	fsr2l+0,??_isr+6
-	movff	fsr2h+0,??_isr+7
-	movff	prodl+0,??_isr+8
-	movff	prodh+0,??_isr+9
-	movff	tblptrl+0,??_isr+10
-	movff	tblptrh+0,??_isr+11
-	movff	tblptru+0,??_isr+12
-	movff	tablat+0,??_isr+13
-	line	81
+	movff	fsr0l+0,??_isr+4
+	movff	fsr0h+0,??_isr+5
+	movff	fsr1l+0,??_isr+6
+	movff	fsr1h+0,??_isr+7
+	movff	fsr2l+0,??_isr+8
+	movff	fsr2h+0,??_isr+9
+	movff	prodl+0,??_isr+10
+	movff	prodh+0,??_isr+11
+	movff	tblptrl+0,??_isr+12
+	movff	tblptrh+0,??_isr+13
+	movff	tblptru+0,??_isr+14
+	movff	tablat+0,??_isr+15
+	line	48
 	
-i2l737:
-;main.c: 81: if(INT0IF)
-	btfss	c:(32657/8),(32657)&7	;volatile
-	goto	i2u10_41
-	goto	i2u10_40
-i2u10_41:
-	goto	i2l55
-i2u10_40:
-	line	83
+i2l885:
+;main.c: 47: unsigned char ssd[4];
+;main.c: 48: unsigned char data[]={0xe7,0x21,0xcb,0x6b,0x2d,0x6e,0xee,0x23,0xef,0x6f};
+	lfsr	2,(isr@F15926)
+	lfsr	1,(isr@data)
+	movlw	10-1
+i2u33_41:
+	movff	plusw2,plusw1
+	decf	wreg
+	bc	i2u33_41
+
+	line	53
 	
-i2l739:
-;main.c: 82: {
-;main.c: 83: PORTD=0X00;
+i2l887:
+;main.c: 51: static int count;
+;main.c: 52: static int number;
+;main.c: 53: if(TMR0IF)
+	btfss	c:(32658/8),(32658)&7	;volatile
+	goto	i2u34_41
+	goto	i2u34_40
+i2u34_41:
+	goto	i2l57
+i2u34_40:
+	line	55
+	
+i2l889:
+;main.c: 54: {
+;main.c: 55: TMR0=TMR0 +8;
+	movlw	low(08h)
+	addwf	((c:4054)),c,w	;volatile
+	movwf	((c:4054)),c	;volatile
+	movlw	high(08h)
+	addwfc	((c:4054+1)),c,w	;volatile
+	movwf	1+((c:4054)),c	;volatile
+	line	56
+;main.c: 56: if(count++ == 20000)
+	infsnz	((c:isr@count)),c
+	incf	((c:isr@count+1)),c
+		movlw	33
+	xorwf	((c:isr@count)),c,w
+	bnz	i2u35_41
+	movlw	78
+	xorwf	((c:isr@count+1)),c,w
+	btfss	status,2
+	goto	i2u35_41
+	goto	i2u35_40
+
+i2u35_41:
+	goto	i2l52
+i2u35_40:
+	line	58
+	
+i2l891:
+;main.c: 57: {
+;main.c: 58: number++;
+	infsnz	((c:isr@number)),c
+	incf	((c:isr@number+1)),c
+	line	59
+	
+i2l893:
+;main.c: 59: count=0;
+	movlw	high(0)
+	movwf	((c:isr@count+1)),c
 	movlw	low(0)
+	movwf	((c:isr@count)),c
+	line	60
+	
+i2l895:
+;main.c: 60: ssd[3]=data[number % 10];
+	movff	(c:isr@number),(c:___awmod@dividend)
+	movff	(c:isr@number+1),(c:___awmod@dividend+1)
+	movlw	high(0Ah)
+	movwf	((c:___awmod@divisor+1)),c
+	movlw	low(0Ah)
+	movwf	((c:___awmod@divisor)),c
+	call	___awmod	;wreg free
+	movlw	low(isr@data)
+	addwf	(0+?___awmod),c,w
+	movwf	c:fsr2l
+	movlw	high(isr@data)
+	addwfc	(1+?___awmod),c,w
+	movwf	1+c:fsr2l
+	movf	indf2,w
+	movwf	(0+((c:isr@ssd)+03h)),c
+	line	61
+	
+i2l897:
+;main.c: 61: ssd[2]=data[(number / 10)%10];
+	movlw	high(0Ah)
+	movwf	((c:___awdiv@divisor+1)),c
+	movlw	low(0Ah)
+	movwf	((c:___awdiv@divisor)),c
+	movff	(c:isr@number),(c:___awdiv@dividend)
+	movff	(c:isr@number+1),(c:___awdiv@dividend+1)
+	call	___awdiv	;wreg free
+	movff	0+?___awdiv,(c:___awmod@dividend)
+	movff	1+?___awdiv,(c:___awmod@dividend+1)
+	movlw	high(0Ah)
+	movwf	((c:___awmod@divisor+1)),c
+	movlw	low(0Ah)
+	movwf	((c:___awmod@divisor)),c
+	call	___awmod	;wreg free
+	movlw	low(isr@data)
+	addwf	(0+?___awmod),c,w
+	movwf	c:fsr2l
+	movlw	high(isr@data)
+	addwfc	(1+?___awmod),c,w
+	movwf	1+c:fsr2l
+	movf	indf2,w
+	movwf	(0+((c:isr@ssd)+02h)),c
+	line	62
+	
+i2l899:
+;main.c: 62: ssd[1]=data[(number /100)%10];
+	movlw	high(064h)
+	movwf	((c:___awdiv@divisor+1)),c
+	movlw	low(064h)
+	movwf	((c:___awdiv@divisor)),c
+	movff	(c:isr@number),(c:___awdiv@dividend)
+	movff	(c:isr@number+1),(c:___awdiv@dividend+1)
+	call	___awdiv	;wreg free
+	movff	0+?___awdiv,(c:___awmod@dividend)
+	movff	1+?___awdiv,(c:___awmod@dividend+1)
+	movlw	high(0Ah)
+	movwf	((c:___awmod@divisor+1)),c
+	movlw	low(0Ah)
+	movwf	((c:___awmod@divisor)),c
+	call	___awmod	;wreg free
+	movlw	low(isr@data)
+	addwf	(0+?___awmod),c,w
+	movwf	c:fsr2l
+	movlw	high(isr@data)
+	addwfc	(1+?___awmod),c,w
+	movwf	1+c:fsr2l
+	movf	indf2,w
+	movwf	(0+((c:isr@ssd)+01h)),c
+	line	63
+	
+i2l901:
+;main.c: 63: ssd[0]=data[(number/1000)];
+	movff	(c:isr@number),(c:___awdiv@dividend)
+	movff	(c:isr@number+1),(c:___awdiv@dividend+1)
+	movlw	high(03E8h)
+	movwf	((c:___awdiv@divisor+1)),c
+	movlw	low(03E8h)
+	movwf	((c:___awdiv@divisor)),c
+	call	___awdiv	;wreg free
+	movlw	low(isr@data)
+	addwf	(0+?___awdiv),c,w
+	movwf	c:fsr2l
+	movlw	high(isr@data)
+	addwfc	(1+?___awdiv),c,w
+	movwf	1+c:fsr2l
+	movf	indf2,w
+	movwf	((c:isr@ssd)),c
+	line	64
+	
+i2l903:
+;main.c: 64: for(int i=0;i < 4;i++)
+	movlw	high(0)
+	movwf	((c:isr@i+1)),c
+	movlw	low(0)
+	movwf	((c:isr@i)),c
+	
+i2l905:
+	btfsc	((c:isr@i+1)),c,7
+	goto	i2u36_41
+	movf	((c:isr@i+1)),c,w
+	bnz	i2u36_40
+	movlw	4
+	subwf	 ((c:isr@i)),c,w
+	btfss	status,0
+	goto	i2u36_41
+	goto	i2u36_40
+
+i2u36_41:
+	goto	i2l909
+i2u36_40:
+	goto	i2l52
+	
+i2l907:
+	goto	i2l52
+	line	65
+	
+i2l53:
+	line	66
+	
+i2l909:
+;main.c: 65: {
+;main.c: 66: PORTD=ssd[i];
+	movlw	low(isr@ssd)
+	addwf	((c:isr@i)),c,w
+	movwf	c:fsr2l
+	movlw	high(isr@ssd)
+	addwfc	((c:isr@i+1)),c,w
+	movwf	1+c:fsr2l
+	movf	indf2,w
 	movwf	((c:3971)),c	;volatile
-	line	84
+	line	67
 	
-i2l741:
-;main.c: 84: INT0IF=0;
-	bcf	c:(32657/8),(32657)&7	;volatile
-	goto	i2l55
-	line	85
+i2l911:
+;main.c: 67: PORTA=(PORTA & 0Xf0 ) | (1<<i);
+	movff	(c:isr@i),??_isr+0+0
+	movlw	(01h)&0ffh
+	movwf	(??_isr+1+0)&0ffh,c
+	incf	(??_isr+0+0),c
+	goto	i2u37_44
+i2u37_45:
+	bcf	status,0
+	rlcf	((??_isr+1+0)),c
+i2u37_44:
+	decfsz	(??_isr+0+0),c
+	goto	i2u37_45
+	movf	((c:3968)),c,w	;volatile
+	andlw	low(0F0h)
+	iorwf	((??_isr+1+0)),c,w
+	movwf	((c:3968)),c	;volatile
+	line	68
 	
-i2l54:
-	line	86
+i2l913:
+;main.c: 68: for(unsigned int j =0;j<1000;j++);
+	movlw	high(0)
+	movwf	((c:isr@j+1)),c
+	movlw	low(0)
+	movwf	((c:isr@j)),c
+	
+i2l915:
+		movlw	232
+	subwf	 ((c:isr@j)),c,w
+	movlw	3
+	subwfb	((c:isr@j+1)),c,w
+	btfss	status,0
+	goto	i2u38_41
+	goto	i2u38_40
+
+i2u38_41:
+	goto	i2l919
+i2u38_40:
+	goto	i2l923
+	
+i2l917:
+	goto	i2l923
 	
 i2l55:
-	movff	??_isr+13,tablat+0
-	movff	??_isr+12,tblptru+0
-	movff	??_isr+11,tblptrh+0
-	movff	??_isr+10,tblptrl+0
-	movff	??_isr+9,prodh+0
-	movff	??_isr+8,prodl+0
-	movff	??_isr+7,fsr2h+0
-	movff	??_isr+6,fsr2l+0
-	movff	??_isr+5,fsr1h+0
-	movff	??_isr+4,fsr1l+0
-	movff	??_isr+3,fsr0h+0
-	movff	??_isr+2,fsr0l+0
-	movff	??_isr+1,pclat+1
-	movff	??_isr+0,pclat+0
+	
+i2l919:
+	infsnz	((c:isr@j)),c
+	incf	((c:isr@j+1)),c
+	
+i2l921:
+		movlw	232
+	subwf	 ((c:isr@j)),c,w
+	movlw	3
+	subwfb	((c:isr@j+1)),c,w
+	btfss	status,0
+	goto	i2u39_41
+	goto	i2u39_40
+
+i2u39_41:
+	goto	i2l919
+i2u39_40:
+	goto	i2l923
+	
+i2l56:
+	line	64
+	
+i2l923:
+	infsnz	((c:isr@i)),c
+	incf	((c:isr@i+1)),c
+	
+i2l925:
+	btfsc	((c:isr@i+1)),c,7
+	goto	i2u40_41
+	movf	((c:isr@i+1)),c,w
+	bnz	i2u40_40
+	movlw	4
+	subwf	 ((c:isr@i)),c,w
+	btfss	status,0
+	goto	i2u40_41
+	goto	i2u40_40
+
+i2u40_41:
+	goto	i2l909
+i2u40_40:
+	goto	i2l52
+	
+i2l54:
+	line	73
+	
+i2l52:
+	line	74
+;main.c: 69: }
+;main.c: 73: }
+;main.c: 74: TMR0IF=0;
+	bcf	c:(32658/8),(32658)&7	;volatile
+	goto	i2l57
+	line	76
+	
+i2l51:
+	line	77
+	
+i2l57:
+	movff	??_isr+15,tablat+0
+	movff	??_isr+14,tblptru+0
+	movff	??_isr+13,tblptrh+0
+	movff	??_isr+12,tblptrl+0
+	movff	??_isr+11,prodh+0
+	movff	??_isr+10,prodl+0
+	movff	??_isr+9,fsr2h+0
+	movff	??_isr+8,fsr2l+0
+	movff	??_isr+7,fsr1h+0
+	movff	??_isr+6,fsr1l+0
+	movff	??_isr+5,fsr0h+0
+	movff	??_isr+4,fsr0l+0
+	movff	??_isr+3,pclat+1
+	movff	??_isr+2,pclat+0
 	bcf int$flags,1,c ;clear compiler interrupt flag (level 2)
 	retfie f
 	opt stack 0
 GLOBAL	__end_of_isr
 	__end_of_isr:
 	signat	_isr,89
+	global	___awmod
+
+;; *************** function ___awmod *****************
+;; Defined at:
+;;		line 8 in file "/opt/microchip/xc8/v1.36/sources/common/awmod.c"
+;; Parameters:    Size  Location     Type
+;;  dividend        2    8[COMRAM] int 
+;;  divisor         2   10[COMRAM] int 
+;; Auto vars:     Size  Location     Type
+;;  sign            1   13[COMRAM] unsigned char 
+;;  counter         1   12[COMRAM] unsigned char 
+;; Return value:  Size  Location     Type
+;;                  2    8[COMRAM] int 
+;; Registers used:
+;;		wreg, status,2, status,0
+;; Tracked objects:
+;;		On entry : 0/0
+;;		On exit  : 0/0
+;;		Unchanged: 0/0
+;; Data sizes:     COMRAM   BANK0   BANK1   BANK2   BANK3   BANK4   BANK5
+;;      Params:         4       0       0       0       0       0       0
+;;      Locals:         2       0       0       0       0       0       0
+;;      Temps:          0       0       0       0       0       0       0
+;;      Totals:         6       0       0       0       0       0       0
+;;Total ram usage:        6 bytes
+;; Hardware stack levels used:    1
+;; This function calls:
+;;		Nothing
+;; This function is called by:
+;;		_isr
+;; This function uses a non-reentrant model
+;;
+psect	text4,class=CODE,space=0,reloc=2
+	file	"/opt/microchip/xc8/v1.36/sources/common/awmod.c"
+	line	8
+global __ptext4
+__ptext4:
+psect	text4
+	file	"/opt/microchip/xc8/v1.36/sources/common/awmod.c"
+	line	8
+	global	__size_of___awmod
+	__size_of___awmod	equ	__end_of___awmod-___awmod
+	
+___awmod:
+;incstack = 0
+	opt	stack 27
+	line	13
+	
+i2l847:
+	movlw	low(0)
+	movwf	((c:___awmod@sign)),c
+	line	14
+	
+i2l849:
+	btfsc	((c:___awmod@dividend+1)),c,7
+	goto	i2u27_40
+	goto	i2u27_41
+
+i2u27_41:
+	goto	i2l855
+i2u27_40:
+	line	15
+	
+i2l851:
+	negf	((c:___awmod@dividend)),c
+	comf	((c:___awmod@dividend+1)),c
+	btfsc	status,0
+	incf	((c:___awmod@dividend+1)),c
+	line	16
+	
+i2l853:
+	movlw	low(01h)
+	movwf	((c:___awmod@sign)),c
+	goto	i2l855
+	line	17
+	
+i2l238:
+	line	18
+	
+i2l855:
+	btfsc	((c:___awmod@divisor+1)),c,7
+	goto	i2u28_40
+	goto	i2u28_41
+
+i2u28_41:
+	goto	i2l859
+i2u28_40:
+	line	19
+	
+i2l857:
+	negf	((c:___awmod@divisor)),c
+	comf	((c:___awmod@divisor+1)),c
+	btfsc	status,0
+	incf	((c:___awmod@divisor+1)),c
+	goto	i2l859
+	
+i2l239:
+	line	20
+	
+i2l859:
+	movf	((c:___awmod@divisor)),c,w
+iorwf	((c:___awmod@divisor+1)),c,w
+	btfsc	status,2
+	goto	i2u29_41
+	goto	i2u29_40
+
+i2u29_41:
+	goto	i2l875
+i2u29_40:
+	line	21
+	
+i2l861:
+	movlw	low(01h)
+	movwf	((c:___awmod@counter)),c
+	line	22
+	goto	i2l865
+	
+i2l242:
+	line	23
+	
+i2l863:
+	bcf	status,0
+	rlcf	((c:___awmod@divisor)),c
+	rlcf	((c:___awmod@divisor+1)),c
+	line	24
+	incf	((c:___awmod@counter)),c
+	goto	i2l865
+	line	25
+	
+i2l241:
+	line	22
+	
+i2l865:
+	
+	btfss	((c:___awmod@divisor+1)),c,(15)&7
+	goto	i2u30_41
+	goto	i2u30_40
+i2u30_41:
+	goto	i2l863
+i2u30_40:
+	goto	i2l867
+	
+i2l243:
+	goto	i2l867
+	line	26
+	
+i2l244:
+	line	27
+	
+i2l867:
+		movf	((c:___awmod@divisor)),c,w
+	subwf	((c:___awmod@dividend)),c,w
+	movf	((c:___awmod@divisor+1)),c,w
+	subwfb	((c:___awmod@dividend+1)),c,w
+	btfss	status,0
+	goto	i2u31_41
+	goto	i2u31_40
+
+i2u31_41:
+	goto	i2l871
+i2u31_40:
+	line	28
+	
+i2l869:
+	movf	((c:___awmod@divisor)),c,w
+	subwf	((c:___awmod@dividend)),c
+	movf	((c:___awmod@divisor+1)),c,w
+	subwfb	((c:___awmod@dividend+1)),c
+
+	goto	i2l871
+	
+i2l245:
+	line	29
+	
+i2l871:
+	bcf	status,0
+	rrcf	((c:___awmod@divisor+1)),c
+	rrcf	((c:___awmod@divisor)),c
+	line	30
+	
+i2l873:
+	decfsz	((c:___awmod@counter)),c
+	
+	goto	i2l867
+	goto	i2l875
+	
+i2l246:
+	goto	i2l875
+	line	31
+	
+i2l240:
+	line	32
+	
+i2l875:
+	movf	((c:___awmod@sign)),c,w
+	btfsc	status,2
+	goto	i2u32_41
+	goto	i2u32_40
+i2u32_41:
+	goto	i2l879
+i2u32_40:
+	line	33
+	
+i2l877:
+	negf	((c:___awmod@dividend)),c
+	comf	((c:___awmod@dividend+1)),c
+	btfsc	status,0
+	incf	((c:___awmod@dividend+1)),c
+	goto	i2l879
+	
+i2l247:
+	line	34
+	
+i2l879:
+	movff	(c:___awmod@dividend),(c:?___awmod)
+	movff	(c:___awmod@dividend+1),(c:?___awmod+1)
+	goto	i2l248
+	
+i2l881:
+	line	35
+	
+i2l248:
+	return	;funcret
+	opt stack 0
+GLOBAL	__end_of___awmod
+	__end_of___awmod:
+	signat	___awmod,8314
+	global	___awdiv
+
+;; *************** function ___awdiv *****************
+;; Defined at:
+;;		line 8 in file "/opt/microchip/xc8/v1.36/sources/common/awdiv.c"
+;; Parameters:    Size  Location     Type
+;;  dividend        2    0[COMRAM] int 
+;;  divisor         2    2[COMRAM] int 
+;; Auto vars:     Size  Location     Type
+;;  quotient        2    6[COMRAM] int 
+;;  sign            1    5[COMRAM] unsigned char 
+;;  counter         1    4[COMRAM] unsigned char 
+;; Return value:  Size  Location     Type
+;;                  2    0[COMRAM] int 
+;; Registers used:
+;;		wreg, status,2, status,0
+;; Tracked objects:
+;;		On entry : 0/0
+;;		On exit  : 0/0
+;;		Unchanged: 0/0
+;; Data sizes:     COMRAM   BANK0   BANK1   BANK2   BANK3   BANK4   BANK5
+;;      Params:         4       0       0       0       0       0       0
+;;      Locals:         4       0       0       0       0       0       0
+;;      Temps:          0       0       0       0       0       0       0
+;;      Totals:         8       0       0       0       0       0       0
+;;Total ram usage:        8 bytes
+;; Hardware stack levels used:    1
+;; This function calls:
+;;		Nothing
+;; This function is called by:
+;;		_isr
+;; This function uses a non-reentrant model
+;;
+psect	text5,class=CODE,space=0,reloc=2
+	file	"/opt/microchip/xc8/v1.36/sources/common/awdiv.c"
+	line	8
+global __ptext5
+__ptext5:
+psect	text5
+	file	"/opt/microchip/xc8/v1.36/sources/common/awdiv.c"
+	line	8
+	global	__size_of___awdiv
+	__size_of___awdiv	equ	__end_of___awdiv-___awdiv
+	
+___awdiv:
+;incstack = 0
+	opt	stack 27
+	line	14
+	
+i2l803:
+	movlw	low(0)
+	movwf	((c:___awdiv@sign)),c
+	line	15
+	
+i2l805:
+	btfsc	((c:___awdiv@divisor+1)),c,7
+	goto	i2u21_40
+	goto	i2u21_41
+
+i2u21_41:
+	goto	i2l811
+i2u21_40:
+	line	16
+	
+i2l807:
+	negf	((c:___awdiv@divisor)),c
+	comf	((c:___awdiv@divisor+1)),c
+	btfsc	status,0
+	incf	((c:___awdiv@divisor+1)),c
+	line	17
+	
+i2l809:
+	movlw	low(01h)
+	movwf	((c:___awdiv@sign)),c
+	goto	i2l811
+	line	18
+	
+i2l225:
+	line	19
+	
+i2l811:
+	btfsc	((c:___awdiv@dividend+1)),c,7
+	goto	i2u22_40
+	goto	i2u22_41
+
+i2u22_41:
+	goto	i2l817
+i2u22_40:
+	line	20
+	
+i2l813:
+	negf	((c:___awdiv@dividend)),c
+	comf	((c:___awdiv@dividend+1)),c
+	btfsc	status,0
+	incf	((c:___awdiv@dividend+1)),c
+	line	21
+	
+i2l815:
+	movlw	(01h)&0ffh
+	xorwf	((c:___awdiv@sign)),c
+	goto	i2l817
+	line	22
+	
+i2l226:
+	line	23
+	
+i2l817:
+	movlw	high(0)
+	movwf	((c:___awdiv@quotient+1)),c
+	movlw	low(0)
+	movwf	((c:___awdiv@quotient)),c
+	line	24
+	
+i2l819:
+	movf	((c:___awdiv@divisor)),c,w
+iorwf	((c:___awdiv@divisor+1)),c,w
+	btfsc	status,2
+	goto	i2u23_41
+	goto	i2u23_40
+
+i2u23_41:
+	goto	i2l839
+i2u23_40:
+	line	25
+	
+i2l821:
+	movlw	low(01h)
+	movwf	((c:___awdiv@counter)),c
+	line	26
+	goto	i2l825
+	
+i2l229:
+	line	27
+	
+i2l823:
+	bcf	status,0
+	rlcf	((c:___awdiv@divisor)),c
+	rlcf	((c:___awdiv@divisor+1)),c
+	line	28
+	incf	((c:___awdiv@counter)),c
+	goto	i2l825
+	line	29
+	
+i2l228:
+	line	26
+	
+i2l825:
+	
+	btfss	((c:___awdiv@divisor+1)),c,(15)&7
+	goto	i2u24_41
+	goto	i2u24_40
+i2u24_41:
+	goto	i2l823
+i2u24_40:
+	goto	i2l827
+	
+i2l230:
+	goto	i2l827
+	line	30
+	
+i2l231:
+	line	31
+	
+i2l827:
+	bcf	status,0
+	rlcf	((c:___awdiv@quotient)),c
+	rlcf	((c:___awdiv@quotient+1)),c
+	line	32
+	
+i2l829:
+		movf	((c:___awdiv@divisor)),c,w
+	subwf	((c:___awdiv@dividend)),c,w
+	movf	((c:___awdiv@divisor+1)),c,w
+	subwfb	((c:___awdiv@dividend+1)),c,w
+	btfss	status,0
+	goto	i2u25_41
+	goto	i2u25_40
+
+i2u25_41:
+	goto	i2l835
+i2u25_40:
+	line	33
+	
+i2l831:
+	movf	((c:___awdiv@divisor)),c,w
+	subwf	((c:___awdiv@dividend)),c
+	movf	((c:___awdiv@divisor+1)),c,w
+	subwfb	((c:___awdiv@dividend+1)),c
+
+	line	34
+	
+i2l833:
+	bsf	(0+(0/8)+(c:___awdiv@quotient)),c,(0)&7
+	goto	i2l835
+	line	35
+	
+i2l232:
+	line	36
+	
+i2l835:
+	bcf	status,0
+	rrcf	((c:___awdiv@divisor+1)),c
+	rrcf	((c:___awdiv@divisor)),c
+	line	37
+	
+i2l837:
+	decfsz	((c:___awdiv@counter)),c
+	
+	goto	i2l827
+	goto	i2l839
+	
+i2l233:
+	goto	i2l839
+	line	38
+	
+i2l227:
+	line	39
+	
+i2l839:
+	movf	((c:___awdiv@sign)),c,w
+	btfsc	status,2
+	goto	i2u26_41
+	goto	i2u26_40
+i2u26_41:
+	goto	i2l843
+i2u26_40:
+	line	40
+	
+i2l841:
+	negf	((c:___awdiv@quotient)),c
+	comf	((c:___awdiv@quotient+1)),c
+	btfsc	status,0
+	incf	((c:___awdiv@quotient+1)),c
+	goto	i2l843
+	
+i2l234:
+	line	41
+	
+i2l843:
+	movff	(c:___awdiv@quotient),(c:?___awdiv)
+	movff	(c:___awdiv@quotient+1),(c:?___awdiv+1)
+	goto	i2l235
+	
+i2l845:
+	line	42
+	
+i2l235:
+	return	;funcret
+	opt stack 0
+GLOBAL	__end_of___awdiv
+	__end_of___awdiv:
+	signat	___awdiv,8314
 	GLOBAL	__activetblptr
 __activetblptr	EQU	0
 	psect	intsave_regs,class=BIGRAM,space=1,noexec
