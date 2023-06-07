@@ -27,7 +27,7 @@
 [v ___flmul __flmul `(d  1 e 3 0 ]
 "15 /opt/microchip/xc8/v1.36/sources/common/Umul32.c
 [v ___lmul __lmul `(ul  1 e 4 0 ]
-"16 /home/harsha/repo/MC/Embedded_C/Classwork/counter_using_timer/main.c
+"16 /home/harsha/repo/MC/Embedded_C/Classwork/counter_timer1/main.c
 [v _main main `(v  1 e 1 0 ]
 "36
 [v _init_config init_config `(v  1 e 1 0 ]
@@ -43,27 +43,61 @@
 [v _TRISA TRISA `VEuc  1 e 1 @3986 ]
 "30097
 [v _TRISD TRISD `VEuc  1 e 1 @3989 ]
-"34328
-"34328
-[v _TMR0 TMR0 `VEus  1 e 2 @4054 ]
+[s S39 . 1 `uc 1 . 1 0 :2:0 
+`uc 1 NOT_T1SYNC 1 0 :1:2 
+]
+"33657
+[s S42 . 1 `uc 1 TMR1ON 1 0 :1:0 
+`uc 1 TMR1CS 1 0 :1:1 
+`uc 1 nT1SYNC 1 0 :1:2 
+`uc 1 T1OSCEN 1 0 :1:3 
+`uc 1 T1CKPS 1 0 :2:4 
+`uc 1 T1RUN 1 0 :1:6 
+`uc 1 RD16 1 0 :1:7 
+]
+"33657
+[s S50 . 1 `uc 1 . 1 0 :2:0 
+`uc 1 T1SYNC 1 0 :1:2 
+`uc 1 . 1 0 :1:3 
+`uc 1 T1CKPS0 1 0 :1:4 
+`uc 1 T1CKPS1 1 0 :1:5 
+]
+"33657
+[s S56 . 1 `uc 1 . 1 0 :2:0 
+`uc 1 T1INSYNC 1 0 :1:2 
+]
+"33657
+[s S59 . 1 `uc 1 . 1 0 :3:0 
+`uc 1 SOSCEN 1 0 :1:3 
+]
+"33657
+[s S62 . 1 `uc 1 . 1 0 :7:0 
+`uc 1 T1RD16 1 0 :1:7 
+]
+"33657
+[u S65 . 1 `S39 1 . 1 0 `S42 1 . 1 0 `S50 1 . 1 0 `S56 1 . 1 0 `S59 1 . 1 0 `S62 1 . 1 0 ]
+"33657
+"33657
+[v _T1CONbits T1CONbits `VES65  1 e 1 @4045 ]
+"33731
+"33731
+[v _TMR1 TMR1 `VEus  1 e 2 @4046 ]
 "37057
 "37057
 [v _GIE GIE `VEb  1 e 0 @32663 ]
 "37453
 [v _PEIE PEIE `VEb  1 e 0 @32662 ]
-"37477
-[v _PSA PSA `VEb  1 e 0 @32427 ]
-"39375
-[v _T08BIT T08BIT `VEb  1 e 0 @32430 ]
-"39379
-[v _T0CS T0CS `VEb  1 e 0 @32429 ]
-"39461
-[v _TMR0IE TMR0IE `VEb  1 e 0 @32661 ]
-"39463
-[v _TMR0IF TMR0IF `VEb  1 e 0 @32658 ]
-"39467
-[v _TMR0ON TMR0ON `VEb  1 e 0 @32431 ]
-"12 /home/harsha/repo/MC/Embedded_C/Classwork/counter_using_timer/main.c
+"39405
+[v _T1OSCEN T1OSCEN `VEb  1 e 0 @32363 ]
+"39469
+[v _TMR1CS TMR1CS `VEb  1 e 0 @32361 ]
+"39471
+[v _TMR1IE TMR1IE `VEb  1 e 0 @31976 ]
+"39473
+[v _TMR1IF TMR1IF `VEb  1 e 0 @31984 ]
+"39477
+[v _TMR1ON TMR1ON `VEb  1 e 0 @32360 ]
+"12 /home/harsha/repo/MC/Embedded_C/Classwork/counter_timer1/main.c
 [v _ssd ssd `[4]uc  1 e 4 0 ]
 "13
 [v _data data `[10]uc  1 e 10 0 ]

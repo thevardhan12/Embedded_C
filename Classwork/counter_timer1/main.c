@@ -45,13 +45,13 @@ void init_timer0()
 {
     GIE=1;
     PEIE=1;
-    TMR0IE=1;
-    TMR0IF=0;
-    TMR0ON=1;
-    T08BIT=1;
-    T0CS=0;
-    PSA=1;
-    TMR0=6;
+    TMR1IE=1;
+    TMR1IF=0;
+    TMR1ON=1;
+    TMR1CS=0;
+    T1CONbits.RD16=1;
+    TMR1=3036;
+    T1OSCEN=0;
 }
 void interrupt isr()
 {
@@ -59,10 +59,10 @@ void interrupt isr()
 
     static int count;
     static int number;
-    if(TMR0IF)
+    if(TMR1IF)
     {
-        TMR0=TMR0 +8;
-        if(count++ == 20000)
+        TMR1=TMR1+3038;
+        if(count++ == 80)
         {
             number++;
             count=0;
@@ -75,7 +75,7 @@ void interrupt isr()
 
 
         }
-        TMR0IF=0;
+        TMR1IF=0;
 
     }
 }

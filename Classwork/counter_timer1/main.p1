@@ -16,20 +16,41 @@ Version 3.2 HI-TECH Software Intermediate Code
 [v _GIE `Vb ~T0 @X0 0 e@32663 ]
 "37453
 [v _PEIE `Vb ~T0 @X0 0 e@32662 ]
-"39461
-[v _TMR0IE `Vb ~T0 @X0 0 e@32661 ]
-"39463
-[v _TMR0IF `Vb ~T0 @X0 0 e@32658 ]
-"39467
-[v _TMR0ON `Vb ~T0 @X0 0 e@32431 ]
-"39375
-[v _T08BIT `Vb ~T0 @X0 0 e@32430 ]
-"39379
-[v _T0CS `Vb ~T0 @X0 0 e@32429 ]
-"37477
-[v _PSA `Vb ~T0 @X0 0 e@32427 ]
-"34328
-[v _TMR0 `Vus ~T0 @X0 0 e@4054 ]
+"39471
+[v _TMR1IE `Vb ~T0 @X0 0 e@31976 ]
+"39473
+[v _TMR1IF `Vb ~T0 @X0 0 e@31984 ]
+"39477
+[v _TMR1ON `Vb ~T0 @X0 0 e@32360 ]
+"39469
+[v _TMR1CS `Vb ~T0 @X0 0 e@32361 ]
+"33624
+[s S2044 :2 `uc 1 :1 `uc 1 ]
+[n S2044 . . NOT_T1SYNC ]
+"33628
+[s S2045 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :2 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S2045 . TMR1ON TMR1CS nT1SYNC T1OSCEN T1CKPS T1RUN RD16 ]
+"33637
+[s S2046 :2 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S2046 . . T1SYNC . T1CKPS0 T1CKPS1 ]
+"33644
+[s S2047 :2 `uc 1 :1 `uc 1 ]
+[n S2047 . . T1INSYNC ]
+"33648
+[s S2048 :3 `uc 1 :1 `uc 1 ]
+[n S2048 . . SOSCEN ]
+"33652
+[s S2049 :7 `uc 1 :1 `uc 1 ]
+[n S2049 . . T1RD16 ]
+"33623
+[u S2043 `S2044 1 `S2045 1 `S2046 1 `S2047 1 `S2048 1 `S2049 1 ]
+[n S2043 . . . . . . . ]
+"33657
+[v _T1CONbits `VS2043 ~T0 @X0 0 e@4045 ]
+"33731
+[v _TMR1 `Vus ~T0 @X0 0 e@4046 ]
+"39405
+[v _T1OSCEN `Vb ~T0 @X0 0 e@32363 ]
 [; ;htc.h: 26: extern const char __xc8_OPTIM_SPEED;
 [; ;htc.h: 28: extern double __fpnormalize(double);
 [; ;xc8debug.h: 14: extern void __builtin_software_breakpoint(void);
@@ -14635,27 +14656,27 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;main.c: 47: PEIE=1;
 "47
 [e = _PEIE -> -> 1 `i `b ]
-[; ;main.c: 48: TMR0IE=1;
+[; ;main.c: 48: TMR1IE=1;
 "48
-[e = _TMR0IE -> -> 1 `i `b ]
-[; ;main.c: 49: TMR0IF=0;
+[e = _TMR1IE -> -> 1 `i `b ]
+[; ;main.c: 49: TMR1IF=0;
 "49
-[e = _TMR0IF -> -> 0 `i `b ]
-[; ;main.c: 50: TMR0ON=1;
+[e = _TMR1IF -> -> 0 `i `b ]
+[; ;main.c: 50: TMR1ON=1;
 "50
-[e = _TMR0ON -> -> 1 `i `b ]
-[; ;main.c: 51: T08BIT=1;
+[e = _TMR1ON -> -> 1 `i `b ]
+[; ;main.c: 51: TMR1CS=0;
 "51
-[e = _T08BIT -> -> 1 `i `b ]
-[; ;main.c: 52: T0CS=0;
+[e = _TMR1CS -> -> 0 `i `b ]
+[; ;main.c: 52: T1CONbits.RD16=1;
 "52
-[e = _T0CS -> -> 0 `i `b ]
-[; ;main.c: 53: PSA=1;
+[e = . . _T1CONbits 1 6 -> -> 1 `i `uc ]
+[; ;main.c: 53: TMR1=3036;
 "53
-[e = _PSA -> -> 1 `i `b ]
-[; ;main.c: 54: TMR0=6;
+[e = _TMR1 -> -> 3036 `i `us ]
+[; ;main.c: 54: T1OSCEN=0;
 "54
-[e = _TMR0 -> -> 6 `i `us ]
+[e = _T1OSCEN -> -> 0 `i `b ]
 [; ;main.c: 55: }
 "55
 [e :UE 2108 ]
@@ -14675,18 +14696,18 @@ Version 3.2 HI-TECH Software Intermediate Code
 [v F15929 `i ~T0 @X0 1 s number ]
 [; ;main.c: 60: static int count;
 [; ;main.c: 61: static int number;
-[; ;main.c: 62: if(TMR0IF)
+[; ;main.c: 62: if(TMR1IF)
 "62
-[e $ ! _TMR0IF 2110  ]
+[e $ ! _TMR1IF 2110  ]
 [; ;main.c: 63: {
 "63
 {
-[; ;main.c: 64: TMR0=TMR0 +8;
+[; ;main.c: 64: TMR1=TMR1+3038;
 "64
-[e = _TMR0 -> + -> _TMR0 `ui -> -> 8 `i `ui `us ]
-[; ;main.c: 65: if(count++ == 20000)
+[e = _TMR1 -> + -> _TMR1 `ui -> -> 3038 `i `ui `us ]
+[; ;main.c: 65: if(count++ == 80)
 "65
-[e $ ! == ++ F15928 -> 1 `i -> 20000 `i 2111  ]
+[e $ ! == ++ F15928 -> 1 `i -> 80 `i 2111  ]
 [; ;main.c: 66: {
 "66
 {
@@ -14712,9 +14733,9 @@ Version 3.2 HI-TECH Software Intermediate Code
 }
 [e :U 2111 ]
 [; ;main.c: 77: }
-[; ;main.c: 78: TMR0IF=0;
+[; ;main.c: 78: TMR1IF=0;
 "78
-[e = _TMR0IF -> -> 0 `i `b ]
+[e = _TMR1IF -> -> 0 `i `b ]
 "80
 }
 [e :U 2110 ]
