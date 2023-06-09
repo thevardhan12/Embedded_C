@@ -1,7 +1,7 @@
 
 
 Microchip Technology PIC18 Macro Assembler V1.36 build -262312587 
-                                                                                                           Fri Jun  9 04:17:38 2023
+                                                                                                           Fri Jun  9 03:27:43 2023
 
 
      1                           
@@ -104,37 +104,40 @@ Microchip Technology PIC18 Macro Assembler V1.36 build -262312587
     98                           	psect	reset_vec
     99                           reset_vec:
    100  000000                     	; No powerup routine
-   101                           	; No interrupt routine
-   102                           	GLOBAL __accesstop
-   103                           __accesstop EQU 96
-   104  0000                     
-   105                           
-   106                           	psect	init
-   107                           start:
-   108  000000                     
-   109                           ;Initialize the stack pointer (FSR1)
-   110                           	global stacklo, stackhi
-   111                           	stacklo	equ	060h
-   112  0000                     	stackhi	equ	05FFh
-   113  0000                     
-   114                           
-   115                           	psect	stack,class=STACK,space=2,noexec
-   116                           	global ___sp,___inthi_sp,___intlo_sp
-   117                           ___sp:
-   118  000000                     ___inthi_sp:
-   119  000000                     ___intlo_sp:
-   120  000000                     
-   121                           	psect	end_init
-   122                           	global start_initialization
-   123                           	goto start_initialization	;jump to C runtime clear & initialization
-   124  000000  EF9E  F017         
+   101                           	global start
+   102                           
+   103                           ; jump to start
+   104                           	goto start
+   105  000000  EF0B  F000         	GLOBAL __accesstop
+   106                           __accesstop EQU 96
+   107  0000                     
+   108                           
+   109                           	psect	init
+   110                           start:
+   111  000016                     
+   112                           ;Initialize the stack pointer (FSR1)
+   113                           	global stacklo, stackhi
+   114                           	stacklo	equ	060h
+   115  0000                     	stackhi	equ	05FFh
+   116  0000                     
+   117                           
+   118                           	psect	stack,class=STACK,space=2,noexec
+   119                           	global ___sp,___inthi_sp,___intlo_sp
+   120                           ___sp:
+   121  000000                     ___inthi_sp:
+   122  000000                     ___intlo_sp:
+   123  000000                     
+   124                           	psect	end_init
+   125                           	global start_initialization
+   126                           	goto start_initialization	;jump to C runtime clear & initialization
+   127  000016  EFF7  F001         
 
 
 Microchip Technology PIC18 Macro Assembler V1.36 build -262312587 
-Symbol Table                                                                                               Fri Jun  9 04:17:38 2023
+Symbol Table                                                                                               Fri Jun  9 03:27:43 2023
 
-                __S1 0022                 ___sp 0000                 _main 2F62                 start 0000  
+                __S1 003C                 ___sp 0000                 _main 001A                 start 0016  
               __HRAM 0000                __LRAM 0001         __mediumconst 0000               stackhi 0005FF  
              stacklo 000060           __accesstop 000060           ___inthi_sp 0000           ___intlo_sp 0000  
-            __ramtop 0600  start_initialization 2F3C          __smallconst 0000             intlevel0 0000  
+            __ramtop 0600  start_initialization 03EE          __smallconst 0000             intlevel0 0000  
            intlevel1 0000             intlevel2 0000             intlevel3 0000             reset_vec 0000  

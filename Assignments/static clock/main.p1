@@ -1,13 +1,35 @@
 Version 3.2 HI-TECH Software Intermediate Code
 [p mainexit ]
-"30097 /opt/microchip/xc8/v1.36/include/pic18f4580.h
-[v _TRISD `Vuc ~T0 @X0 0 e@3989 ]
-"29434
-[v _TRISA `Vuc ~T0 @X0 0 e@3986 ]
-"28554
+"9 main.c
+[v _init_config `(v ~T0 @X0 0 ef ]
+"28554 /opt/microchip/xc8/v1.36/include/pic18f4580.h
 [v _PORTD `Vuc ~T0 @X0 0 e@3971 ]
 "27999
 [v _PORTA `Vuc ~T0 @X0 0 e@3968 ]
+"30097
+[v _TRISD `Vuc ~T0 @X0 0 e@3989 ]
+"29434
+[v _TRISA `Vuc ~T0 @X0 0 e@3986 ]
+"10 main.c
+[v _init_timer0 `(v ~T0 @X0 0 ef ]
+"37057 /opt/microchip/xc8/v1.36/include/pic18f4580.h
+[v _GIE `Vb ~T0 @X0 0 e@32663 ]
+"37453
+[v _PEIE `Vb ~T0 @X0 0 e@32662 ]
+"39461
+[v _TMR0IE `Vb ~T0 @X0 0 e@32661 ]
+"39463
+[v _TMR0IF `Vb ~T0 @X0 0 e@32658 ]
+"39467
+[v _TMR0ON `Vb ~T0 @X0 0 e@32431 ]
+"39375
+[v _T08BIT `Vb ~T0 @X0 0 e@32430 ]
+"39379
+[v _T0CS `Vb ~T0 @X0 0 e@32429 ]
+"37477
+[v _PSA `Vb ~T0 @X0 0 e@32427 ]
+"34328
+[v _TMR0 `Vus ~T0 @X0 0 e@4054 ]
 [; ;htc.h: 26: extern const char __xc8_OPTIM_SPEED;
 [; ;htc.h: 28: extern double __fpnormalize(double);
 [; ;xc8debug.h: 14: extern void __builtin_software_breakpoint(void);
@@ -14487,152 +14509,293 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;pic18.h: 156: extern __nonreentrant void _delay(unsigned long);
 [; ;pic18.h: 158: extern __nonreentrant void _delaywdt(unsigned long);
 [; ;pic18.h: 160: extern __nonreentrant void _delay3(unsigned char);
-"2 main.c
-[v _main `(v ~T0 @X0 1 ef ]
-"3
-{
-[; ;main.c: 2: void main()
-[; ;main.c: 3: {
-[e :U _main ]
-[f ]
-"4
-[v _init_config `(v ~T0 @X0 0 ef ]
-[; ;main.c: 4: void init_config();
-[; ;main.c: 5: init_config();
-"5
-[e ( _init_config ..  ]
-"6
-[v _display `(v ~T0 @X0 0 ef1`*uc ]
-"7
-[v _i `uc ~T0 @X0 1 a ]
-[; ;main.c: 6: void display(unsigned char *ssd);
-[; ;main.c: 7: unsigned char i=5;
-[e = _i -> -> 5 `i `uc ]
-[v F15925 `uc ~T0 @X0 -> 0 `x s ]
-[i F15925
+[; ;main.c: 9: void init_config();
+[; ;main.c: 10: void init_timer0();
+"11 main.c
+[v _half_sec `ui ~T0 @X0 1 s ]
+[v _sec `ui ~T0 @X0 1 s ]
+[; ;main.c: 11: static unsigned int half_sec,sec;
+"12
+[v _hour `i ~T0 @X0 1 s ]
+[i _hour
+-> 12 `i
+]
+[v _minute `i ~T0 @X0 1 s ]
+[; ;main.c: 12: static int hour=12,minute;
+"13
+[v _ssd `uc ~T0 @X0 -> 4 `i e ]
+[; ;main.c: 13: unsigned char ssd[4];
+"14
+[v _data `uc ~T0 @X0 -> 0 `x e ]
+[i _data
 :U ..
-"8
 -> -> 231 `i `uc
 -> -> 33 `i `uc
 -> -> 203 `i `uc
 -> -> 107 `i `uc
--> -> 108 `i `uc
--> -> 182 `i `uc
+-> -> 45 `i `uc
+-> -> 110 `i `uc
 -> -> 238 `i `uc
 -> -> 35 `i `uc
 -> -> 239 `i `uc
--> -> 47 `i `uc
+-> -> 111 `i `uc
 ..
 ]
-[v _data `uc ~T0 @X0 10  a ]
-[; ;main.c: 8: unsigned char data[]={0xe7,0x21,0xcb,0x6b,0x6c,0xb6,0xee,0x23,0xef,0x2f};
-[e = _data F15925 ]
-"9
-[v _ssd `uc ~T0 @X0 -> 4 `i a ]
-[; ;main.c: 9: unsigned char ssd[4];
-[; ;main.c: 10: while(1)
-"10
-[e :U 2099 ]
-[; ;main.c: 11: {
-"11
-{
-[; ;main.c: 12: ssd[0]=0x8e;
-"12
-[e = *U + &U _ssd * -> -> -> 0 `i `ui `ux -> -> # *U &U _ssd `ui `ux -> -> 142 `i `uc ]
-[; ;main.c: 13: ssd[1]=0xe5;
-"13
-[e = *U + &U _ssd * -> -> -> 1 `i `ui `ux -> -> # *U &U _ssd `ui `ux -> -> 229 `i `uc ]
-[; ;main.c: 14: ssd[2]=0xc6;
-"14
-[e = *U + &U _ssd * -> -> -> 2 `i `ui `ux -> -> # *U &U _ssd `ui `ux -> -> 198 `i `uc ]
-[; ;main.c: 15: ssd[3]=0xac;
-"15
-[e = *U + &U _ssd * -> -> -> 3 `i `ui `ux -> -> # *U &U _ssd `ui `ux -> -> 172 `i `uc ]
-[; ;main.c: 18: display(ssd);
+[; ;main.c: 14: unsigned char data[]={0xe7,0x21,0xcb,0x6b,0x2d,0x6e,0xee,0x23,0xef,0x6f};
+"17
+[v _main `(v ~T0 @X0 1 ef ]
 "18
-[e ( _display (1 &U _ssd ]
+{
+[; ;main.c: 17: void main()
+[; ;main.c: 18: {
+[e :U _main ]
+[f ]
+[; ;main.c: 19: init_config();
 "19
-}
-[e :U 2098 ]
-"10
-[e $U 2099  ]
-[e :U 2100 ]
-[; ;main.c: 19: }
-[; ;main.c: 20: }
+[e ( _init_config ..  ]
+[; ;main.c: 20: ssd[1]=data[(hour % 10)];
 "20
-[e :UE 2097 ]
-}
+[e = *U + &U _ssd * -> -> -> 1 `i `ui `ux -> -> # *U &U _ssd `ui `ux *U + &U _data * -> -> % _hour -> 10 `i `ui `ux -> -> # *U &U _data `ui `ux ]
+[; ;main.c: 21: ssd[0]=data[((hour / 10)%10)];
+"21
+[e = *U + &U _ssd * -> -> -> 0 `i `ui `ux -> -> # *U &U _ssd `ui `ux *U + &U _data * -> -> % / _hour -> 10 `i -> 10 `i `ui `ux -> -> # *U &U _data `ui `ux ]
+[; ;main.c: 22: ssd[3]=data[minute % 10];
 "22
-[v _init_config `(v ~T0 @X0 1 ef ]
+[e = *U + &U _ssd * -> -> -> 3 `i `ui `ux -> -> # *U &U _ssd `ui `ux *U + &U _data * -> -> % _minute -> 10 `i `ui `ux -> -> # *U &U _data `ui `ux ]
+[; ;main.c: 23: ssd[2]=data[(minute/10)%10];
 "23
-{
-[; ;main.c: 22: void init_config()
-[; ;main.c: 23: {
-[e :U _init_config ]
-[f ]
-[; ;main.c: 24: TRISD=0X00;
-"24
-[e = _TRISD -> -> 0 `i `uc ]
-[; ;main.c: 25: TRISA=TRISA & 0XF0;
+[e = *U + &U _ssd * -> -> -> 2 `i `ui `ux -> -> # *U &U _ssd `ui `ux *U + &U _data * -> -> % / _minute -> 10 `i -> 10 `i `ui `ux -> -> # *U &U _data `ui `ux ]
+[; ;main.c: 25: while(1)
 "25
-[e = _TRISA -> & -> _TRISA `i -> 240 `i `uc ]
-[; ;main.c: 26: PORTD=0X00;
+[e :U 2099 ]
+[; ;main.c: 26: {
 "26
-[e = _PORTD -> -> 0 `i `uc ]
-[; ;main.c: 27: }
-"27
-[e :UE 2101 ]
-}
-"28
-[v _display `(v ~T0 @X0 1 ef1`*uc ]
-"29
 {
-[; ;main.c: 28: void display(unsigned char *ssd)
-[; ;main.c: 29: {
-[e :U _display ]
-"28
-[v _ssd `*uc ~T0 @X0 1 r1 ]
-"29
-[f ]
-[; ;main.c: 30: for(int i=0;i < 4;i++)
-"30
+[; ;main.c: 27: for(int i=0;i < 4;i++)
+"27
 {
 [v _i `i ~T0 @X0 1 a ]
 [e = _i -> 0 `i ]
-[e $ < _i -> 4 `i 2103  ]
-[e $U 2104  ]
-"31
-[e :U 2103 ]
-[; ;main.c: 31: {
+[e $ < _i -> 4 `i 2101  ]
+[e $U 2102  ]
+"28
+[e :U 2101 ]
+[; ;main.c: 28: {
 {
-[; ;main.c: 32: PORTD=ssd[i];
-"32
-[e = _PORTD *U + _ssd * -> _i `x -> -> # *U _ssd `i `x ]
-[; ;main.c: 33: PORTA=(PORTA & 0Xf0 ) | (1<<i);
-"33
+[; ;main.c: 29: PORTD=ssd[i];
+"29
+[e = _PORTD *U + &U _ssd * -> -> _i `ui `ux -> -> # *U &U _ssd `ui `ux ]
+[; ;main.c: 30: PORTA=(PORTA & 0Xf0 ) | (1<<i);
+"30
 [e = _PORTA -> | & -> _PORTA `i -> 240 `i << -> 1 `i _i `uc ]
-[; ;main.c: 34: for(unsigned int j =0;j<1000;j++);
-"34
+[; ;main.c: 31: for(unsigned int j =0;j<1000;j++);
+"31
 {
 [v _j `ui ~T0 @X0 1 a ]
 [e = _j -> -> 0 `i `ui ]
-[e $ < _j -> -> 1000 `i `ui 2106  ]
-[e $U 2107  ]
-[e :U 2106 ]
-[e ++ _j -> -> 1 `i `ui ]
-[e $ < _j -> -> 1000 `i `ui 2106  ]
-[e :U 2107 ]
-}
-"35
-}
-"30
-[e ++ _i -> 1 `i ]
-[e $ < _i -> 4 `i 2103  ]
+[e $ < _j -> -> 1000 `i `ui 2104  ]
+[e $U 2105  ]
 [e :U 2104 ]
-"35
+[e ++ _j -> -> 1 `i `ui ]
+[e $ < _j -> -> 1000 `i `ui 2104  ]
+[e :U 2105 ]
 }
-[; ;main.c: 35: }
-[; ;main.c: 38: }
+"32
+}
+"27
+[e ++ _i -> 1 `i ]
+[e $ < _i -> 4 `i 2101  ]
+[e :U 2102 ]
+"32
+}
+[; ;main.c: 32: }
+[; ;main.c: 33: if(half_sec == 2)
+"33
+[e $ ! == _half_sec -> -> 2 `i `ui 2107  ]
+[; ;main.c: 34: {
+"34
+{
+[; ;main.c: 36: half_sec=0;
+"36
+[e = _half_sec -> -> 0 `i `ui ]
+[; ;main.c: 37: minute++;
+"37
+[e ++ _minute -> 1 `i ]
+[; ;main.c: 38: if(minute == 60)
 "38
-[e :UE 2102 ]
+[e $ ! == _minute -> 60 `i 2108  ]
+[; ;main.c: 39: {
+"39
+{
+[; ;main.c: 40: hour++;
+"40
+[e ++ _hour -> 1 `i ]
+[; ;main.c: 41: minute=0;
+"41
+[e = _minute -> 0 `i ]
+[; ;main.c: 42: if(hour == 24)
+"42
+[e $ ! == _hour -> 24 `i 2109  ]
+[; ;main.c: 43: {
+"43
+{
+[; ;main.c: 44: hour=0;
+"44
+[e = _hour -> 0 `i ]
+"45
+}
+[e :U 2109 ]
+"47
+}
+[e :U 2108 ]
+[; ;main.c: 45: }
+[; ;main.c: 47: }
+[; ;main.c: 49: ssd[0]=data[(hour / 10)%10];
+"49
+[e = *U + &U _ssd * -> -> -> 0 `i `ui `ux -> -> # *U &U _ssd `ui `ux *U + &U _data * -> -> % / _hour -> 10 `i -> 10 `i `ui `ux -> -> # *U &U _data `ui `ux ]
+[; ;main.c: 50: ssd[3]=data[minute % 10];
+"50
+[e = *U + &U _ssd * -> -> -> 3 `i `ui `ux -> -> # *U &U _ssd `ui `ux *U + &U _data * -> -> % _minute -> 10 `i `ui `ux -> -> # *U &U _data `ui `ux ]
+[; ;main.c: 51: ssd[2]=data[(minute/10)%10];
+"51
+[e = *U + &U _ssd * -> -> -> 2 `i `ui `ux -> -> # *U &U _ssd `ui `ux *U + &U _data * -> -> % / _minute -> 10 `i -> 10 `i `ui `ux -> -> # *U &U _data `ui `ux ]
+"53
+}
+[e :U 2107 ]
+[; ;main.c: 53: }
+[; ;main.c: 54: if(half_sec % 2)
+"54
+[e $ ! != % _half_sec -> -> 2 `i `ui -> -> 0 `i `ui 2110  ]
+[; ;main.c: 55: ssd[1]=data[(hour % 10 )] | 0x10;
+"55
+[e = *U + &U _ssd * -> -> -> 1 `i `ui `ux -> -> # *U &U _ssd `ui `ux -> | -> *U + &U _data * -> -> % _hour -> 10 `i `ui `ux -> -> # *U &U _data `ui `ux `i -> 16 `i `uc ]
+[e $U 2111  ]
+"56
+[e :U 2110 ]
+[; ;main.c: 56: else
+[; ;main.c: 57: ssd[1]=data[(hour % 10 )];
+"57
+[e = *U + &U _ssd * -> -> -> 1 `i `ui `ux -> -> # *U &U _ssd `ui `ux *U + &U _data * -> -> % _hour -> 10 `i `ui `ux -> -> # *U &U _data `ui `ux ]
+[e :U 2111 ]
+"64
+}
+[e :U 2098 ]
+"25
+[e $U 2099  ]
+[e :U 2100 ]
+[; ;main.c: 64: }
+[; ;main.c: 67: }
+"67
+[e :UE 2097 ]
+}
+"68
+[v _init_config `(v ~T0 @X0 1 ef ]
+"69
+{
+[; ;main.c: 68: void init_config()
+[; ;main.c: 69: {
+[e :U _init_config ]
+[f ]
+[; ;main.c: 70: TRISD=0X00;
+"70
+[e = _TRISD -> -> 0 `i `uc ]
+[; ;main.c: 71: TRISA=TRISA & 0XF0;
+"71
+[e = _TRISA -> & -> _TRISA `i -> 240 `i `uc ]
+[; ;main.c: 72: PORTA=PORTA & 0XF0;
+"72
+[e = _PORTA -> & -> _PORTA `i -> 240 `i `uc ]
+[; ;main.c: 73: init_timer0();
+"73
+[e ( _init_timer0 ..  ]
+[; ;main.c: 74: }
+"74
+[e :UE 2112 ]
+}
+"75
+[v _init_timer0 `(v ~T0 @X0 1 ef ]
+"76
+{
+[; ;main.c: 75: void init_timer0()
+[; ;main.c: 76: {
+[e :U _init_timer0 ]
+[f ]
+[; ;main.c: 77: GIE=1;
+"77
+[e = _GIE -> -> 1 `i `b ]
+[; ;main.c: 78: PEIE=1;
+"78
+[e = _PEIE -> -> 1 `i `b ]
+[; ;main.c: 79: TMR0IE=1;
+"79
+[e = _TMR0IE -> -> 1 `i `b ]
+[; ;main.c: 80: TMR0IF=0;
+"80
+[e = _TMR0IF -> -> 0 `i `b ]
+[; ;main.c: 81: TMR0ON=1;
+"81
+[e = _TMR0ON -> -> 1 `i `b ]
+[; ;main.c: 82: T08BIT=1;
+"82
+[e = _T08BIT -> -> 1 `i `b ]
+[; ;main.c: 83: T0CS=0;
+"83
+[e = _T0CS -> -> 0 `i `b ]
+[; ;main.c: 84: PSA=1;
+"84
+[e = _PSA -> -> 1 `i `b ]
+[; ;main.c: 85: TMR0=6;
+"85
+[e = _TMR0 -> -> 6 `i `us ]
+[; ;main.c: 86: }
+"86
+[e :UE 2113 ]
+}
+[v F15931 `(v ~T0 @X0 1 tf ]
+"87
+[v _isr `IF15931 ~T0 @X0 1 e ]
+"88
+{
+[; ;main.c: 87: void interrupt isr()
+[; ;main.c: 88: {
+[e :U _isr ]
+[f ]
+"91
+[v F15932 `i ~T0 @X0 1 s count ]
+[; ;main.c: 91: static int count;
+[; ;main.c: 92: if(TMR0IF)
+"92
+[e $ ! _TMR0IF 2115  ]
+[; ;main.c: 93: {
+"93
+{
+[; ;main.c: 94: TMR0=TMR0 +8;
+"94
+[e = _TMR0 -> + -> _TMR0 `ui -> -> 8 `i `ui `us ]
+[; ;main.c: 95: if(count++ == 10000)
+"95
+[e $ ! == ++ F15932 -> 1 `i -> 10000 `i 2116  ]
+[; ;main.c: 96: {
+"96
+{
+[; ;main.c: 97: half_sec++;
+"97
+[e ++ _half_sec -> -> 1 `i `ui ]
+[; ;main.c: 99: count=0;
+"99
+[e = F15932 -> 0 `i ]
+"101
+}
+[e :U 2116 ]
+[; ;main.c: 101: }
+[; ;main.c: 102: TMR0IF=0;
+"102
+[e = _TMR0IF -> -> 0 `i `b ]
+"104
+}
+[e :U 2115 ]
+[; ;main.c: 104: }
+[; ;main.c: 105: }
+"105
+[e :UE 2114 ]
 }
